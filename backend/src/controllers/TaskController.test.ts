@@ -4,6 +4,7 @@ import taskRoutes from '../routes/taskRoutes';
 import TaskService from '../services/TaskService';
 import authMiddleware from '../middlewares/authMiddleware';
 import errorHandler from '../middlewares/errorHandler';
+import { Task } from '../domain/entities/Task';
 
 // Mock dependencies
 jest.mock('../services/TaskService');
@@ -39,27 +40,10 @@ describe('TaskController Integration Tests', () => {
   describe('GET /api/tasks', () => {
     it('should return 200 and list of tasks for authenticated user', async () => {
       // Arrange
+      const now = new Date();
       const mockTasks = [
-        {
-          id: 1,
-          user_id: 1,
-          title: 'Task 1',
-          description: 'Description 1',
-          status: 'pending',
-          priority: 'high',
-          created_at: new Date(),
-          updated_at: new Date(),
-        },
-        {
-          id: 2,
-          user_id: 1,
-          title: 'Task 2',
-          description: 'Description 2',
-          status: 'completed',
-          priority: 'low',
-          created_at: new Date(),
-          updated_at: new Date(),
-        },
+        new Task(1, 1, 'Task 1', 'Description 1', 'pending', 'high', null, now, now),
+        new Task(2, 1, 'Task 2', 'Description 2', 'completed', 'low', null, now, now),
       ];
 
       mockTaskService.getTasks = jest.fn().mockResolvedValue(mockTasks);
@@ -72,7 +56,16 @@ describe('TaskController Integration Tests', () => {
       // Assert
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('Tasks retrieved successfully');
-      expect(response.body.data).toEqual(mockTasks);
+      expect(response.body.data).toBeDefined();
+      expect(response.body.data).toHaveLength(2);
+      expect(response.body.data[0]).toMatchObject({
+        id: 1,
+        userId: 1,
+        title: 'Task 1',
+        description: 'Description 1',
+        status: 'pending',
+        priority: 'high',
+      });
       expect(mockTaskService.getTasks).toHaveBeenCalledWith(1);
     });
 

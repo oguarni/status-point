@@ -66,11 +66,7 @@ class AuthService {
 
     return {
       token,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-      },
+      user: user.toSafeObject(),
     };
   }
 
@@ -89,7 +85,7 @@ class AuthService {
     }
 
     // Compare passwords
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
       throw new InvalidPasswordError('Invalid email or password');
     }
@@ -103,11 +99,7 @@ class AuthService {
 
     return {
       token,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-      },
+      user: user.toSafeObject(),
     };
   }
 }

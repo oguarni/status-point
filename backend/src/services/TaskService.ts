@@ -1,6 +1,6 @@
 import TaskRepository from '../repositories/TaskRepository';
 import { AuthorizationError, UserNotFoundError } from '../errors';
-import TaskModel from '../models/Task';
+import { Task } from '../domain/entities/Task';
 
 // Create task DTO
 interface CreateTaskDTO {
@@ -32,7 +32,7 @@ class TaskService {
    * @param userId - User's ID
    * @returns Array of tasks
    */
-  async getTasks(userId: number): Promise<TaskModel[]> {
+  async getTasks(userId: number): Promise<Task[]> {
     const tasks = await this.taskRepository.findAllByUserId(userId);
     return tasks;
   }
@@ -43,7 +43,7 @@ class TaskService {
    * @param taskData - Task creation data
    * @returns Created task
    */
-  async createTask(userId: number, taskData: CreateTaskDTO): Promise<TaskModel> {
+  async createTask(userId: number, taskData: CreateTaskDTO): Promise<Task> {
     const task = await this.taskRepository.create({
       user_id: userId,
       ...taskData,
@@ -58,7 +58,7 @@ class TaskService {
    * @param taskId - Task's ID
    * @returns Updated task
    */
-  async completeTask(userId: number, taskId: number): Promise<TaskModel> {
+  async completeTask(userId: number, taskId: number): Promise<Task> {
     // Find task
     const task = await this.taskRepository.findById(taskId);
 
@@ -67,7 +67,7 @@ class TaskService {
     }
 
     // CRITICAL: Authorization check - user must own the task
-    if (task.user_id !== userId) {
+    if (!task.isOwnedBy(userId)) {
       throw new AuthorizationError('You are not authorized to modify this task');
     }
 
@@ -91,7 +91,7 @@ class TaskService {
    * @param taskData - Task update data
    * @returns Updated task
    */
-  async updateTask(userId: number, taskId: number, taskData: UpdateTaskDTO): Promise<TaskModel> {
+  async updateTask(userId: number, taskId: number, taskData: UpdateTaskDTO): Promise<Task> {
     // Find task
     const task = await this.taskRepository.findById(taskId);
 
@@ -100,7 +100,7 @@ class TaskService {
     }
 
     // CRITICAL: Authorization check - user must own the task
-    if (task.user_id !== userId) {
+    if (!task.isOwnedBy(userId)) {
       throw new AuthorizationError('You are not authorized to modify this task');
     }
 
@@ -130,7 +130,7 @@ class TaskService {
     }
 
     // CRITICAL: Authorization check - user must own the task
-    if (task.user_id !== userId) {
+    if (!task.isOwnedBy(userId)) {
       throw new AuthorizationError('You are not authorized to delete this task');
     }
 

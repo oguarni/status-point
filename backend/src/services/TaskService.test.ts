@@ -1,6 +1,7 @@
 import TaskService from './TaskService';
 import TaskRepository from '../repositories/TaskRepository';
 import { AuthorizationError, UserNotFoundError } from '../errors';
+import { Task } from '../domain/entities/Task';
 
 // Mock TaskRepository
 jest.mock('../repositories/TaskRepository');
@@ -83,20 +84,32 @@ describe('TaskService', () => {
       // Arrange
       const userId = 1;
       const taskId = 1;
-      const mockTask = {
-        id: taskId,
-        user_id: userId,
-        title: 'Task',
-        status: 'pending' as const,
-      };
+      const mockTask = new Task(
+        taskId,
+        userId,
+        'Task',
+        null,
+        'pending',
+        null,
+        null,
+        new Date(),
+        new Date()
+      );
 
-      const mockUpdatedTask = {
-        ...mockTask,
-        status: 'completed' as const,
-      };
+      const mockUpdatedTask = new Task(
+        taskId,
+        userId,
+        'Task',
+        null,
+        'completed',
+        null,
+        null,
+        new Date(),
+        new Date()
+      );
 
-      mockTaskRepository.findById.mockResolvedValue(mockTask as any);
-      mockTaskRepository.update.mockResolvedValue(mockUpdatedTask as any);
+      mockTaskRepository.findById.mockResolvedValue(mockTask);
+      mockTaskRepository.update.mockResolvedValue(mockUpdatedTask);
 
       // Act
       const result = await taskService.completeTask(userId, taskId);
@@ -115,14 +128,19 @@ describe('TaskService', () => {
       const differentUserId = 2;
       const taskId = 1;
 
-      const mockTask = {
-        id: taskId,
-        user_id: differentUserId, // Different user!
-        title: 'Task',
-        status: 'pending' as const,
-      };
+      const mockTask = new Task(
+        taskId,
+        differentUserId, // Different user!
+        'Task',
+        null,
+        'pending',
+        null,
+        null,
+        new Date(),
+        new Date()
+      );
 
-      mockTaskRepository.findById.mockResolvedValue(mockTask as any);
+      mockTaskRepository.findById.mockResolvedValue(mockTask);
 
       // Act & Assert
       await expect(taskService.completeTask(userId, taskId)).rejects.toThrow(AuthorizationError);
@@ -154,20 +172,32 @@ describe('TaskService', () => {
         priority: 'low' as const,
       };
 
-      const mockTask = {
-        id: taskId,
-        user_id: userId,
-        title: 'Original Task',
-        status: 'pending' as const,
-      };
+      const mockTask = new Task(
+        taskId,
+        userId,
+        'Original Task',
+        null,
+        'pending',
+        null,
+        null,
+        new Date(),
+        new Date()
+      );
 
-      const mockUpdatedTask = {
-        ...mockTask,
-        ...updateData,
-      };
+      const mockUpdatedTask = new Task(
+        taskId,
+        userId,
+        'Updated Task',
+        null,
+        'pending',
+        'low',
+        null,
+        new Date(),
+        new Date()
+      );
 
-      mockTaskRepository.findById.mockResolvedValue(mockTask as any);
-      mockTaskRepository.update.mockResolvedValue(mockUpdatedTask as any);
+      mockTaskRepository.findById.mockResolvedValue(mockTask);
+      mockTaskRepository.update.mockResolvedValue(mockUpdatedTask);
 
       // Act
       const result = await taskService.updateTask(userId, taskId, updateData);
@@ -185,13 +215,19 @@ describe('TaskService', () => {
       const taskId = 1;
       const updateData = { title: 'Updated Task' };
 
-      const mockTask = {
-        id: taskId,
-        user_id: differentUserId, // Different user!
-        title: 'Original Task',
-      };
+      const mockTask = new Task(
+        taskId,
+        differentUserId, // Different user!
+        'Original Task',
+        null,
+        'pending',
+        null,
+        null,
+        new Date(),
+        new Date()
+      );
 
-      mockTaskRepository.findById.mockResolvedValue(mockTask as any);
+      mockTaskRepository.findById.mockResolvedValue(mockTask);
 
       // Act & Assert
       await expect(taskService.updateTask(userId, taskId, updateData)).rejects.toThrow(
@@ -207,13 +243,19 @@ describe('TaskService', () => {
       const userId = 1;
       const taskId = 1;
 
-      const mockTask = {
-        id: taskId,
-        user_id: userId,
-        title: 'Task to delete',
-      };
+      const mockTask = new Task(
+        taskId,
+        userId,
+        'Task to delete',
+        null,
+        'pending',
+        null,
+        null,
+        new Date(),
+        new Date()
+      );
 
-      mockTaskRepository.findById.mockResolvedValue(mockTask as any);
+      mockTaskRepository.findById.mockResolvedValue(mockTask);
       mockTaskRepository.delete.mockResolvedValue(true);
 
       // Act
@@ -231,13 +273,19 @@ describe('TaskService', () => {
       const differentUserId = 2;
       const taskId = 1;
 
-      const mockTask = {
-        id: taskId,
-        user_id: differentUserId, // Different user!
-        title: 'Task',
-      };
+      const mockTask = new Task(
+        taskId,
+        differentUserId, // Different user!
+        'Task',
+        null,
+        'pending',
+        null,
+        null,
+        new Date(),
+        new Date()
+      );
 
-      mockTaskRepository.findById.mockResolvedValue(mockTask as any);
+      mockTaskRepository.findById.mockResolvedValue(mockTask);
 
       // Act & Assert
       await expect(taskService.deleteTask(userId, taskId)).rejects.toThrow(AuthorizationError);

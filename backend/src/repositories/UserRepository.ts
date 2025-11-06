@@ -1,26 +1,21 @@
-import { User } from '../models';
-import UserModel from '../models/User';
-
-// User data transfer object for creation
-interface CreateUserDTO {
-  name: string;
-  email: string;
-  password_hash: string;
-}
+import { User as UserModel } from '../models';
+import { User } from '../domain/entities/User';
+import { UserMapper } from '../mappers/UserMapper';
+import { CreateUserDTO } from '../interfaces/IUserRepository';
 
 // UserRepository class - Data Access Layer
 class UserRepository {
   /**
    * Find a user by email
    * @param email - User's email address
-   * @returns User instance or null if not found
+   * @returns User domain entity or null if not found
    */
-  async findByEmail(email: string): Promise<UserModel | null> {
+  async findByEmail(email: string): Promise<User | null> {
     try {
-      const user = await User.findOne({
+      const user = await UserModel.findOne({
         where: { email },
       });
-      return user;
+      return user ? UserMapper.toDomain(user) : null;
     } catch (error) {
       throw new Error(`Error finding user by email: ${error}`);
     }
@@ -29,12 +24,12 @@ class UserRepository {
   /**
    * Find a user by ID
    * @param id - User's ID
-   * @returns User instance or null if not found
+   * @returns User domain entity or null if not found
    */
-  async findById(id: number): Promise<UserModel | null> {
+  async findById(id: number): Promise<User | null> {
     try {
-      const user = await User.findByPk(id);
-      return user;
+      const user = await UserModel.findByPk(id);
+      return user ? UserMapper.toDomain(user) : null;
     } catch (error) {
       throw new Error(`Error finding user by ID: ${error}`);
     }
@@ -43,12 +38,12 @@ class UserRepository {
   /**
    * Create a new user
    * @param userData - User creation data
-   * @returns Created user instance
+   * @returns Created user domain entity
    */
-  async create(userData: CreateUserDTO): Promise<UserModel> {
+  async create(userData: CreateUserDTO): Promise<User> {
     try {
-      const user = await User.create(userData);
-      return user;
+      const user = await UserModel.create(userData);
+      return UserMapper.toDomain(user);
     } catch (error) {
       throw new Error(`Error creating user: ${error}`);
     }

@@ -1,6 +1,7 @@
 import AuthService from './AuthService';
 import UserRepository from '../repositories/UserRepository';
 import { UserAlreadyExistsError, UserNotFoundError, InvalidPasswordError } from '../errors';
+import { User } from '../domain/entities/User';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -89,16 +90,16 @@ describe('AuthService', () => {
 
     it('should successfully login with valid credentials', async () => {
       // Arrange
-      const mockUser = {
-        id: 1,
-        name: 'Test User',
-        email: 'test@example.com',
-        password_hash: 'hashed_password',
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
+      const mockUser = new User(
+        1,
+        'Test User',
+        'test@example.com',
+        'hashed_password',
+        new Date(),
+        new Date()
+      );
 
-      mockUserRepository.findByEmail.mockResolvedValue(mockUser as any);
+      mockUserRepository.findByEmail.mockResolvedValue(mockUser);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
       (jwt.sign as jest.Mock).mockReturnValue('mock_token');
 
@@ -107,7 +108,7 @@ describe('AuthService', () => {
 
       // Assert
       expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(loginData.email);
-      expect(bcrypt.compare).toHaveBeenCalledWith(loginData.password, mockUser.password_hash);
+      expect(bcrypt.compare).toHaveBeenCalledWith(loginData.password, mockUser.passwordHash);
       expect(jwt.sign).toHaveBeenCalled();
       expect(result).toEqual({
         token: 'mock_token',
@@ -131,22 +132,22 @@ describe('AuthService', () => {
 
     it('should throw InvalidPasswordError if password is incorrect', async () => {
       // Arrange
-      const mockUser = {
-        id: 1,
-        name: 'Test User',
-        email: 'test@example.com',
-        password_hash: 'hashed_password',
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
+      const mockUser = new User(
+        1,
+        'Test User',
+        'test@example.com',
+        'hashed_password',
+        new Date(),
+        new Date()
+      );
 
-      mockUserRepository.findByEmail.mockResolvedValue(mockUser as any);
+      mockUserRepository.findByEmail.mockResolvedValue(mockUser);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
       // Act & Assert
       await expect(authService.login(loginData)).rejects.toThrow(InvalidPasswordError);
       expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(loginData.email);
-      expect(bcrypt.compare).toHaveBeenCalledWith(loginData.password, mockUser.password_hash);
+      expect(bcrypt.compare).toHaveBeenCalledWith(loginData.password, mockUser.passwordHash);
       expect(jwt.sign).not.toHaveBeenCalled();
     });
   });
