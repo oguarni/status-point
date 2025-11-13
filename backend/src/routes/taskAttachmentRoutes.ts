@@ -25,6 +25,9 @@ router.post(
   taskAttachmentController.uploadAttachment
 );
 
+// GET /api/attachments/:attachmentId/download - Download an attachment
+router.get('/attachments/:attachmentId/download', taskAttachmentController.downloadAttachment);
+
 // DELETE /api/attachments/:attachmentId - Delete an attachment
 router.delete('/attachments/:attachmentId', taskAttachmentController.deleteAttachment);
 

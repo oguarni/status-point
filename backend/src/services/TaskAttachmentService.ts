@@ -73,6 +73,26 @@ class TaskAttachmentService {
 
     return await this.taskAttachmentRepository.delete(attachmentId);
   }
+
+  async getAttachmentForDownload(userId: number, attachmentId: number): Promise<TaskAttachment> {
+    const attachment = await this.taskAttachmentRepository.findById(attachmentId);
+    if (!attachment) {
+      throw new UserNotFoundError('Attachment not found');
+    }
+
+    // Verify user has access to the task
+    const task = await this.taskRepository.findById(attachment.taskId);
+    if (!task) {
+      throw new UserNotFoundError('Task not found');
+    }
+
+    // User must own the task to download attachments
+    if (!task.isOwnedBy(userId)) {
+      throw new AuthorizationError('You are not authorized to download attachments for this task');
+    }
+
+    return attachment;
+  }
 }
 
 export default TaskAttachmentService;

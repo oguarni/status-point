@@ -140,6 +140,39 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose, onTa
     }
   };
 
+  const handleDownloadAttachment = async (attachmentId: number, filename: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3001/api/attachments/${attachmentId}/download`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Download failed');
+      }
+
+      // Create blob from response
+      const blob = await response.blob();
+
+      // Create temporary URL and trigger download
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (err) {
+      setError('Failed to download attachment');
+      console.error(err);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleString('en-US', {
@@ -321,14 +354,22 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose, onTa
                           </p>
                         </div>
                       </div>
-                      {attachment.user_id === user?.id && (
+                      <div style={styles.attachmentActions}>
                         <button
-                          onClick={() => handleDeleteAttachment(attachment.id)}
-                          style={styles.deleteButton}
+                          onClick={() => handleDownloadAttachment(attachment.id, attachment.filename)}
+                          style={styles.downloadButton}
                         >
-                          Delete
+                          Download
                         </button>
-                      )}
+                        {attachment.user_id === user?.id && (
+                          <button
+                            onClick={() => handleDeleteAttachment(attachment.id)}
+                            style={styles.deleteButton}
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ))
                 )}
@@ -578,6 +619,21 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: '0.25rem 0 0 0',
     fontSize: '0.75rem',
     color: '#666',
+  },
+  attachmentActions: {
+    display: 'flex',
+    gap: '0.5rem',
+    alignItems: 'center',
+  },
+  downloadButton: {
+    padding: '0.5rem 1rem',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '0.875rem',
+    fontWeight: '500',
   },
 };
 

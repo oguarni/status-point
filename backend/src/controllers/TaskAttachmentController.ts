@@ -74,6 +74,32 @@ class TaskAttachmentController {
       next(error);
     }
   };
+
+  downloadAttachment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const attachmentId = parseInt(req.params.attachmentId, 10);
+
+      if (isNaN(attachmentId)) {
+        res.status(400).json({ error: 'Invalid attachment ID' });
+        return;
+      }
+
+      const attachment = await this.taskAttachmentService.getAttachmentForDownload(userId, attachmentId);
+
+      // Set content disposition header to trigger download
+      res.download(attachment.filepath, attachment.filename, (err) => {
+        if (err) {
+          // If file doesn't exist or error occurs during download
+          if (!res.headersSent) {
+            res.status(404).json({ error: 'File not found' });
+          }
+        }
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default TaskAttachmentController;
