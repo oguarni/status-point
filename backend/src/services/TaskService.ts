@@ -1,4 +1,5 @@
 import TaskRepository from '../repositories/TaskRepository';
+import TaskHistoryRepository from '../repositories/TaskHistoryRepository';
 import { AuthorizationError, UserNotFoundError } from '../errors';
 import { Task } from '../domain/entities/Task';
 
@@ -22,9 +23,11 @@ interface UpdateTaskDTO {
 // TaskService class - Business Logic Layer
 class TaskService {
   private taskRepository: TaskRepository;
+  private taskHistoryRepository: TaskHistoryRepository;
 
-  constructor(taskRepository: TaskRepository) {
+  constructor(taskRepository: TaskRepository, taskHistoryRepository?: TaskHistoryRepository) {
     this.taskRepository = taskRepository;
+    this.taskHistoryRepository = taskHistoryRepository || new TaskHistoryRepository();
   }
 
   /**
@@ -71,6 +74,8 @@ class TaskService {
       throw new AuthorizationError('You are not authorized to modify this task');
     }
 
+    const previousStatus = task.status;
+
     // Update status to completed
     const updatedTask = await this.taskRepository.update(taskId, {
       status: 'completed',
@@ -78,6 +83,16 @@ class TaskService {
 
     if (!updatedTask) {
       throw new Error('Failed to update task');
+    }
+
+    // Record status change in history
+    if (previousStatus !== 'completed') {
+      await this.taskHistoryRepository.create({
+        task_id: taskId,
+        user_id: userId,
+        previous_status: previousStatus,
+        new_status: 'completed',
+      });
     }
 
     return updatedTask;
@@ -104,11 +119,23 @@ class TaskService {
       throw new AuthorizationError('You are not authorized to modify this task');
     }
 
+    const previousStatus = task.status;
+
     // Update task
     const updatedTask = await this.taskRepository.update(taskId, taskData);
 
     if (!updatedTask) {
       throw new Error('Failed to update task');
+    }
+
+    // Record status change in history if status was changed
+    if (taskData.status && taskData.status !== previousStatus) {
+      await this.taskHistoryRepository.create({
+        task_id: taskId,
+        user_id: userId,
+        previous_status: previousStatus,
+        new_status: taskData.status,
+      });
     }
 
     return updatedTask;
@@ -131,6 +158,28 @@ class TaskService {
   }
 
   /**
+   * Get task history
+   * @param userId - User's ID
+   * @param taskId - Task's ID
+   * @returns Array of task history records
+   */
+  async getTaskHistory(userId: number, taskId: number) {
+    // Find task
+    const task = await this.taskRepository.findById(taskId);
+
+    if (!task) {
+      throw new UserNotFoundError('Task not found');
+    }
+
+    // User must own the task to see its history
+    if (!task.isOwnedBy(userId)) {
+      throw new AuthorizationError('You are not authorized to view this task history');
+    }
+
+    return await this.taskHistoryRepository.findByTaskId(taskId);
+  }
+
+  /**
    * Delete a task
    * CRITICAL: Checks if the task belongs to the user before deleting
    * @param userId - User's ID
@@ -150,7 +199,7 @@ class TaskService {
       throw new AuthorizationError('You are not authorized to delete this task');
     }
 
-    // Delete task
+    // Delete task (history will be cascade deleted)
     const deleted = await this.taskRepository.delete(taskId);
     return deleted;
   }

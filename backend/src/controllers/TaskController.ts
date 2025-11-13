@@ -154,6 +154,31 @@ class TaskController {
   };
 
   /**
+   * Get task history
+   * GET /api/tasks/:id/history
+   */
+  getTaskHistory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const taskId = parseInt(req.params.id, 10);
+
+      if (isNaN(taskId)) {
+        res.status(400).json({ error: 'Invalid task ID' });
+        return;
+      }
+
+      const history = await this.taskService.getTaskHistory(userId, taskId);
+
+      res.status(200).json({
+        message: 'Task history retrieved successfully',
+        data: history,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
    * Delete a task
    * DELETE /api/tasks/:id
    */

@@ -79,6 +79,9 @@ router.put(
   taskController.updateTask
 );
 
+// GET /api/tasks/:id/history - Get task history
+router.get('/:id/history', taskController.getTaskHistory);
+
 // DELETE /api/tasks/:id - Delete a task
 router.delete('/:id', taskController.deleteTask);
 
