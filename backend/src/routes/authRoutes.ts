@@ -35,6 +35,11 @@ router.post(
       .withMessage('Password is required')
       .isLength({ min: 6 })
       .withMessage('Password must be at least 6 characters long'),
+    body('role')
+      .optional()
+      .trim()
+      .isIn(['admin', 'gestor', 'colaborador'])
+      .withMessage('Role must be one of: admin, gestor, colaborador'),
   ],
   authController.register
 );

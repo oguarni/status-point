@@ -11,6 +11,7 @@ const RegisterPage: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'admin' | 'gestor' | 'colaborador'>('colaborador');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +24,7 @@ const RegisterPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await register({ name, email, password });
+      const response = await register({ name, email, password, role });
       login(response.data.token, response.data.user);
       navigate('/');
     } catch (err: any) {
@@ -73,6 +74,20 @@ const RegisterPage: React.FC = () => {
               style={styles.input}
               placeholder="Enter your password (min 6 characters)"
             />
+          </div>
+
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Role</label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as 'admin' | 'gestor' | 'colaborador')}
+              style={styles.input}
+              required
+            >
+              <option value="colaborador">Colaborador (Team Member)</option>
+              <option value="gestor">Gestor (Manager)</option>
+              <option value="admin">Admin (Administrator)</option>
+            </select>
           </div>
 
           {error && <div style={styles.error}>{error}</div>}
