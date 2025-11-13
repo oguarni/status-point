@@ -1,8 +1,12 @@
 import axios from 'axios';
 
 // Create Axios instance with base URL
+// CRITICAL: Use relative URL '/api' instead of absolute 'http://localhost:3001/api'
+// This allows the Vite proxy (configured in vite.config.ts) to forward requests
+// to the backend service. The proxy will automatically route '/api' to 'http://backend:3001/api'
+// in Docker, making the frontend work seamlessly in both Docker and local environments.
 const api = axios.create({
-  baseURL: 'http://localhost:3001/api',
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
   },

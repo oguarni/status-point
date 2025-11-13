@@ -1,0 +1,157 @@
+# =============================================================================
+# Docker Compose Configuration for status-point Development Environment
+# =============================================================================
+# This file orchestrates the backend, frontend, and their dependencies
+# for local development with hot-reload support.
+#
+# Key Features:
+# - Hot-reload: Source code changes are instantly reflected in containers
+# - Bind mounts: Local code directories are mounted into containers
+# - Named volumes: node_modules are isolated to prevent host/container conflicts
+# - Network: Services communicate via a custom bridge network
+# - Host database: Backend connects to PostgreSQL on host via host.docker.internal
+#
+# Usage:
+#   Start all services:        docker compose up
+#   Start in background:       docker compose up -d
+#   View logs:                 docker compose logs -f
+#   Stop all services:         docker compose down
+#   Rebuild after changes:     docker compose up --build
+#   Remove volumes:            docker compose down -v
+# =============================================================================
+
+version: '3.8'
+
+# =============================================================================
+# SERVICES
+# =============================================================================
+services:
+  # ---------------------------------------------------------------------------
+  # Backend Service (Node.js + Express + TypeScript)
+  # ---------------------------------------------------------------------------
+  backend:
+    # Build configuration
+    build:
+      context: ./backend                    # Build context is the backend directory
+      dockerfile: Dockerfile                 # Use backend/Dockerfile
+
+    # Container name for easy reference
+    container_name: status-point-backend
+
+    # Port mapping: host:container
+    # Maps host port 3001 to container port 3001
+    ports:
+      - "3001:3001"
+
+    # Environment variables for the backend
+    # These override defaults and configure database connection
+    environment:
+      # Server configuration
+      - PORT=3001
+      - NODE_ENV=development
+
+      # Database configuration
+      # CRITICAL: Use host.docker.internal to connect to host PostgreSQL
+      - DB_HOST=host.docker.internal        # Special DNS name for host machine
+      - DB_PORT=5432
+      - DB_USER=postgres                     # Change if your DB user is different
+      - DB_PASS=postgres                     # Change to your actual DB password
+      - DB_NAME=task_management_dev          # Your database name
+
+      # JWT configuration
+      - JWT_SECRET=your-secret-key-change-in-production
+
+    # Volume mounts
+    # CRITICAL for hot-reload: These bind mounts sync host and container files
+    volumes:
+      # Bind mount: Sync local backend/ directory to /app in container
+      # Any changes to .ts files on host are immediately visible in container
+      - ./backend:/app
+
+      # Named volume: Isolate node_modules inside container
+      # This prevents conflicts between host and container OS/architecture
+      # (e.g., native bindings compiled for different platforms)
+      - backend_modules:/app/node_modules
+
+    # Network configuration
+    networks:
+      - status-point-net                     # Connect to custom bridge network
+
+    # Restart policy: always restart if container stops
+    restart: unless-stopped
+
+    # Command override (optional, already set in Dockerfile)
+    # Runs ts-node-dev for hot-reload during development
+    command: npm run dev
+
+  # ---------------------------------------------------------------------------
+  # Frontend Service (React + Vite + TypeScript)
+  # ---------------------------------------------------------------------------
+  frontend:
+    # Build configuration
+    build:
+      context: ./frontend                    # Build context is the frontend directory
+      dockerfile: Dockerfile                 # Use frontend/Dockerfile
+
+    # Container name for easy reference
+    container_name: status-point-frontend
+
+    # Port mapping: host:container
+    # Maps host port 3000 to container port 3000
+    ports:
+      - "3000:3000"
+
+    # Environment variables for the frontend (optional)
+    environment:
+      - NODE_ENV=development
+
+    # Volume mounts
+    # CRITICAL for hot-reload: These bind mounts sync host and container files
+    volumes:
+      # Bind mount: Sync local frontend/ directory to /app in container
+      # Any changes to .tsx/.ts files on host trigger Vite's HMR
+      - ./frontend:/app
+
+      # Named volume: Isolate node_modules inside container
+      # This prevents conflicts between host and container OS/architecture
+      - frontend_modules:/app/node_modules
+
+    # Dependencies
+    # Frontend depends on backend being available
+    depends_on:
+      - backend
+
+    # Network configuration
+    networks:
+      - status-point-net                     # Connect to custom bridge network
+
+    # Restart policy: always restart if container stops
+    restart: unless-stopped
+
+    # Command override (optional, already set in Dockerfile)
+    # Runs Vite dev server for hot-reload and HMR
+    command: npm run dev
+
+# =============================================================================
+# NETWORKS
+# =============================================================================
+# Custom bridge network for service-to-service communication
+# Services can communicate using service names as DNS hostnames
+# Example: frontend can reach backend at http://backend:3001
+networks:
+  status-point-net:
+    driver: bridge                           # Use bridge driver for local networking
+
+# =============================================================================
+# VOLUMES
+# =============================================================================
+# Named volumes for persisting node_modules inside containers
+# These prevent host/container OS conflicts and improve performance
+volumes:
+  # Backend node_modules volume
+  # Stores backend dependencies inside the container
+  backend_modules:
+
+  # Frontend node_modules volume
+  # Stores frontend dependencies inside the container
+  frontend_modules:
