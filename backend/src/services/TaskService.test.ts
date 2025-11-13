@@ -1,18 +1,23 @@
 import TaskService from './TaskService';
 import TaskRepository from '../repositories/TaskRepository';
+import TaskHistoryRepository from '../repositories/TaskHistoryRepository';
 import { AuthorizationError, UserNotFoundError } from '../errors';
 import { Task } from '../domain/entities/Task';
 
-// Mock TaskRepository
+// Mock repositories
 jest.mock('../repositories/TaskRepository');
+jest.mock('../repositories/TaskHistoryRepository');
 
 describe('TaskService', () => {
   let taskService: TaskService;
   let mockTaskRepository: jest.Mocked<TaskRepository>;
+  let mockTaskHistoryRepository: jest.Mocked<TaskHistoryRepository>;
 
   beforeEach(() => {
     mockTaskRepository = new TaskRepository() as jest.Mocked<TaskRepository>;
-    taskService = new TaskService(mockTaskRepository);
+    mockTaskHistoryRepository = new TaskHistoryRepository() as jest.Mocked<TaskHistoryRepository>;
+    mockTaskHistoryRepository.create = jest.fn().mockResolvedValue({} as any);
+    taskService = new TaskService(mockTaskRepository, mockTaskHistoryRepository);
     jest.clearAllMocks();
   });
 
@@ -87,6 +92,7 @@ describe('TaskService', () => {
       const mockTask = new Task(
         taskId,
         userId,
+        null, // projectId
         'Task',
         null,
         'pending',
@@ -99,6 +105,7 @@ describe('TaskService', () => {
       const mockUpdatedTask = new Task(
         taskId,
         userId,
+        null, // projectId
         'Task',
         null,
         'completed',
@@ -131,6 +138,7 @@ describe('TaskService', () => {
       const mockTask = new Task(
         taskId,
         differentUserId, // Different user!
+        null, // projectId
         'Task',
         null,
         'pending',
@@ -168,6 +176,7 @@ describe('TaskService', () => {
       const mockTask = new Task(
         taskId,
         userId,
+        null, // projectId
         'Task',
         null,
         'pending',
@@ -200,6 +209,7 @@ describe('TaskService', () => {
       const mockTask = new Task(
         taskId,
         userId,
+        null, // projectId
         'Original Task',
         null,
         'pending',
@@ -212,6 +222,7 @@ describe('TaskService', () => {
       const mockUpdatedTask = new Task(
         taskId,
         userId,
+        null, // projectId
         'Updated Task',
         null,
         'pending',
@@ -243,6 +254,7 @@ describe('TaskService', () => {
       const mockTask = new Task(
         taskId,
         differentUserId, // Different user!
+        null, // projectId
         'Original Task',
         null,
         'pending',
@@ -285,6 +297,7 @@ describe('TaskService', () => {
       const mockTask = new Task(
         taskId,
         userId,
+        null, // projectId
         'Original Task',
         null,
         'pending',
@@ -315,6 +328,7 @@ describe('TaskService', () => {
       const mockTask = new Task(
         taskId,
         userId,
+        null, // projectId
         'Task to delete',
         null,
         'pending',
@@ -345,6 +359,7 @@ describe('TaskService', () => {
       const mockTask = new Task(
         taskId,
         differentUserId, // Different user!
+        null, // projectId
         'Task',
         null,
         'pending',

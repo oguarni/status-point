@@ -14,6 +14,7 @@ describe('CreateTaskUseCase', () => {
       findById: jest.fn(),
       findAllByUserId: jest.fn(),
       findAllByUserIdPaginated: jest.fn(),
+      findAllByProjectId: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -41,6 +42,7 @@ describe('CreateTaskUseCase', () => {
     const mockTask = new Task(
       1,
       userId,
+      null, // projectId
       input.title,
       input.description!,
       'pending',
@@ -110,6 +112,7 @@ describe('CreateTaskUseCase', () => {
     const mockTask = new Task(
       1,
       userId,
+      null, // projectId
       input.title,
       null,
       'pending',

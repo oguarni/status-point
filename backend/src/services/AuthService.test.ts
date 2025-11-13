@@ -37,6 +37,7 @@ describe('AuthService', () => {
         'Test User',
         'test@example.com',
         'hashed_password',
+        'colaborador', // role
         new Date(),
         new Date()
       );
@@ -54,6 +55,7 @@ describe('AuthService', () => {
         name: registerData.name,
         email: registerData.email,
         password_hash: registerData.password,
+        role: 'colaborador',
       });
       expect(jwt.sign).toHaveBeenCalled();
       expect(result).toEqual({
@@ -62,6 +64,7 @@ describe('AuthService', () => {
           id: mockUser.id,
           name: mockUser.name,
           email: mockUser.email,
+          role: mockUser.role,
         },
       });
     });
@@ -95,6 +98,7 @@ describe('AuthService', () => {
         'Test User',
         'test@example.com',
         'hashed_password',
+        'colaborador', // role
         new Date(),
         new Date()
       );
@@ -116,6 +120,7 @@ describe('AuthService', () => {
           id: mockUser.id,
           name: mockUser.name,
           email: mockUser.email,
+          role: mockUser.role,
         },
       });
     });
@@ -137,6 +142,7 @@ describe('AuthService', () => {
         'Test User',
         'test@example.com',
         'hashed_password',
+        'colaborador', // role
         new Date(),
         new Date()
       );

@@ -188,6 +188,7 @@ describe('Authentication Integration Tests', () => {
           name: userData.name,
           email: userData.email,
           password_hash: userData.password, // Will be hashed by the model hook
+          role: 'colaborador',
         });
       }
     });
@@ -302,6 +303,7 @@ describe('Authentication Integration Tests', () => {
         name: testUsers[0].name,
         email: testUsers[0].email,
         password_hash: testUsers[0].password, // Will be hashed by model hook
+        role: 'colaborador',
       });
 
       const response = await request(app)
@@ -362,6 +364,7 @@ describe('Authentication Integration Tests', () => {
           name: userData.name,
           email: userData.email,
           password_hash: userData.password, // Will be hashed by model hook
+          role: 'colaborador',
         });
       }
 
