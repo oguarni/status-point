@@ -32,6 +32,25 @@ class TaskController {
   };
 
   /**
+   * Get tasks organized as Kanban board
+   * GET /api/tasks/kanban
+   */
+  getTasksKanban = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+
+      const kanban = await this.taskService.getTasksKanban(userId);
+
+      res.status(200).json({
+        message: 'Kanban board retrieved successfully',
+        data: kanban,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
    * Create a new task
    * POST /api/tasks
    */

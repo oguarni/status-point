@@ -5,6 +5,7 @@ import TaskModel from '../models/Task';
 export interface TaskAttributes {
   id: number;
   user_id: number;
+  project_id: number | null;
   title: string;
   description: string | null;
   status: 'pending' | 'completed';
@@ -27,6 +28,7 @@ export class TaskMapper {
     return new Task(
       model.id,
       model.user_id,
+      model.project_id,
       model.title,
       model.description,
       model.status,
@@ -46,6 +48,7 @@ export class TaskMapper {
     return {
       id: entity.id,
       user_id: entity.userId,
+      project_id: entity.projectId,
       title: entity.title,
       description: entity.description,
       status: entity.status,

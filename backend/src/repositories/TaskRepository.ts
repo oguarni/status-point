@@ -37,6 +37,23 @@ class TaskRepository {
   }
 
   /**
+   * Find all tasks for a specific project
+   * @param projectId - Project's ID
+   * @returns Array of task domain entities
+   */
+  async findAllByProjectId(projectId: number): Promise<Task[]> {
+    try {
+      const tasks = await TaskModel.findAll({
+        where: { project_id: projectId },
+        order: [['created_at', 'DESC']],
+      });
+      return TaskMapper.toDomainList(tasks);
+    } catch (error) {
+      throw new Error(`Error finding tasks by project ID: ${error}`);
+    }
+  }
+
+  /**
    * Create a new task
    * @param taskData - Task creation data
    * @returns Created task domain entity

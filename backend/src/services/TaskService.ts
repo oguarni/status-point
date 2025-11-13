@@ -115,6 +115,22 @@ class TaskService {
   }
 
   /**
+   * Get tasks organized as Kanban board (grouped by status)
+   * @param userId - User's ID
+   * @returns Tasks grouped by status
+   */
+  async getTasksKanban(userId: number): Promise<{ pending: Task[]; completed: Task[] }> {
+    const tasks = await this.taskRepository.findAllByUserId(userId);
+
+    const kanban = {
+      pending: tasks.filter(task => task.status === 'pending'),
+      completed: tasks.filter(task => task.status === 'completed'),
+    };
+
+    return kanban;
+  }
+
+  /**
    * Delete a task
    * CRITICAL: Checks if the task belongs to the user before deleting
    * @param userId - User's ID

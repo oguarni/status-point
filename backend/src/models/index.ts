@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { initUserModel } from './User';
 import { initTaskModel, associateTask } from './Task';
+import { initProjectModel, associateProject } from './Project';
 
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/database.js')[env];
@@ -21,13 +22,23 @@ const sequelize = new Sequelize(
 // Initialize models
 const User = initUserModel(sequelize);
 const Task = initTaskModel(sequelize);
+const Project = initProjectModel(sequelize);
 
 // Define associations
 User.hasMany(Task, {
   foreignKey: 'user_id',
   as: 'tasks',
 });
+User.hasMany(Project, {
+  foreignKey: 'gestor_id',
+  as: 'projects',
+});
+Project.hasMany(Task, {
+  foreignKey: 'project_id',
+  as: 'tasks',
+});
 associateTask();
+associateProject();
 
 // Export models and sequelize instance
-export { sequelize, User, Task };
+export { sequelize, User, Task, Project };

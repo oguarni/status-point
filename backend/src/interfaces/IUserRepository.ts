@@ -1,10 +1,11 @@
-import { User } from '../domain/entities/User';
+import { User, UserRole } from '../domain/entities/User';
 
 // DTOs
 export interface CreateUserDTO {
   name: string;
   email: string;
   password_hash: string;
+  role: UserRole;
 }
 
 // Repository Interface

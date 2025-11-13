@@ -2,6 +2,7 @@ export class Task {
   constructor(
     public readonly id: number,
     public readonly userId: number,
+    public readonly projectId: number | null,
     public readonly title: string,
     public readonly description: string | null,
     public readonly status: 'pending' | 'completed',
@@ -18,6 +19,23 @@ export class Task {
    */
   isOwnedBy(userId: number): boolean {
     return this.userId === userId;
+  }
+
+  /**
+   * Check if the task belongs to a specific project
+   * @param projectId - Project ID to check
+   * @returns true if the task belongs to the project
+   */
+  belongsToProject(projectId: number): boolean {
+    return this.projectId === projectId;
+  }
+
+  /**
+   * Check if the task is standalone (not assigned to any project)
+   * @returns true if the task has no project
+   */
+  isStandalone(): boolean {
+    return this.projectId === null;
   }
 
   /**

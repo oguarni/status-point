@@ -1,10 +1,12 @@
 import { Model, DataTypes, Sequelize, Optional } from 'sequelize';
 import User from './User';
+import Project from './Project';
 
 // Task attributes interface
 interface TaskAttributes {
   id: number;
   user_id: number;
+  project_id: number | null;
   title: string;
   description: string | null;
   status: 'pending' | 'completed';
@@ -15,12 +17,13 @@ interface TaskAttributes {
 }
 
 // Optional fields for creation
-interface TaskCreationAttributes extends Optional<TaskAttributes, 'id' | 'description' | 'status' | 'priority' | 'due_date' | 'created_at' | 'updated_at'> {}
+interface TaskCreationAttributes extends Optional<TaskAttributes, 'id' | 'project_id' | 'description' | 'status' | 'priority' | 'due_date' | 'created_at' | 'updated_at'> {}
 
 // Task model class
 class Task extends Model<TaskAttributes, TaskCreationAttributes> implements TaskAttributes {
   public id!: number;
   public user_id!: number;
+  public project_id!: number | null;
   public title!: string;
   public description!: string | null;
   public status!: 'pending' | 'completed';
@@ -48,6 +51,15 @@ export const initTaskModel = (sequelize: Sequelize): typeof Task => {
         allowNull: false,
         references: {
           model: 'Users',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+      },
+      project_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'Projects',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -102,6 +114,10 @@ export const initTaskModel = (sequelize: Sequelize): typeof Task => {
           fields: ['user_id'],
           name: 'idx_tasks_user_id',
         },
+        {
+          fields: ['project_id'],
+          name: 'idx_tasks_project_id',
+        },
       ],
     }
   );
@@ -114,6 +130,10 @@ export const associateTask = (): void => {
   Task.belongsTo(User, {
     foreignKey: 'user_id',
     as: 'user',
+  });
+  Task.belongsTo(Project, {
+    foreignKey: 'project_id',
+    as: 'project',
   });
 };
 

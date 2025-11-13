@@ -63,6 +63,35 @@ class AuthController {
       next(error);
     }
   };
+
+  /**
+   * Handle user creation by admin
+   * POST /api/auth/users
+   * Requires authentication and admin role
+   */
+  createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      // Validate request
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(400).json({ errors: errors.array() });
+        return;
+      }
+
+      const adminUserId = req.user!.id;
+      const { name, email, password, role } = req.body;
+
+      // Call service
+      const result = await this.authService.createUser(adminUserId, { name, email, password, role });
+
+      res.status(201).json({
+        message: 'User created successfully',
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default AuthController;

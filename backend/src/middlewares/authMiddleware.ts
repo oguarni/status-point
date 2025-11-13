@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { UserRole } from '../domain/entities/User';
 
 // Extend Express Request interface to include user
 declare global {
@@ -8,6 +9,7 @@ declare global {
       user?: {
         id: number;
         email: string;
+        role: UserRole;
       };
     }
   }
@@ -17,6 +19,7 @@ declare global {
 interface JwtPayload {
   id: number;
   email: string;
+  role: UserRole;
   iat: number;
   exp: number;
 }
@@ -59,6 +62,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction): void =
     req.user = {
       id: decoded.id,
       email: decoded.email,
+      role: decoded.role || 'colaborador', // Default to colaborador for backward compatibility
     };
 
     next();

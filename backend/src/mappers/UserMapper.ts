@@ -1,4 +1,4 @@
-import { User } from '../domain/entities/User';
+import { User, UserRole } from '../domain/entities/User';
 import UserModel from '../models/User';
 
 // UserAttributes for mapping back to model
@@ -7,6 +7,7 @@ export interface UserAttributes {
   name: string;
   email: string;
   password_hash: string;
+  role: UserRole;
   created_at: Date;
   updated_at: Date;
 }
@@ -26,6 +27,7 @@ export class UserMapper {
       model.name,
       model.email,
       model.password_hash,
+      model.role,
       model.created_at,
       model.updated_at
     );
@@ -42,6 +44,7 @@ export class UserMapper {
       name: entity.name,
       email: entity.email,
       password_hash: entity.passwordHash,
+      role: entity.role,
       created_at: entity.createdAt,
       updated_at: entity.updatedAt,
     };

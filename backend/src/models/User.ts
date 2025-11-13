@@ -7,6 +7,7 @@ interface UserAttributes {
   name: string;
   email: string;
   password_hash: string;
+  role: 'admin' | 'gestor' | 'colaborador';
   created_at: Date;
   updated_at: Date;
 }
@@ -20,6 +21,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public name!: string;
   public email!: string;
   public password_hash!: string;
+  public role!: 'admin' | 'gestor' | 'colaborador';
   public created_at!: Date;
   public updated_at!: Date;
 
@@ -49,6 +51,14 @@ export const initUserModel = (sequelize: Sequelize): typeof User => {
       password_hash: {
         type: DataTypes.STRING(255),
         allowNull: false,
+      },
+      role: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        defaultValue: 'colaborador',
+        validate: {
+          isIn: [['admin', 'gestor', 'colaborador']],
+        },
       },
       created_at: {
         type: DataTypes.DATE,
