@@ -1,20 +1,43 @@
 import request from 'supertest';
 import express, { Application } from 'express';
-import taskRoutes from '../routes/taskRoutes';
-import TaskService from '../services/TaskService';
 import authMiddleware from '../middlewares/authMiddleware';
 import errorHandler from '../middlewares/errorHandler';
 import { Task } from '../domain/entities/Task';
 
-// Mock dependencies
-jest.mock('../services/TaskService');
+// Create mock methods - must be let so we can reassign in beforeEach
+let mockGetTasks: jest.Mock;
+let mockCreateTask: jest.Mock;
+let mockCompleteTask: jest.Mock;
+let mockUpdateTask: jest.Mock;
+let mockDeleteTask: jest.Mock;
+
+// Mock TaskService module
+jest.mock('../services/TaskService', () => {
+  return jest.fn().mockImplementation(() => ({
+    getTasks: (...args: any[]) => mockGetTasks(...args),
+    createTask: (...args: any[]) => mockCreateTask(...args),
+    completeTask: (...args: any[]) => mockCompleteTask(...args),
+    updateTask: (...args: any[]) => mockUpdateTask(...args),
+    deleteTask: (...args: any[]) => mockDeleteTask(...args),
+  }));
+});
+
+// Mock authMiddleware
 jest.mock('../middlewares/authMiddleware');
+
+import taskRoutes from '../routes/taskRoutes';
 
 describe('TaskController Integration Tests', () => {
   let app: Application;
-  let mockTaskService: jest.Mocked<TaskService>;
 
   beforeEach(() => {
+    // Initialize mock functions
+    mockGetTasks = jest.fn();
+    mockCreateTask = jest.fn();
+    mockCompleteTask = jest.fn();
+    mockUpdateTask = jest.fn();
+    mockDeleteTask = jest.fn();
+
     // Create Express app
     app = express();
     app.use(express.json());
@@ -31,9 +54,7 @@ describe('TaskController Integration Tests', () => {
     // Add error handler
     app.use(errorHandler);
 
-    // Get mock service instance
-    mockTaskService = TaskService.prototype as jest.Mocked<TaskService>;
-
+    // Clear all mocks before each test
     jest.clearAllMocks();
   });
 
@@ -46,7 +67,7 @@ describe('TaskController Integration Tests', () => {
         new Task(2, 1, 'Task 2', 'Description 2', 'completed', 'low', null, now, now),
       ];
 
-      mockTaskService.getTasks = jest.fn().mockResolvedValue(mockTasks);
+      mockGetTasks.mockResolvedValue(mockTasks);
 
       // Act
       const response = await request(app)
@@ -66,7 +87,7 @@ describe('TaskController Integration Tests', () => {
         status: 'pending',
         priority: 'high',
       });
-      expect(mockTaskService.getTasks).toHaveBeenCalledWith(1);
+      expect(mockGetTasks).toHaveBeenCalledWith(1);
     });
 
     it('should return 401 if user is not authenticated', async () => {
@@ -96,16 +117,19 @@ describe('TaskController Integration Tests', () => {
         priority: 'medium',
       };
 
-      const mockCreatedTask = {
-        id: 1,
-        user_id: 1,
-        ...newTaskData,
-        status: 'pending',
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
+      const mockCreatedTask = new Task(
+        1,
+        1,
+        'New Task',
+        'Task description',
+        'pending',
+        'medium',
+        null,
+        new Date(),
+        new Date()
+      );
 
-      mockTaskService.createTask = jest.fn().mockResolvedValue(mockCreatedTask);
+      mockCreateTask.mockResolvedValue(mockCreatedTask);
 
       // Act
       const response = await request(app)
@@ -116,7 +140,14 @@ describe('TaskController Integration Tests', () => {
       // Assert
       expect(response.status).toBe(201);
       expect(response.body.message).toBe('Task created successfully');
-      expect(response.body.data).toEqual(mockCreatedTask);
+      expect(response.body.data).toMatchObject({
+        id: 1,
+        userId: 1,
+        title: 'New Task',
+        description: 'Task description',
+        status: 'pending',
+        priority: 'medium',
+      });
     });
 
     it('should return 400 if title is missing', async () => {
@@ -141,16 +172,19 @@ describe('TaskController Integration Tests', () => {
     it('should return 200 and mark task as completed', async () => {
       // Arrange
       const taskId = 1;
-      const mockCompletedTask = {
-        id: taskId,
-        user_id: 1,
-        title: 'Task',
-        status: 'completed',
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
+      const mockCompletedTask = new Task(
+        taskId,
+        1,
+        'Task',
+        null,
+        'completed',
+        null,
+        null,
+        new Date(),
+        new Date()
+      );
 
-      mockTaskService.completeTask = jest.fn().mockResolvedValue(mockCompletedTask);
+      mockCompleteTask.mockResolvedValue(mockCompletedTask);
 
       // Act
       const response = await request(app)
@@ -161,7 +195,7 @@ describe('TaskController Integration Tests', () => {
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('Task marked as completed');
       expect(response.body.data.status).toBe('completed');
-      expect(mockTaskService.completeTask).toHaveBeenCalledWith(1, taskId);
+      expect(mockCompleteTask).toHaveBeenCalledWith(1, taskId);
     });
 
     it('should return 400 if task ID is invalid', async () => {
@@ -185,16 +219,19 @@ describe('TaskController Integration Tests', () => {
         priority: 'high',
       };
 
-      const mockUpdatedTask = {
-        id: taskId,
-        user_id: 1,
-        ...updateData,
-        status: 'pending',
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
+      const mockUpdatedTask = new Task(
+        taskId,
+        1,
+        'Updated Task',
+        null,
+        'pending',
+        'high',
+        null,
+        new Date(),
+        new Date()
+      );
 
-      mockTaskService.updateTask = jest.fn().mockResolvedValue(mockUpdatedTask);
+      mockUpdateTask.mockResolvedValue(mockUpdatedTask);
 
       // Act
       const response = await request(app)
@@ -205,7 +242,12 @@ describe('TaskController Integration Tests', () => {
       // Assert
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('Task updated successfully');
-      expect(response.body.data).toEqual(mockUpdatedTask);
+      expect(response.body.data).toMatchObject({
+        id: taskId,
+        userId: 1,
+        title: 'Updated Task',
+        priority: 'high',
+      });
     });
   });
 
@@ -213,7 +255,7 @@ describe('TaskController Integration Tests', () => {
     it('should return 200 and delete task', async () => {
       // Arrange
       const taskId = 1;
-      mockTaskService.deleteTask = jest.fn().mockResolvedValue(true);
+      mockDeleteTask.mockResolvedValue(true);
 
       // Act
       const response = await request(app)
@@ -223,7 +265,7 @@ describe('TaskController Integration Tests', () => {
       // Assert
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('Task deleted successfully');
-      expect(mockTaskService.deleteTask).toHaveBeenCalledWith(1, taskId);
+      expect(mockDeleteTask).toHaveBeenCalledWith(1, taskId);
     });
   });
 });

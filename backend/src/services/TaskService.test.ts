@@ -160,6 +160,31 @@ describe('TaskService', () => {
       expect(mockTaskRepository.findById).toHaveBeenCalledWith(taskId);
       expect(mockTaskRepository.update).not.toHaveBeenCalled();
     });
+
+    it('should throw Error if repository update fails', async () => {
+      // Arrange
+      const userId = 1;
+      const taskId = 1;
+      const mockTask = new Task(
+        taskId,
+        userId,
+        'Task',
+        null,
+        'pending',
+        null,
+        null,
+        new Date(),
+        new Date()
+      );
+
+      mockTaskRepository.findById.mockResolvedValue(mockTask);
+      mockTaskRepository.update.mockResolvedValue(null); // Simulate update failure
+
+      // Act & Assert
+      await expect(taskService.completeTask(userId, taskId)).rejects.toThrow('Failed to update task');
+      expect(mockTaskRepository.findById).toHaveBeenCalledWith(taskId);
+      expect(mockTaskRepository.update).toHaveBeenCalled();
+    });
   });
 
   describe('updateTask', () => {
@@ -235,6 +260,50 @@ describe('TaskService', () => {
       );
       expect(mockTaskRepository.update).not.toHaveBeenCalled();
     });
+
+    it('should throw UserNotFoundError if task does not exist', async () => {
+      // Arrange
+      const userId = 1;
+      const taskId = 999;
+      const updateData = { title: 'Updated Task' };
+
+      mockTaskRepository.findById.mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(taskService.updateTask(userId, taskId, updateData)).rejects.toThrow(
+        UserNotFoundError
+      );
+      expect(mockTaskRepository.findById).toHaveBeenCalledWith(taskId);
+      expect(mockTaskRepository.update).not.toHaveBeenCalled();
+    });
+
+    it('should throw Error if repository update fails', async () => {
+      // Arrange
+      const userId = 1;
+      const taskId = 1;
+      const updateData = { title: 'Updated Task' };
+      const mockTask = new Task(
+        taskId,
+        userId,
+        'Original Task',
+        null,
+        'pending',
+        null,
+        null,
+        new Date(),
+        new Date()
+      );
+
+      mockTaskRepository.findById.mockResolvedValue(mockTask);
+      mockTaskRepository.update.mockResolvedValue(null); // Simulate update failure
+
+      // Act & Assert
+      await expect(taskService.updateTask(userId, taskId, updateData)).rejects.toThrow(
+        'Failed to update task'
+      );
+      expect(mockTaskRepository.findById).toHaveBeenCalledWith(taskId);
+      expect(mockTaskRepository.update).toHaveBeenCalled();
+    });
   });
 
   describe('deleteTask', () => {
@@ -289,6 +358,19 @@ describe('TaskService', () => {
 
       // Act & Assert
       await expect(taskService.deleteTask(userId, taskId)).rejects.toThrow(AuthorizationError);
+      expect(mockTaskRepository.delete).not.toHaveBeenCalled();
+    });
+
+    it('should throw UserNotFoundError if task does not exist', async () => {
+      // Arrange
+      const userId = 1;
+      const taskId = 999;
+
+      mockTaskRepository.findById.mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(taskService.deleteTask(userId, taskId)).rejects.toThrow(UserNotFoundError);
+      expect(mockTaskRepository.findById).toHaveBeenCalledWith(taskId);
       expect(mockTaskRepository.delete).not.toHaveBeenCalled();
     });
   });

@@ -32,17 +32,17 @@ describe('AuthService', () => {
 
     it('should successfully register a new user', async () => {
       // Arrange
-      const mockUser = {
-        id: 1,
-        name: 'Test User',
-        email: 'test@example.com',
-        password_hash: 'hashed_password',
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
+      const mockUser = new User(
+        1,
+        'Test User',
+        'test@example.com',
+        'hashed_password',
+        new Date(),
+        new Date()
+      );
 
       mockUserRepository.findByEmail.mockResolvedValue(null);
-      mockUserRepository.create.mockResolvedValue(mockUser as any);
+      mockUserRepository.create.mockResolvedValue(mockUser);
       (jwt.sign as jest.Mock).mockReturnValue('mock_token');
 
       // Act

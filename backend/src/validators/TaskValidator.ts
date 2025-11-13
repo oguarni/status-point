@@ -19,7 +19,7 @@ export class TaskValidator {
     const errors: string[] = [];
 
     // Title validation
-    if (!data.title) {
+    if (data.title === undefined || data.title === null) {
       errors.push('Title is required');
     } else if (typeof data.title !== 'string') {
       errors.push('Title must be a string');
