@@ -27,10 +27,10 @@ interface Task {
 interface TaskDetailsModalProps {
   task: Task;
   onClose: () => void;
-  onTaskUpdate: () => void;
+  onTaskUpdate?: () => void; // Optional: call when task needs refresh
 }
 
-const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose, onTaskUpdate }) => {
+const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'details' | 'comments' | 'attachments'>('details');
   const [comments, setComments] = useState<Comment[]>([]);
