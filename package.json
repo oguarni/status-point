@@ -1,0 +1,17 @@
+{
+  "name": "status-point",
+  "version": "1.0.0",
+  "description": "Task Management System with Clean Architecture",
+  "license": "MIT",
+  "scripts": {
+    "dev": "npx concurrently -n \"backend,frontend\" -c \"cyan,magenta\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "start": "npx concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\"",
+    "test": "npm test --prefix backend",
+    "test:coverage": "npm run test:coverage --prefix backend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "db:migrate": "npm run db:migrate --prefix backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
