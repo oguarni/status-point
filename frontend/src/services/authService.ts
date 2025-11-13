@@ -5,6 +5,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  role: 'admin' | 'gestor' | 'colaborador';
 }
 
 // Auth response interface

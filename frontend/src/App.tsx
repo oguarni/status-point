@@ -4,7 +4,9 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
+import TasksPage from './pages/TasksPage';
+import KanbanPage from './pages/KanbanPage';
+import ProjectsPage from './pages/ProjectsPage';
 
 /**
  * App component
@@ -21,16 +23,35 @@ const App: React.FC = () => {
 
           {/* Protected routes */}
           <Route
-            path="/"
+            path="/tasks"
             element={
               <ProtectedRoute>
-                <DashboardPage />
+                <TasksPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/kanban"
+            element={
+              <ProtectedRoute>
+                <KanbanPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <ProtectedRoute>
+                <ProjectsPage />
               </ProtectedRoute>
             }
           />
 
-          {/* Redirect all other routes to home */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* Redirect root to tasks */}
+          <Route path="/" element={<Navigate to="/tasks" replace />} />
+
+          {/* Redirect all other routes to tasks */}
+          <Route path="*" element={<Navigate to="/tasks" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -1,0 +1,584 @@
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import {
+  getTaskComments,
+  createComment,
+  updateComment,
+  deleteComment,
+  Comment,
+} from '../services/commentService';
+import {
+  getTaskAttachments,
+  uploadAttachment,
+  deleteAttachment,
+  formatFileSize,
+  Attachment,
+} from '../services/attachmentService';
+
+interface Task {
+  id: number;
+  title: string;
+  description: string | null;
+  status: 'pending' | 'completed';
+  priority: 'low' | 'medium' | 'high' | null;
+  dueDate: string | null;
+}
+
+interface TaskDetailsModalProps {
+  task: Task;
+  onClose: () => void;
+  onTaskUpdate: () => void;
+}
+
+const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose, onTaskUpdate }) => {
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState<'details' | 'comments' | 'attachments'>('details');
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [newComment, setNewComment] = useState('');
+  const [editingComment, setEditingComment] = useState<Comment | null>(null);
+  const [editContent, setEditContent] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (activeTab === 'comments') {
+      fetchComments();
+    } else if (activeTab === 'attachments') {
+      fetchAttachments();
+    }
+  }, [activeTab, task.id]);
+
+  const fetchComments = async () => {
+    try {
+      const data = await getTaskComments(task.id);
+      setComments(data);
+      setError('');
+    } catch (err) {
+      setError('Failed to load comments');
+      console.error(err);
+    }
+  };
+
+  const fetchAttachments = async () => {
+    try {
+      const data = await getTaskAttachments(task.id);
+      setAttachments(data);
+      setError('');
+    } catch (err) {
+      setError('Failed to load attachments');
+      console.error(err);
+    }
+  };
+
+  const handleAddComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
+    try {
+      await createComment(task.id, { content: newComment });
+      setNewComment('');
+      fetchComments();
+    } catch (err) {
+      setError('Failed to add comment');
+      console.error(err);
+    }
+  };
+
+  const handleUpdateComment = async (commentId: number) => {
+    if (!editContent.trim()) return;
+
+    try {
+      await updateComment(commentId, { content: editContent });
+      setEditingComment(null);
+      setEditContent('');
+      fetchComments();
+    } catch (err) {
+      setError('Failed to update comment');
+      console.error(err);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: number) => {
+    if (!window.confirm('Are you sure you want to delete this comment?')) return;
+
+    try {
+      await deleteComment(commentId);
+      fetchComments();
+    } catch (err) {
+      setError('Failed to delete comment');
+      console.error(err);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      await uploadAttachment(task.id, file);
+      fetchAttachments();
+      e.target.value = '';
+    } catch (err) {
+      setError('Failed to upload file');
+      console.error(err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteAttachment = async (attachmentId: number) => {
+    if (!window.confirm('Are you sure you want to delete this attachment?')) return;
+
+    try {
+      await deleteAttachment(attachmentId);
+      fetchAttachments();
+    } catch (err) {
+      setError('Failed to delete attachment');
+      console.error(err);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  return (
+    <div style={styles.overlay} onClick={onClose}>
+      <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <div style={styles.header}>
+          <h2 style={styles.title}>{task.title}</h2>
+          <button onClick={onClose} style={styles.closeButton}>
+            ×
+          </button>
+        </div>
+
+        {error && <div style={styles.error}>{error}</div>}
+
+        <div style={styles.tabs}>
+          <button
+            style={{ ...styles.tab, ...(activeTab === 'details' ? styles.tabActive : {}) }}
+            onClick={() => setActiveTab('details')}
+          >
+            Details
+          </button>
+          <button
+            style={{ ...styles.tab, ...(activeTab === 'comments' ? styles.tabActive : {}) }}
+            onClick={() => setActiveTab('comments')}
+          >
+            Comments ({comments.length})
+          </button>
+          <button
+            style={{ ...styles.tab, ...(activeTab === 'attachments' ? styles.tabActive : {}) }}
+            onClick={() => setActiveTab('attachments')}
+          >
+            Attachments ({attachments.length})
+          </button>
+        </div>
+
+        <div style={styles.content}>
+          {activeTab === 'details' && (
+            <div>
+              <div style={styles.detailRow}>
+                <strong>Status:</strong>
+                <span style={styles.badge}>{task.status}</span>
+              </div>
+              <div style={styles.detailRow}>
+                <strong>Priority:</strong>
+                <span style={styles.badge}>{task.priority || 'none'}</span>
+              </div>
+              {task.dueDate && (
+                <div style={styles.detailRow}>
+                  <strong>Due Date:</strong>
+                  <span>{formatDate(task.dueDate)}</span>
+                </div>
+              )}
+              {task.description && (
+                <div style={styles.detailRow}>
+                  <strong>Description:</strong>
+                  <p style={styles.description}>{task.description}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'comments' && (
+            <div>
+              <form onSubmit={handleAddComment} style={styles.commentForm}>
+                <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Write a comment..."
+                  style={styles.commentInput}
+                  rows={3}
+                />
+                <button type="submit" style={styles.submitButton}>
+                  Add Comment
+                </button>
+              </form>
+
+              <div style={styles.commentsList}>
+                {comments.length === 0 ? (
+                  <p style={styles.emptyMessage}>No comments yet. Be the first to comment!</p>
+                ) : (
+                  comments.map((comment) => (
+                    <div key={comment.id} style={styles.commentCard}>
+                      {editingComment?.id === comment.id ? (
+                        <div>
+                          <textarea
+                            value={editContent}
+                            onChange={(e) => setEditContent(e.target.value)}
+                            style={styles.commentInput}
+                            rows={3}
+                          />
+                          <div style={styles.commentActions}>
+                            <button
+                              onClick={() => handleUpdateComment(comment.id)}
+                              style={styles.saveButton}
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => {
+                                setEditingComment(null);
+                                setEditContent('');
+                              }}
+                              style={styles.cancelButton}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          <p style={styles.commentContent}>{comment.content}</p>
+                          <div style={styles.commentMeta}>
+                            <span style={styles.commentDate}>{formatDate(comment.created_at)}</span>
+                            {comment.user_id === user?.id && (
+                              <div style={styles.commentActions}>
+                                <button
+                                  onClick={() => {
+                                    setEditingComment(comment);
+                                    setEditContent(comment.content);
+                                  }}
+                                  style={styles.editButton}
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteComment(comment.id)}
+                                  style={styles.deleteButton}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'attachments' && (
+            <div>
+              <div style={styles.uploadSection}>
+                <input
+                  type="file"
+                  onChange={handleFileUpload}
+                  disabled={uploading}
+                  style={styles.fileInput}
+                  id="file-upload"
+                />
+                <label htmlFor="file-upload" style={styles.uploadButton}>
+                  {uploading ? 'Uploading...' : 'Choose File'}
+                </label>
+              </div>
+
+              <div style={styles.attachmentsList}>
+                {attachments.length === 0 ? (
+                  <p style={styles.emptyMessage}>No attachments yet. Upload a file to get started!</p>
+                ) : (
+                  attachments.map((attachment) => (
+                    <div key={attachment.id} style={styles.attachmentCard}>
+                      <div style={styles.attachmentInfo}>
+                        <div style={styles.attachmentIcon}>📎</div>
+                        <div>
+                          <p style={styles.attachmentName}>{attachment.filename}</p>
+                          <p style={styles.attachmentMeta}>
+                            {formatFileSize(attachment.size)} • {formatDate(attachment.created_at)}
+                          </p>
+                        </div>
+                      </div>
+                      {attachment.user_id === user?.id && (
+                        <button
+                          onClick={() => handleDeleteAttachment(attachment.id)}
+                          style={styles.deleteButton}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const styles: { [key: string]: React.CSSProperties } = {
+  overlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  modal: {
+    backgroundColor: 'white',
+    borderRadius: '8px',
+    width: '90%',
+    maxWidth: '700px',
+    maxHeight: '90vh',
+    display: 'flex',
+    flexDirection: 'column',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '1.5rem',
+    borderBottom: '1px solid #eee',
+  },
+  title: {
+    margin: 0,
+    fontSize: '1.5rem',
+    color: '#333',
+  },
+  closeButton: {
+    background: 'none',
+    border: 'none',
+    fontSize: '2rem',
+    cursor: 'pointer',
+    color: '#666',
+    lineHeight: 1,
+    padding: 0,
+    width: '32px',
+    height: '32px',
+  },
+  error: {
+    margin: '1rem 1.5rem 0',
+    padding: '1rem',
+    backgroundColor: '#f8d7da',
+    color: '#721c24',
+    borderRadius: '4px',
+  },
+  tabs: {
+    display: 'flex',
+    borderBottom: '1px solid #eee',
+    padding: '0 1.5rem',
+  },
+  tab: {
+    padding: '1rem 1.5rem',
+    background: 'none',
+    border: 'none',
+    borderBottom: '3px solid transparent',
+    cursor: 'pointer',
+    fontSize: '1rem',
+    fontWeight: '500',
+    color: '#666',
+    transition: 'all 0.2s',
+  },
+  tabActive: {
+    color: '#007bff',
+    borderBottomColor: '#007bff',
+  },
+  content: {
+    padding: '1.5rem',
+    overflowY: 'auto',
+    flex: 1,
+  },
+  detailRow: {
+    marginBottom: '1rem',
+    display: 'flex',
+    gap: '0.5rem',
+    alignItems: 'flex-start',
+  },
+  badge: {
+    padding: '0.25rem 0.75rem',
+    backgroundColor: '#e9ecef',
+    borderRadius: '4px',
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    textTransform: 'capitalize',
+  },
+  description: {
+    margin: '0.5rem 0 0 0',
+    color: '#666',
+    lineHeight: '1.6',
+  },
+  commentForm: {
+    marginBottom: '1.5rem',
+  },
+  commentInput: {
+    width: '100%',
+    padding: '0.75rem',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    fontSize: '1rem',
+    marginBottom: '0.5rem',
+    boxSizing: 'border-box',
+    resize: 'vertical',
+  },
+  submitButton: {
+    padding: '0.5rem 1.5rem',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: '500',
+  },
+  commentsList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+  },
+  emptyMessage: {
+    textAlign: 'center',
+    color: '#999',
+    padding: '2rem',
+    fontStyle: 'italic',
+  },
+  commentCard: {
+    padding: '1rem',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '6px',
+    borderLeft: '3px solid #007bff',
+  },
+  commentContent: {
+    margin: '0 0 0.5rem 0',
+    color: '#333',
+    lineHeight: '1.5',
+  },
+  commentMeta: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  commentDate: {
+    fontSize: '0.75rem',
+    color: '#666',
+  },
+  commentActions: {
+    display: 'flex',
+    gap: '0.5rem',
+  },
+  editButton: {
+    padding: '0.25rem 0.75rem',
+    backgroundColor: 'transparent',
+    color: '#007bff',
+    border: '1px solid #007bff',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '0.75rem',
+  },
+  deleteButton: {
+    padding: '0.25rem 0.75rem',
+    backgroundColor: 'transparent',
+    color: '#dc3545',
+    border: '1px solid #dc3545',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '0.75rem',
+  },
+  saveButton: {
+    padding: '0.25rem 0.75rem',
+    backgroundColor: '#28a745',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '0.75rem',
+  },
+  cancelButton: {
+    padding: '0.25rem 0.75rem',
+    backgroundColor: '#6c757d',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '0.75rem',
+  },
+  uploadSection: {
+    marginBottom: '1.5rem',
+  },
+  fileInput: {
+    display: 'none',
+  },
+  uploadButton: {
+    display: 'inline-block',
+    padding: '0.75rem 1.5rem',
+    backgroundColor: '#28a745',
+    color: 'white',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: '500',
+  },
+  attachmentsList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+  },
+  attachmentCard: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '1rem',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '6px',
+    border: '1px solid #dee2e6',
+  },
+  attachmentInfo: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+    flex: 1,
+  },
+  attachmentIcon: {
+    fontSize: '2rem',
+  },
+  attachmentName: {
+    margin: 0,
+    fontWeight: '500',
+    color: '#333',
+  },
+  attachmentMeta: {
+    margin: '0.25rem 0 0 0',
+    fontSize: '0.75rem',
+    color: '#666',
+  },
+};
+
+export default TaskDetailsModal;
