@@ -63,13 +63,28 @@ const TasksPage: React.FC = () => {
     e.preventDefault();
 
     try {
-      await api.post('/tasks', {
+      // Build request payload, only including fields with values
+      const payload: any = {
         title,
-        description: description || undefined,
         priority,
-        due_date: dueDate || undefined,
-        project_id: projectId,
-      });
+      };
+
+      // Only include description if it has a value
+      if (description && description.trim()) {
+        payload.description = description;
+      }
+
+      // Only include due_date if it has a value
+      if (dueDate && dueDate.trim()) {
+        payload.due_date = dueDate;
+      }
+
+      // Only include project_id if selected
+      if (projectId !== null) {
+        payload.project_id = projectId;
+      }
+
+      await api.post('/tasks', payload);
 
       resetForm();
       fetchTasks();

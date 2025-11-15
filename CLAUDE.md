@@ -26,11 +26,16 @@
 - **Domain**: Task management system with user authentication
 
 ### Key Achievements
-- ✅ 7 functional requirements implemented (exceeded 5 minimum requirement)
+- ✅ 10+ functional requirements implemented (exceeded 5 minimum requirement)
 - ✅ 100% test coverage in Services layer
 - ✅ Clean Architecture with SOLID principles
 - ✅ Domain-Driven Design patterns
 - ✅ Complete authentication with JWT + bcrypt
+- ✅ Role-Based Access Control (admin, gestor, colaborador)
+- ✅ Docker Compose with hot-reload for development
+- ✅ Advanced features: Projects, Comments, Attachments, Task History
+- ✅ File upload/download with multer
+- ✅ Kanban board view
 
 ### Tech Stack
 
@@ -40,8 +45,11 @@
 - PostgreSQL + Sequelize ORM
 - JWT authentication (7-day expiry)
 - bcrypt password hashing
+- Role-Based Access Control (RBAC)
+- Multer for file uploads
 - Jest + Supertest for testing
-- InversifyJS for dependency injection
+- InversifyJS for dependency injection (optional)
+- Docker + Docker Compose
 
 **Frontend**
 - React 18 + TypeScript
@@ -94,67 +102,136 @@
 backend/src/
 ├── domain/entities/      # Business entities (framework-agnostic)
 │   ├── Task.ts          # Task entity with business methods
-│   └── User.ts          # User entity with business methods
+│   ├── User.ts          # User entity with role-based methods (admin, gestor, colaborador)
+│   ├── Project.ts       # Project entity for task grouping
+│   ├── TaskHistory.ts   # Task change tracking entity
+│   ├── TaskComment.ts   # Task comment entity
+│   ├── TaskAttachment.ts # Task file attachment entity
+│   └── index.ts
 ├── usecases/            # Application logic (orchestrates business rules)
 │   ├── CreateTaskUseCase.ts
 │   ├── UpdateTaskUseCase.ts
 │   ├── DeleteTaskUseCase.ts
-│   └── GetTasksUseCase.ts
+│   ├── GetTasksUseCase.ts
+│   ├── CreateTaskUseCase.test.ts
+│   └── index.ts
 ├── interfaces/          # Contracts (abstractions for DI)
 │   ├── ITaskRepository.ts
 │   ├── IUserRepository.ts
+│   ├── IProjectRepository.ts
+│   ├── ITaskHistoryRepository.ts
+│   ├── ITaskCommentRepository.ts
+│   ├── ITaskAttachmentRepository.ts
 │   ├── ITaskService.ts
-│   └── IAuthService.ts
+│   ├── IAuthService.ts
+│   └── index.ts
 ├── services/            # Business logic layer (100% coverage)
 │   ├── TaskService.ts
-│   └── AuthService.ts
+│   ├── TaskService.test.ts
+│   ├── AuthService.ts
+│   ├── AuthService.test.ts
+│   ├── ProjectService.ts
+│   ├── TaskCommentService.ts
+│   └── TaskAttachmentService.ts
 ├── repositories/        # Data access implementations
 │   ├── TaskRepository.ts
-│   └── UserRepository.ts
+│   ├── UserRepository.ts
+│   ├── ProjectRepository.ts
+│   ├── TaskHistoryRepository.ts
+│   ├── TaskCommentRepository.ts
+│   └── TaskAttachmentRepository.ts
 ├── controllers/         # API layer (HTTP handling)
 │   ├── TaskController.ts
-│   └── AuthController.ts
+│   ├── TaskController.test.ts
+│   ├── AuthController.ts
+│   ├── ProjectController.ts
+│   ├── TaskCommentController.ts
+│   └── TaskAttachmentController.ts
 ├── mappers/            # ORM Model ↔ Domain Entity conversion
 │   ├── TaskMapper.ts
-│   └── UserMapper.ts
+│   ├── UserMapper.ts
+│   ├── ProjectMapper.ts
+│   ├── TaskHistoryMapper.ts
+│   ├── TaskCommentMapper.ts
+│   └── TaskAttachmentMapper.ts
 ├── validators/         # Business rule validation
 │   ├── TaskValidator.ts
-│   └── UserValidator.ts
-├── factories/          # Dependency injection factories
+│   ├── TaskValidator.test.ts
+│   ├── UserValidator.ts
+│   ├── UserValidator.test.ts
+│   └── ProjectValidator.ts
+├── factories/          # Dependency injection factories (optional)
 │   ├── RepositoryFactory.ts
 │   └── ServiceFactory.ts
-├── container/          # InversifyJS DI container
+├── container/          # InversifyJS DI container (optional)
 │   └── index.ts
 ├── models/             # Sequelize ORM models
 │   ├── Task.ts
-│   └── User.ts
+│   ├── User.ts
+│   ├── Project.ts
+│   ├── TaskHistory.ts
+│   ├── TaskComment.ts
+│   ├── TaskAttachment.ts
+│   └── index.ts
 ├── routes/             # Express route definitions
 │   ├── taskRoutes.ts
-│   └── authRoutes.ts
+│   ├── authRoutes.ts
+│   ├── authRoutes.test.ts
+│   ├── authRoutes.integration.test.ts
+│   ├── projectRoutes.ts
+│   ├── taskCommentRoutes.ts
+│   └── taskAttachmentRoutes.ts
 ├── middlewares/        # Express middlewares
-│   ├── authMiddleware.ts
-│   └── errorHandler.ts
+│   ├── authMiddleware.ts      # JWT authentication
+│   ├── roleMiddleware.ts      # Role-based access control
+│   ├── uploadMiddleware.ts    # File upload handling (multer)
+│   └── errorHandler.ts        # Global error handling
 ├── errors/             # Custom error classes
 │   └── index.ts
 ├── utils/              # Utilities
 │   └── logger.ts       # Logging abstraction
-└── config/             # Configuration
-    ├── database.js     # Sequelize config
-    └── app.config.ts   # Centralized env vars
+├── config/             # Configuration
+│   ├── database.js     # Sequelize config
+│   └── app.config.ts   # Centralized env vars
+├── types/              # TypeScript type definitions
+│   └── express.d.ts    # Express Request extension
+├── tests/              # Test setup
+│   └── test-setup.ts
+├── migrations/         # Database migrations (8 files)
+│   ├── 20240101000001-create-users-table.js
+│   ├── 20240101000002-create-tasks-table.js
+│   ├── 20240102000001-add-role-to-users.js
+│   ├── 20240102000002-create-projects-table.js
+│   ├── 20240102000003-add-project-id-to-tasks.js
+│   ├── 20240102000004-create-task-history-table.js
+│   ├── 20240102000005-create-task-comments-table.js
+│   └── 20240102000006-create-task-attachments-table.js
+├── app.ts              # Express app setup
+└── server.ts           # Server entry point
 
 frontend/src/
 ├── pages/              # Route components
 │   ├── LoginPage.tsx
-│   ├── RegisterPage.tsx
+│   ├── RegisterPage.tsx    # Now includes role selection
+│   ├── TasksPage.tsx       # Task list view
+│   ├── KanbanPage.tsx      # Kanban board view
+│   ├── ProjectsPage.tsx    # Project management
 │   └── DashboardPage.tsx
 ├── components/         # Reusable components
-│   └── ProtectedRoute.tsx
+│   ├── Layout.tsx            # Navigation and layout wrapper
+│   ├── ProtectedRoute.tsx    # HOC for protected routes
+│   └── TaskDetailsModal.tsx  # Modal for task details
 ├── contexts/           # React contexts
-│   └── AuthContext.tsx
+│   └── AuthContext.tsx       # Authentication + user role state
 ├── services/           # API clients
-│   ├── api.ts          # Axios instance with interceptors
-│   └── authService.ts  # Auth API calls
-└── App.tsx
+│   ├── api.ts               # Axios instance with interceptors
+│   ├── authService.ts       # Auth API calls
+│   ├── projectService.ts    # Project API calls
+│   ├── commentService.ts    # Comment API calls
+│   └── attachmentService.ts # Attachment API calls
+├── App.tsx             # Main app with routing
+├── main.tsx            # React entry point
+└── index.css           # Global styles
 ```
 
 ### C4 Architecture Diagrams
@@ -171,13 +248,15 @@ frontend/src/
 ```
 HTTP Request
     ↓
-[Middlewares] ← JWT authentication, error handling
+[Middlewares] ← JWT authentication, role-based access, file uploads, error handling
     ↓
 [Controllers] ← HTTP input validation (express-validator)
     ↓
 [Services] ← CRITICAL: Authorization checks + business logic
     ↓
 [Repositories] ← Data access abstraction
+    ↓
+[Mappers] ← ORM Model ↔ Domain Entity conversion
     ↓
 [Models] ← Sequelize ORM
     ↓
@@ -191,16 +270,78 @@ Diagrams available: `docs/diagrams/*.png`
 ## Development Workflow
 
 ### Prerequisites
+
+**Docker Method (Recommended)**
+- Docker Desktop or Docker Engine + Docker Compose
+- Git
+
+**Traditional Method**
 - Node.js v18+
 - PostgreSQL v12+
 - npm
 
 ### Initial Setup
 
+#### Option 1: Docker Compose (Recommended) ⭐
+
 ```bash
 # 1. Clone repository
 git clone <repo-url>
-cd status-point
+cd Projeto
+
+# 2. Start all services with hot-reload
+docker compose up
+
+# 3. Access the application
+# - Frontend: http://localhost:3000
+# - Backend API: http://localhost:3001
+# - Hot-reload enabled for both services
+```
+
+**What Docker Compose provides**:
+- ✅ Automatic dependency installation
+- ✅ PostgreSQL database pre-configured
+- ✅ Hot-reload for backend (ts-node-dev)
+- ✅ Hot-reload for frontend (Vite HMR)
+- ✅ Isolated node_modules via named volumes
+- ✅ Code sync via bind mounts
+- ✅ No local PostgreSQL installation needed
+
+**Docker Compose Commands**:
+```bash
+# Start services
+docker compose up                    # Start and show logs
+docker compose up -d                 # Start in detached mode
+
+# Stop services
+docker compose down                  # Stop and remove containers
+docker compose down -v               # Stop and remove volumes (clean slate)
+
+# View logs
+docker compose logs -f               # Follow all logs
+docker compose logs -f backend       # Follow backend logs only
+docker compose logs -f frontend      # Follow frontend logs only
+
+# Rebuild after dependency changes
+docker compose up --build            # Rebuild images and start
+
+# Run commands inside containers
+docker compose exec backend npm test              # Run backend tests
+docker compose exec backend npm run db:migrate    # Run migrations
+docker compose exec frontend npm run build        # Build frontend
+```
+
+**Database Connection in Docker**:
+- Backend connects to host database via `host.docker.internal`
+- Ensure PostgreSQL is running on your host machine
+- Database: `task_management_dev`
+
+#### Option 2: Traditional Setup
+
+```bash
+# 1. Clone repository
+git clone <repo-url>
+cd Projeto
 
 # 2. Setup database
 psql -U postgres
@@ -280,6 +421,76 @@ npm run db:migrate
 npx sequelize-cli db:migrate:undo
 ```
 
+#### Current Database Schema (8 Migrations)
+
+**1. Users Table** (`20240101000001-create-users-table.js`)
+- `id` (PK, auto-increment)
+- `name` (VARCHAR 255)
+- `email` (VARCHAR 255, unique)
+- `password_hash` (VARCHAR 255)
+- `created_at`, `updated_at` (timestamps)
+
+**2. Tasks Table** (`20240101000002-create-tasks-table.js`)
+- `id` (PK, auto-increment)
+- `user_id` (FK → Users)
+- `title` (VARCHAR 255)
+- `description` (TEXT, nullable)
+- `status` (ENUM: 'pending', 'completed')
+- `priority` (ENUM: 'low', 'medium', 'high', nullable)
+- `due_date` (DATE, nullable)
+- `created_at`, `updated_at` (timestamps)
+
+**3. Add Role to Users** (`20240102000001-add-role-to-users.js`)
+- Adds `role` column (ENUM: 'admin', 'gestor', 'colaborador', default: 'colaborador')
+
+**4. Projects Table** (`20240102000002-create-projects-table.js`)
+- `id` (PK, auto-increment)
+- `name` (VARCHAR 255)
+- `description` (TEXT, nullable)
+- `owner_id` (FK → Users)
+- `created_at`, `updated_at` (timestamps)
+
+**5. Add Project to Tasks** (`20240102000003-add-project-id-to-tasks.js`)
+- Adds `project_id` column (FK → Projects, nullable)
+- ON DELETE CASCADE (deleting project deletes tasks)
+
+**6. Task History Table** (`20240102000004-create-task-history-table.js`)
+- `id` (PK, auto-increment)
+- `task_id` (FK → Tasks)
+- `user_id` (FK → Users)
+- `previous_status` (VARCHAR 50)
+- `new_status` (VARCHAR 50)
+- `created_at`, `updated_at` (timestamps)
+- Purpose: Audit trail for task status changes
+
+**7. Task Comments Table** (`20240102000005-create-task-comments-table.js`)
+- `id` (PK, auto-increment)
+- `task_id` (FK → Tasks, ON DELETE CASCADE)
+- `user_id` (FK → Users)
+- `content` (TEXT)
+- `created_at`, `updated_at` (timestamps)
+
+**8. Task Attachments Table** (`20240102000006-create-task-attachments-table.js`)
+- `id` (PK, auto-increment)
+- `task_id` (FK → Tasks, ON DELETE CASCADE)
+- `file_name` (VARCHAR 255)
+- `file_path` (VARCHAR 500)
+- `uploaded_at` (timestamp)
+
+**Entity Relationships**:
+```
+User (1) ─┬─ (N) Task
+          ├─ (N) Project (as owner)
+          ├─ (N) TaskComment
+          └─ (N) TaskHistory
+
+Project (1) ── (N) Task
+
+Task (1) ─┬─ (N) TaskComment
+          ├─ (N) TaskAttachment
+          └─ (N) TaskHistory
+```
+
 ---
 
 ## Code Patterns
@@ -287,6 +498,85 @@ npx sequelize-cli db:migrate:undo
 ### 1. Domain Entity Pattern
 
 **Purpose**: Framework-agnostic business entities with behavior
+
+#### User Entity with Role-Based Access Control
+
+**Example**: `backend/src/domain/entities/User.ts`
+
+```typescript
+export type UserRole = 'admin' | 'gestor' | 'colaborador';
+
+export class User {
+  constructor(
+    public readonly id: number,
+    public readonly name: string,
+    public readonly email: string,
+    public readonly passwordHash: string,
+    public readonly role: UserRole,
+    public readonly createdAt: Date,
+    public readonly updatedAt: Date
+  ) {}
+
+  // Role-based access control methods
+  isAdmin(): boolean {
+    return this.role === 'admin';
+  }
+
+  isGestor(): boolean {
+    return this.role === 'gestor';
+  }
+
+  isColaborador(): boolean {
+    return this.role === 'colaborador';
+  }
+
+  // Permission checks
+  canCreateProjects(): boolean {
+    return this.role === 'admin' || this.role === 'gestor';
+  }
+
+  canManageUsers(): boolean {
+    return this.role === 'admin';
+  }
+
+  canDeleteTasks(): boolean {
+    return this.role === 'admin' || this.role === 'gestor';
+  }
+
+  // Security: Never expose password hash
+  toSafeObject(): Omit<User, 'passwordHash'> {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      role: this.role,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    } as Omit<User, 'passwordHash'>;
+  }
+}
+```
+
+**Key Principles**:
+- Three roles: `admin`, `gestor`, `colaborador`
+- Permission methods for fine-grained access control
+- `toSafeObject()` prevents password hash exposure in API responses
+- Role validation happens in domain layer
+
+**Usage in Services**:
+```typescript
+// Check permissions before operations
+if (!user.canCreateProjects()) {
+  throw new AuthorizationError('Only admins and gestors can create projects');
+}
+
+// Return safe user object in responses
+return user.toSafeObject();
+```
+
+---
+
+#### Task Entity
 
 **Example**: `backend/src/domain/entities/Task.ts`
 
@@ -300,6 +590,7 @@ export class Task {
     public readonly status: 'pending' | 'completed',
     public readonly priority: 'low' | 'medium' | 'high' | null,
     public readonly dueDate: Date | null,
+    public readonly projectId: number | null,  // NEW: Task can belong to project
     public readonly createdAt: Date,
     public readonly updatedAt: Date
   ) {}
@@ -1350,7 +1641,8 @@ Register a new user account.
 {
   "name": "John Doe",
   "email": "john@example.com",
-  "password": "password123"
+  "password": "password123",
+  "role": "colaborador"
 }
 ```
 
@@ -1358,6 +1650,7 @@ Register a new user account.
 - `name`: Required, 2-255 characters
 - `email`: Required, valid email format
 - `password`: Required, minimum 6 characters
+- `role`: Required, one of: `"admin"`, `"gestor"`, `"colaborador"`
 
 **Success Response** (201):
 ```json
@@ -1626,6 +1919,273 @@ Delete a task permanently.
 
 ---
 
+### Project Endpoints
+
+**Base URL**: `http://localhost:3001/api/projects`
+
+**Authentication**: All project endpoints require JWT token + appropriate role permissions
+
+---
+
+#### GET /api/projects
+Retrieve all projects (admin and gestor can see all; colaborador sees only assigned).
+
+**Auth**: Required (JWT)
+
+**Success Response** (200):
+```json
+{
+  "message": "Projects retrieved successfully",
+  "data": [
+    {
+      "id": 1,
+      "name": "Website Redesign",
+      "description": "Complete redesign of company website",
+      "ownerId": 1,
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+#### POST /api/projects
+Create a new project (admin and gestor only).
+
+**Auth**: Required (JWT + admin or gestor role)
+
+**Request Body**:
+```json
+{
+  "name": "Website Redesign",
+  "description": "Complete redesign of company website"
+}
+```
+
+**Validation**:
+- `name`: Required, 1-255 characters
+- `description`: Optional, max 5000 characters
+
+**Success Response** (201):
+```json
+{
+  "message": "Project created successfully",
+  "data": {
+    "id": 1,
+    "name": "Website Redesign",
+    "description": "Complete redesign of company website",
+    "ownerId": 1,
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+
+**Error Responses**:
+- 403: User does not have permission (colaborador role)
+
+---
+
+#### PUT /api/projects/:id
+Update a project (admin and project owner only).
+
+**Auth**: Required (JWT + admin or project owner)
+
+**Success Response** (200):
+```json
+{
+  "message": "Project updated successfully",
+  "data": { /* updated project */ }
+}
+```
+
+---
+
+#### DELETE /api/projects/:id
+Delete a project (admin and project owner only).
+
+**Auth**: Required (JWT + admin or project owner)
+
+**Success Response** (200):
+```json
+{
+  "message": "Project deleted successfully"
+}
+```
+
+---
+
+### Task Comment Endpoints
+
+**Base URL**: `http://localhost:3001/api/tasks/:taskId/comments`
+
+---
+
+#### GET /api/tasks/:taskId/comments
+Retrieve all comments for a task.
+
+**Auth**: Required (JWT)
+
+**Success Response** (200):
+```json
+{
+  "message": "Comments retrieved successfully",
+  "data": [
+    {
+      "id": 1,
+      "taskId": 1,
+      "userId": 2,
+      "content": "I'll start working on this tomorrow",
+      "createdAt": "2024-01-15T14:30:00.000Z",
+      "updatedAt": "2024-01-15T14:30:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+#### POST /api/tasks/:taskId/comments
+Add a comment to a task.
+
+**Auth**: Required (JWT)
+
+**Request Body**:
+```json
+{
+  "content": "I'll start working on this tomorrow"
+}
+```
+
+**Validation**:
+- `content`: Required, 1-5000 characters
+
+**Success Response** (201):
+```json
+{
+  "message": "Comment added successfully",
+  "data": {
+    "id": 1,
+    "taskId": 1,
+    "userId": 2,
+    "content": "I'll start working on this tomorrow",
+    "createdAt": "2024-01-15T14:30:00.000Z",
+    "updatedAt": "2024-01-15T14:30:00.000Z"
+  }
+}
+```
+
+---
+
+#### DELETE /api/tasks/:taskId/comments/:commentId
+Delete a comment (comment owner or admin only).
+
+**Auth**: Required (JWT + comment owner or admin)
+
+**Success Response** (200):
+```json
+{
+  "message": "Comment deleted successfully"
+}
+```
+
+---
+
+### Task Attachment Endpoints
+
+**Base URL**: `http://localhost:3001/api/tasks/:taskId/attachments`
+
+---
+
+#### GET /api/tasks/:taskId/attachments
+Retrieve all attachments for a task.
+
+**Auth**: Required (JWT)
+
+**Success Response** (200):
+```json
+{
+  "message": "Attachments retrieved successfully",
+  "data": [
+    {
+      "id": 1,
+      "taskId": 1,
+      "fileName": "design-mockup.pdf",
+      "filePath": "uploads/1234567890-design-mockup.pdf",
+      "uploadedAt": "2024-01-15T15:00:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+#### POST /api/tasks/:taskId/attachments
+Upload a file attachment to a task.
+
+**Auth**: Required (JWT)
+
+**Request**: `multipart/form-data`
+
+**Form Data**:
+- `file`: File to upload (max 10MB)
+
+**Supported File Types**:
+- Images: `.jpg`, `.jpeg`, `.png`, `.gif`
+- Documents: `.pdf`, `.doc`, `.docx`, `.txt`
+- Archives: `.zip`, `.rar`
+
+**Success Response** (201):
+```json
+{
+  "message": "File uploaded successfully",
+  "data": {
+    "id": 1,
+    "taskId": 1,
+    "fileName": "design-mockup.pdf",
+    "filePath": "uploads/1234567890-design-mockup.pdf",
+    "uploadedAt": "2024-01-15T15:00:00.000Z"
+  }
+}
+```
+
+**Error Responses**:
+- 400: No file provided or invalid file type
+- 413: File too large (>10MB)
+
+---
+
+#### GET /api/tasks/:taskId/attachments/:attachmentId/download
+Download a file attachment.
+
+**Auth**: Required (JWT)
+
+**Success Response** (200):
+- Content-Type: Based on file type
+- Content-Disposition: `attachment; filename="original-filename.ext"`
+- Body: File binary data
+
+**Error Responses**:
+- 404: File not found
+
+---
+
+#### DELETE /api/tasks/:taskId/attachments/:attachmentId
+Delete an attachment (uploader or admin only).
+
+**Auth**: Required (JWT + uploader or admin)
+
+**Success Response** (200):
+```json
+{
+  "message": "Attachment deleted successfully"
+}
+```
+
+---
+
 ### Response Format (ALL Endpoints)
 
 **Success**:
@@ -1890,7 +2450,159 @@ export const AppConfig = {
 
 ---
 
-### 10. Dependency Injection with Factories
+### 10. Role-Based Access Control (RBAC)
+
+**Why**: Fine-grained permissions for different user types.
+
+**Roles**:
+- **admin**: Full system access (manage users, projects, all tasks)
+- **gestor**: Project management (create projects, manage team tasks)
+- **colaborador**: Basic access (manage own tasks only)
+
+**Implementation Pattern**: `backend/src/domain/entities/User.ts`
+
+```typescript
+export type UserRole = 'admin' | 'gestor' | 'colaborador';
+
+export class User {
+  // Permission checks in domain entity
+  canCreateProjects(): boolean {
+    return this.role === 'admin' || this.role === 'gestor';
+  }
+
+  canManageUsers(): boolean {
+    return this.role === 'admin';
+  }
+
+  canDeleteTasks(): boolean {
+    return this.role === 'admin' || this.role === 'gestor';
+  }
+}
+```
+
+**Middleware Enforcement**: `backend/src/middlewares/roleMiddleware.ts`
+
+```typescript
+export const requireRole = (...allowedRoles: UserRole[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if (!user || !allowedRoles.includes(user.role)) {
+      return res.status(403).json({
+        error: 'Insufficient permissions'
+      });
+    }
+
+    next();
+  };
+};
+```
+
+**Usage in Routes**:
+```typescript
+// Only admin and gestor can create projects
+router.post('/projects',
+  authMiddleware,
+  requireRole('admin', 'gestor'),
+  projectController.createProject
+);
+
+// Only admin can manage users
+router.delete('/users/:id',
+  authMiddleware,
+  requireRole('admin'),
+  userController.deleteUser
+);
+```
+
+**Benefits**:
+- Clear permission hierarchy
+- Declarative route protection
+- Domain-level permission checks
+- Easy to extend with new roles
+
+---
+
+### 11. Automatic Task History Tracking
+
+**Why**: Audit trail for task changes.
+
+**Pattern**: Sequelize model hooks automatically create history records.
+
+**Location**: `backend/src/models/Task.ts`
+
+```typescript
+Task.afterUpdate(async (task) => {
+  // Automatically log status changes
+  if (task.changed('status')) {
+    await TaskHistory.create({
+      task_id: task.id,
+      user_id: task.user_id,
+      previous_status: task._previousDataValues.status,
+      new_status: task.status,
+    });
+  }
+});
+```
+
+**Benefits**:
+- Transparent tracking (no manual logging in services)
+- Complete audit trail
+- Historical reporting capabilities
+
+---
+
+### 12. File Upload with Multer
+
+**Why**: Secure file handling with validation.
+
+**Location**: `backend/src/middlewares/uploadMiddleware.ts`
+
+```typescript
+const storage = multer.diskStorage({
+  destination: './uploads/',
+  filename: (req, file, cb) => {
+    const uniqueName = `${Date.now()}-${file.originalname}`;
+    cb(null, uniqueName);
+  }
+});
+
+const fileFilter = (req: any, file: any, cb: any) => {
+  const allowedTypes = /jpeg|jpg|png|gif|pdf|doc|docx|txt|zip|rar/;
+  const isValid = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+
+  if (isValid) {
+    cb(null, true);
+  } else {
+    cb(new Error('Invalid file type'), false);
+  }
+};
+
+export const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter
+});
+```
+
+**Usage**:
+```typescript
+router.post('/tasks/:taskId/attachments',
+  authMiddleware,
+  upload.single('file'),
+  attachmentController.uploadFile
+);
+```
+
+**Benefits**:
+- File type validation
+- Size limits
+- Secure file naming (prevents path traversal)
+- Organized storage
+
+---
+
+### 13. Dependency Injection with Factories
 
 **Location**: `backend/src/factories/ServiceFactory.ts`
 
@@ -2010,11 +2722,21 @@ Before committing changes, ensure:
 9. **Return `{message, data}` JSON** from all controllers
 10. **Run validation checklist** before committing
 
-**Project Status**: Week 5/5 MVP completed. All functional requirements met. Ready for extensions (tags, attachments, notifications, etc.).
+**Project Status**: Week 5/5 MVP completed and extended. All functional requirements met plus advanced features:
+- ✅ Role-Based Access Control (3 roles)
+- ✅ Project Management
+- ✅ Task Comments
+- ✅ File Attachments (upload/download)
+- ✅ Automatic Task History Tracking
+- ✅ Kanban Board View
+- ✅ Docker Compose Development Environment
+- ✅ Hot-reload for development
+
+**Ready for**: Production deployment, additional features (notifications, real-time collaboration, advanced reporting)
 
 **Contact**: 7th-semester Software Engineering student, UTFPR.
 
 ---
 
-*Last Updated: 2024-01-16*
-*Version: 1.0*
+*Last Updated: 2025-01-14*
+*Version: 2.0* - Extended with RBAC, Projects, Comments, Attachments, and Docker

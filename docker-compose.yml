@@ -43,6 +43,11 @@ services:
     ports:
       - "3001:3001"
 
+    # Extra hosts for Linux compatibility
+    # Maps host.docker.internal to host gateway IP
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
     # Environment variables for the backend
     # These override defaults and configure database connection
     environment:
@@ -54,12 +59,12 @@ services:
       # CRITICAL: Use host.docker.internal to connect to host PostgreSQL
       - DB_HOST=host.docker.internal        # Special DNS name for host machine
       - DB_PORT=5432
-      - DB_USER=postgres                     # Change if your DB user is different
-      - DB_PASS=postgres                     # Change to your actual DB password
+      - DB_USER=terrasafe_user               # Database user from .env
+      - DB_PASS=xH5CdP2aA-ERZOxRA3bAzqUbdSxpKF6B6b69xfFzsPY  # Database password from .env
       - DB_NAME=task_management_dev          # Your database name
 
       # JWT configuration
-      - JWT_SECRET=your-secret-key-change-in-production
+      - JWT_SECRET=S3nh4Muit0F0rt3P4r4M3uJWT!@#$
 
     # Volume mounts
     # CRITICAL for hot-reload: These bind mounts sync host and container files

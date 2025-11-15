@@ -1,18 +1,29 @@
 # Dependencies
 node_modules/
-package-lock.json
-yarn.lock
+bower_components/
+jspm_packages/
+
+# Lock files (keep in backend/frontend, ignore in root)
+/package-lock.json
+/yarn.lock
+/pnpm-lock.yaml
 
 # Environment variables
 .env
 .env.local
+.env.development
 .env.development.local
+.env.test
 .env.test.local
+.env.production
 .env.production.local
 
 # Build outputs
 dist/
 build/
+out/
+.next/
+*.tsbuildinfo
 
 # Logs
 logs/
@@ -20,24 +31,66 @@ logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
 
 # Test coverage
 coverage/
 .nyc_output/
+*.lcov
 
-# Temporary files
+# IDE and editors
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Docker
+docker-compose.override.yml
+.docker/
+
+# Uploads and temporary files
+uploads/*
+!uploads/.gitkeep
 *.tmp
 .cache/
-Apresentação/*
-prompts/*
+tmp/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Presentation and temporary documentation
+Apresentação/
+prompts/
+*.zip
+
+# Test scripts (temporary)
+test-all-accounts.sh
+seedDatabase.ts
+
+# Root-level files that shouldn't exist
+/package.json
+/.sequelizerc
