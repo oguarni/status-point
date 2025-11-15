@@ -108,8 +108,8 @@ export const formatDateLong = (date: Date | string | null | undefined, locale: s
 
 /**
  * Format a date with time according to the specified locale
- * Portuguese: "dd/mm/aaaa HH:mm'h'"
- * English: "mm/dd/yyyy HH:mm"
+ * Portuguese: "dd/mm/aaaa HH:mm'h'" (e.g., "15/11/2025 14:30h")
+ * English: "mm/dd/yyyy h:mmAM/PM" (e.g., "11/15/2025 2:30PM")
  * @param date - The date to format (Date object, ISO string, or null)
  * @param locale - The locale code (e.g., 'en', 'pt')
  * @returns Formatted datetime string or empty string if date is null
@@ -121,22 +121,25 @@ export const formatDateTime = (date: Date | string | null | undefined, locale: s
 
   if (isNaN(dateObj.getTime())) return '';
 
-  const hours = dateObj.getHours().toString().padStart(2, '0');
+  const hours24 = dateObj.getHours();
   const minutes = dateObj.getMinutes().toString().padStart(2, '0');
 
-  // Portuguese and Brazilian format: dd/mm/aaaa HH:mm'h'
+  // Portuguese and Brazilian format: dd/mm/aaaa HH:mm'h' (24-hour)
   if (locale === 'pt' || locale === 'pt-BR') {
     const day = dateObj.getDate().toString().padStart(2, '0');
     const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
     const year = dateObj.getFullYear();
+    const hours = hours24.toString().padStart(2, '0');
     return `${day}/${month}/${year} ${hours}:${minutes}h`;
   }
 
-  // English format: mm/dd/yyyy HH:mm
+  // English format: mm/dd/yyyy h:mmAM/PM (12-hour)
   const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
   const day = dateObj.getDate().toString().padStart(2, '0');
   const year = dateObj.getFullYear();
-  return `${month}/${day}/${year} ${hours}:${minutes}`;
+  const hours12 = hours24 % 12 || 12; // Convert to 12-hour format (0 becomes 12)
+  const ampm = hours24 >= 12 ? 'PM' : 'AM';
+  return `${month}/${day}/${year} ${hours12}:${minutes}${ampm}`;
 };
 
 /**
