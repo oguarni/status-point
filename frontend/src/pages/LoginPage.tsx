@@ -47,6 +47,9 @@ const LoginPage: React.FC = () => {
             <option value="en">🇬🇧 {t('language.english')}</option>
           </select>
         </div>
+        <div style={styles.logoContainer}>
+          <img src="/favicon/android-chrome-192x192.png" alt="Agiliza" style={styles.logo} />
+        </div>
         <h1 style={styles.title}>{t('auth.loginTitle')}</h1>
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.formGroup}>
@@ -164,6 +167,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: '4px',
     cursor: 'pointer',
     fontSize: '0.9rem',
+  },
+  logoContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: '1.5rem',
+  },
+  logo: {
+    width: '120px',
+    height: 'auto',
   },
 };
 

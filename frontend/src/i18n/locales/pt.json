@@ -64,7 +64,26 @@
   "priority": {
     "low": "Baixa",
     "medium": "Média",
-    "high": "Alta"
+    "high": "Alta",
+    "none": "Nenhuma"
+  },
+  "taskDetails": {
+    "details": "Detalhes",
+    "comments": "Comentários",
+    "attachments": "Anexos"
+  },
+  "comments": {
+    "add": "Adicionar Comentário",
+    "placeholder": "Escreva um comentário...",
+    "empty": "Nenhum comentário ainda. Seja o primeiro a comentar!",
+    "deleteConfirm": "Tem certeza que deseja excluir este comentário?"
+  },
+  "attachments": {
+    "chooseFile": "Escolher Arquivo",
+    "uploading": "Enviando...",
+    "download": "Baixar",
+    "empty": "Nenhum anexo ainda. Envie um arquivo para começar!",
+    "deleteConfirm": "Tem certeza que deseja excluir este anexo?"
   },
   "projects": {
     "title": "Projetos",

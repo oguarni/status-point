@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 import {
   getTaskComments,
   createComment,
@@ -14,6 +15,7 @@ import {
   formatFileSize,
   Attachment,
 } from '../services/attachmentService';
+import { formatDateTime, formatDate as formatDateLocale } from '../utils/dateFormatter';
 
 interface Task {
   id: number;
@@ -32,6 +34,7 @@ interface TaskDetailsModalProps {
 
 const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) => {
   const { user } = useAuth();
+  const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState<'details' | 'comments' | 'attachments'>('details');
   const [comments, setComments] = useState<Comment[]>([]);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
@@ -100,7 +103,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
   };
 
   const handleDeleteComment = async (commentId: number) => {
-    if (!window.confirm('Are you sure you want to delete this comment?')) return;
+    if (!window.confirm(t('comments.deleteConfirm') || 'Are you sure you want to delete this comment?')) return;
 
     try {
       await deleteComment(commentId);
@@ -129,7 +132,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
   };
 
   const handleDeleteAttachment = async (attachmentId: number) => {
-    if (!window.confirm('Are you sure you want to delete this attachment?')) return;
+    if (!window.confirm(t('attachments.deleteConfirm') || 'Are you sure you want to delete this attachment?')) return;
 
     try {
       await deleteAttachment(attachmentId);
@@ -174,14 +177,11 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    return formatDateTime(dateString, i18n.language);
+  };
+
+  const formatDateOnly = (dateString: string) => {
+    return formatDateLocale(dateString, i18n.language);
   };
 
   return (
@@ -201,19 +201,19 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
             style={{ ...styles.tab, ...(activeTab === 'details' ? styles.tabActive : {}) }}
             onClick={() => setActiveTab('details')}
           >
-            Details
+            {t('taskDetails.details')}
           </button>
           <button
             style={{ ...styles.tab, ...(activeTab === 'comments' ? styles.tabActive : {}) }}
             onClick={() => setActiveTab('comments')}
           >
-            Comments ({comments.length})
+            {t('taskDetails.comments')} ({comments.length})
           </button>
           <button
             style={{ ...styles.tab, ...(activeTab === 'attachments' ? styles.tabActive : {}) }}
             onClick={() => setActiveTab('attachments')}
           >
-            Attachments ({attachments.length})
+            {t('taskDetails.attachments')} ({attachments.length})
           </button>
         </div>
 
@@ -221,22 +221,22 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
           {activeTab === 'details' && (
             <div>
               <div style={styles.detailRow}>
-                <strong>Status:</strong>
-                <span style={styles.badge}>{task.status}</span>
+                <strong>{t('tasks.status')}:</strong>
+                <span style={styles.badge}>{t(`status.${task.status}`)}</span>
               </div>
               <div style={styles.detailRow}>
-                <strong>Priority:</strong>
-                <span style={styles.badge}>{task.priority || 'none'}</span>
+                <strong>{t('tasks.priority')}:</strong>
+                <span style={styles.badge}>{task.priority ? t(`priority.${task.priority}`) : t('priority.none')}</span>
               </div>
               {task.dueDate && (
                 <div style={styles.detailRow}>
-                  <strong>Due Date:</strong>
-                  <span>{formatDate(task.dueDate)}</span>
+                  <strong>{t('tasks.dueDate')}:</strong>
+                  <span>{formatDateOnly(task.dueDate)}</span>
                 </div>
               )}
               {task.description && (
                 <div style={styles.detailRow}>
-                  <strong>Description:</strong>
+                  <strong>{t('tasks.description')}:</strong>
                   <p style={styles.description}>{task.description}</p>
                 </div>
               )}
@@ -249,18 +249,18 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
                 <textarea
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Write a comment..."
+                  placeholder={t('comments.placeholder') || 'Write a comment...'}
                   style={styles.commentInput}
                   rows={3}
                 />
                 <button type="submit" style={styles.submitButton}>
-                  Add Comment
+                  {t('comments.add')}
                 </button>
               </form>
 
               <div style={styles.commentsList}>
                 {comments.length === 0 ? (
-                  <p style={styles.emptyMessage}>No comments yet. Be the first to comment!</p>
+                  <p style={styles.emptyMessage}>{t('comments.empty')}</p>
                 ) : (
                   comments.map((comment) => (
                     <div key={comment.id} style={styles.commentCard}>
@@ -277,7 +277,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
                               onClick={() => handleUpdateComment(comment.id)}
                               style={styles.saveButton}
                             >
-                              Save
+                              {t('common.save')}
                             </button>
                             <button
                               onClick={() => {
@@ -286,7 +286,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
                               }}
                               style={styles.cancelButton}
                             >
-                              Cancel
+                              {t('common.cancel')}
                             </button>
                           </div>
                         </div>
@@ -304,13 +304,13 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
                                   }}
                                   style={styles.editButton}
                                 >
-                                  Edit
+                                  {t('common.edit')}
                                 </button>
                                 <button
                                   onClick={() => handleDeleteComment(comment.id)}
                                   style={styles.deleteButton}
                                 >
-                                  Delete
+                                  {t('common.delete')}
                                 </button>
                               </div>
                             )}
@@ -335,13 +335,13 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
                   id="file-upload"
                 />
                 <label htmlFor="file-upload" style={styles.uploadButton}>
-                  {uploading ? 'Uploading...' : 'Choose File'}
+                  {uploading ? t('attachments.uploading') : t('attachments.chooseFile')}
                 </label>
               </div>
 
               <div style={styles.attachmentsList}>
                 {attachments.length === 0 ? (
-                  <p style={styles.emptyMessage}>No attachments yet. Upload a file to get started!</p>
+                  <p style={styles.emptyMessage}>{t('attachments.empty')}</p>
                 ) : (
                   attachments.map((attachment) => (
                     <div key={attachment.id} style={styles.attachmentCard}>
@@ -359,14 +359,14 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
                           onClick={() => handleDownloadAttachment(attachment.id, attachment.filename)}
                           style={styles.downloadButton}
                         >
-                          Download
+                          {t('attachments.download')}
                         </button>
                         {attachment.user_id === user?.id && (
                           <button
                             onClick={() => handleDeleteAttachment(attachment.id)}
                             style={styles.deleteButton}
                           >
-                            Delete
+                            {t('common.delete')}
                           </button>
                         )}
                       </div>

@@ -108,6 +108,8 @@ export const formatDateLong = (date: Date | string | null | undefined, locale: s
 
 /**
  * Format a date with time according to the specified locale
+ * Portuguese: "dd/mm/aaaa HH:mm'h'"
+ * English: "mm/dd/yyyy HH:mm"
  * @param date - The date to format (Date object, ISO string, or null)
  * @param locale - The locale code (e.g., 'en', 'pt')
  * @returns Formatted datetime string or empty string if date is null
@@ -121,9 +123,20 @@ export const formatDateTime = (date: Date | string | null | undefined, locale: s
 
   const hours = dateObj.getHours().toString().padStart(2, '0');
   const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-  const time = `${hours}:${minutes}`;
 
-  return `${formatDate(dateObj, locale)} ${time}`;
+  // Portuguese and Brazilian format: dd/mm/aaaa HH:mm'h'
+  if (locale === 'pt' || locale === 'pt-BR') {
+    const day = dateObj.getDate().toString().padStart(2, '0');
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const year = dateObj.getFullYear();
+    return `${day}/${month}/${year} ${hours}:${minutes}h`;
+  }
+
+  // English format: mm/dd/yyyy HH:mm
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+  const day = dateObj.getDate().toString().padStart(2, '0');
+  const year = dateObj.getFullYear();
+  return `${month}/${day}/${year} ${hours}:${minutes}`;
 };
 
 /**
