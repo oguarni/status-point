@@ -2,12 +2,14 @@
 
 A full-stack task management application implementing Clean Architecture with Role-Based Access Control.
 
+**Repository:** https://github.com/oguarni/status-point.git
+
 ## 🚀 Quick Start (Docker)
 
 ```bash
 # Clone and start
-git clone <repo-url>
-cd Projeto
+git clone https://github.com/oguarni/status-point.git
+cd status-point
 docker compose up
 
 # Access the application
@@ -33,6 +35,7 @@ docker compose up
 - ✅ Task comments and attachments
 - ✅ Task history tracking
 - ✅ Kanban board view
+- ✅ **Internationalization (i18n)** - English/Portuguese language support with dropdown selector
 
 ### Technical Highlights
 - ✅ Clean Architecture with SOLID principles
@@ -40,6 +43,7 @@ docker compose up
 - ✅ 100% test coverage in Services layer
 - ✅ Docker Compose with hot-reload
 - ✅ Comprehensive API documentation
+- ✅ Multi-language support (react-i18next)
 
 ## 🛠️ Tech Stack
 
@@ -84,11 +88,150 @@ This project follows **Clean Architecture** with 4 layers:
 3. **Interface Adapters** - Controllers, repositories, mappers
 4. **Infrastructure** - Framework implementations (Express, Sequelize)
 
+### Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph "Frontend Layer"
+        A[React SPA<br/>TypeScript + Vite]
+        A1[Pages<br/>Login, Tasks, Kanban]
+        A2[Components<br/>Layout, Modals]
+        A3[Contexts<br/>Auth, i18n]
+        A4[Services<br/>API Client]
+        A --> A1
+        A --> A2
+        A --> A3
+        A --> A4
+    end
+
+    subgraph "API Layer - Clean Architecture"
+        B[Controllers]
+        B --> |HTTP Validation| C[Services]
+        C --> |Business Logic| D[Repositories]
+        D --> |Data Access| E[Mappers]
+        E --> |ORM Conversion| F[Models - Sequelize]
+    end
+
+    subgraph "Domain Layer"
+        G[Entities<br/>Task, User, Project]
+        H[Use Cases<br/>CreateTask, UpdateTask]
+        I[Validators<br/>Business Rules]
+        C --> G
+        C --> H
+        C --> I
+    end
+
+    subgraph "Infrastructure"
+        F --> J[(PostgreSQL<br/>Database)]
+        K[Middlewares<br/>Auth, RBAC, Upload]
+        K --> B
+    end
+
+    A4 --> |HTTPS/REST| K
+
+    subgraph "Security & Features"
+        L[JWT Authentication<br/>7-day expiry]
+        M[bcrypt Password Hash]
+        N[Role-Based Access Control<br/>admin, gestor, colaborador]
+        O[File Upload<br/>Multer + 10MB limit]
+        P[i18n Support<br/>English/Portuguese]
+    end
+
+    style A fill:#61dafb,stroke:#333,stroke-width:2px,color:#000
+    style B fill:#68a063,stroke:#333,stroke-width:2px
+    style C fill:#f39c12,stroke:#333,stroke-width:2px
+    style D fill:#3498db,stroke:#333,stroke-width:2px
+    style F fill:#e74c3c,stroke:#333,stroke-width:2px
+    style J fill:#9b59b6,stroke:#333,stroke-width:2px,color:#fff
+    style G fill:#2ecc71,stroke:#333,stroke-width:2px
+```
+
+### Data Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant React Frontend
+    participant Auth Middleware
+    participant Controller
+    participant Service
+    participant Repository
+    participant Database
+
+    User->>React Frontend: Login Request
+    React Frontend->>Controller: POST /api/auth/login
+    Controller->>Service: Authenticate
+    Service->>Repository: Find User by Email
+    Repository->>Database: SELECT * FROM users
+    Database-->>Repository: User Data
+    Repository-->>Service: User Entity
+    Service->>Service: Verify Password (bcrypt)
+    Service-->>Controller: JWT Token + User
+    Controller-->>React Frontend: {token, user}
+    React Frontend->>React Frontend: Store Token (localStorage)
+
+    Note over User,Database: Subsequent Requests
+
+    User->>React Frontend: Create Task
+    React Frontend->>Auth Middleware: POST /api/tasks + JWT
+    Auth Middleware->>Auth Middleware: Verify Token
+    Auth Middleware->>Controller: Authorized Request
+    Controller->>Service: Create Task
+    Service->>Service: Validate + Check Permissions
+    Service->>Repository: Create Task
+    Repository->>Database: INSERT INTO tasks
+    Database-->>Repository: New Task
+    Repository-->>Service: Task Entity
+    Service-->>Controller: Task Entity
+    Controller-->>React Frontend: {message, data: task}
+    React Frontend-->>User: Task Created
+```
+
+### Technology Stack Architecture
+
+```mermaid
+graph LR
+    subgraph "Development"
+        A[Docker Compose<br/>Hot-Reload]
+        B[TypeScript<br/>Type Safety]
+        C[Jest + Supertest<br/>100% Coverage]
+    end
+
+    subgraph "Backend Stack"
+        D[Node.js + Express]
+        E[Sequelize ORM]
+        F[PostgreSQL]
+        G[JWT + bcrypt]
+    end
+
+    subgraph "Frontend Stack"
+        H[React 18]
+        I[Vite]
+        J[React Router v6]
+        K[Axios + i18next]
+    end
+
+    A --> D
+    A --> H
+    D --> E
+    E --> F
+    D --> G
+    H --> I
+    H --> J
+    H --> K
+
+    style A fill:#2496ed,stroke:#333,stroke-width:2px,color:#fff
+    style D fill:#68a063,stroke:#333,stroke-width:2px
+    style F fill:#336791,stroke:#333,stroke-width:2px,color:#fff
+    style H fill:#61dafb,stroke:#333,stroke-width:2px,color:#000
+```
+
 ### C4 Diagrams
 
-![System Context](./docs/diagrams/SystemContext.png)
-![Container View](./docs/diagrams/Container.png)
-![Backend Components](./docs/diagrams/Component_Backend.png)
+Static architecture diagrams are also available:
+- ![System Context](./docs/diagrams/SystemContext.png)
+- ![Container View](./docs/diagrams/Container.png)
+- ![Backend Components](./docs/diagrams/Component_Backend.png)
 
 ## 🧪 Testing
 
@@ -188,6 +331,8 @@ npm run dev
   - ✅ Advanced features (comments, attachments, history)
 
 ## 📄 License
+
+MIT License - see [LICENSE](./LICENSE) file for details.
 
 Educational project for UTFPR Software Engineering course.
 

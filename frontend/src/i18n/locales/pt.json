@@ -1,0 +1,89 @@
+{
+  "common": {
+    "logout": "Sair",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "create": "Criar",
+    "update": "Atualizar",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso"
+  },
+  "nav": {
+    "myTasks": "Minhas Tarefas",
+    "kanbanBoard": "Quadro Kanban",
+    "projects": "Projetos",
+    "dashboard": "Painel"
+  },
+  "auth": {
+    "login": "Entrar",
+    "register": "Registrar",
+    "email": "E-mail",
+    "password": "Senha",
+    "name": "Nome",
+    "role": "Função",
+    "loginTitle": "Entrar no Gerenciador de Tarefas",
+    "registerTitle": "Criar Conta",
+    "noAccount": "Não tem uma conta?",
+    "haveAccount": "Já tem uma conta?",
+    "signIn": "Entrar",
+    "signUp": "Cadastrar"
+  },
+  "roles": {
+    "admin": "Administrador",
+    "gestor": "Gestor",
+    "colaborador": "Colaborador"
+  },
+  "tasks": {
+    "title": "Tarefas",
+    "newTask": "Nova Tarefa",
+    "editTask": "Editar Tarefa",
+    "taskTitle": "Título da Tarefa",
+    "description": "Descrição",
+    "status": "Status",
+    "priority": "Prioridade",
+    "dueDate": "Data de Vencimento",
+    "project": "Projeto",
+    "noTasks": "Nenhuma tarefa encontrada",
+    "createSuccess": "Tarefa criada com sucesso",
+    "updateSuccess": "Tarefa atualizada com sucesso",
+    "deleteSuccess": "Tarefa excluída com sucesso",
+    "markComplete": "Marcar como Concluída",
+    "details": "Detalhes",
+    "comments": "Comentários",
+    "attachments": "Anexos"
+  },
+  "status": {
+    "pending": "Pendente",
+    "completed": "Concluída",
+    "inProgress": "Em Progresso"
+  },
+  "priority": {
+    "low": "Baixa",
+    "medium": "Média",
+    "high": "Alta"
+  },
+  "projects": {
+    "title": "Projetos",
+    "newProject": "Novo Projeto",
+    "editProject": "Editar Projeto",
+    "projectName": "Nome do Projeto",
+    "noProjects": "Nenhum projeto encontrado",
+    "createSuccess": "Projeto criado com sucesso",
+    "updateSuccess": "Projeto atualizado com sucesso",
+    "deleteSuccess": "Projeto excluído com sucesso"
+  },
+  "kanban": {
+    "title": "Quadro Kanban",
+    "pending": "A Fazer",
+    "inProgress": "Em Progresso",
+    "completed": "Concluído"
+  },
+  "language": {
+    "selectLanguage": "Idioma",
+    "english": "Inglês",
+    "portuguese": "Português"
+  }
+}

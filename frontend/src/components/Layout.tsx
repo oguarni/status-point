@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 interface LayoutProps {
   children: ReactNode;
@@ -10,16 +11,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t, i18n } = useTranslation();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
   const navItems = [
-    { path: '/tasks', label: 'My Tasks', roles: ['admin', 'gestor', 'colaborador'] },
-    { path: '/kanban', label: 'Kanban Board', roles: ['admin', 'gestor', 'colaborador'] },
-    { path: '/projects', label: 'Projects', roles: ['admin', 'gestor'] },
+    { path: '/tasks', label: t('nav.myTasks'), roles: ['admin', 'gestor', 'colaborador'] },
+    { path: '/kanban', label: t('nav.kanbanBoard'), roles: ['admin', 'gestor', 'colaborador'] },
+    { path: '/projects', label: t('nav.projects'), roles: ['admin', 'gestor'] },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -51,11 +57,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             )}
           </nav>
           <div style={styles.userSection}>
+            <select
+              value={i18n.language}
+              onChange={(e) => changeLanguage(e.target.value)}
+              style={styles.languageSelector}
+              title={t('language.selectLanguage')}
+            >
+              <option value="en">🇬🇧 {t('language.english')}</option>
+              <option value="pt">🇧🇷 {t('language.portuguese')}</option>
+            </select>
             <span style={styles.userName}>
-              {user?.name} ({user?.role})
+              {user?.name} ({t(`roles.${user?.role}`)})
             </span>
             <button onClick={handleLogout} style={styles.logoutButton}>
-              Logout
+              {t('common.logout')}
             </button>
           </div>
         </div>
@@ -116,6 +131,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: 'flex',
     alignItems: 'center',
     gap: '1rem',
+  },
+  languageSelector: {
+    padding: '0.5rem',
+    backgroundColor: 'white',
+    color: '#007bff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
+    fontWeight: '500',
   },
   userName: {
     fontSize: '0.9rem',

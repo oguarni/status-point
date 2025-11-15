@@ -1,0 +1,89 @@
+{
+  "common": {
+    "logout": "Logout",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "update": "Update",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "nav": {
+    "myTasks": "My Tasks",
+    "kanbanBoard": "Kanban Board",
+    "projects": "Projects",
+    "dashboard": "Dashboard"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "role": "Role",
+    "loginTitle": "Login to Task Manager",
+    "registerTitle": "Create Account",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  },
+  "roles": {
+    "admin": "Admin",
+    "gestor": "Manager",
+    "colaborador": "Developer"
+  },
+  "tasks": {
+    "title": "Tasks",
+    "newTask": "New Task",
+    "editTask": "Edit Task",
+    "taskTitle": "Task Title",
+    "description": "Description",
+    "status": "Status",
+    "priority": "Priority",
+    "dueDate": "Due Date",
+    "project": "Project",
+    "noTasks": "No tasks found",
+    "createSuccess": "Task created successfully",
+    "updateSuccess": "Task updated successfully",
+    "deleteSuccess": "Task deleted successfully",
+    "markComplete": "Mark as Complete",
+    "details": "Details",
+    "comments": "Comments",
+    "attachments": "Attachments"
+  },
+  "status": {
+    "pending": "Pending",
+    "completed": "Completed",
+    "inProgress": "In Progress"
+  },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "projects": {
+    "title": "Projects",
+    "newProject": "New Project",
+    "editProject": "Edit Project",
+    "projectName": "Project Name",
+    "noProjects": "No projects found",
+    "createSuccess": "Project created successfully",
+    "updateSuccess": "Project updated successfully",
+    "deleteSuccess": "Project deleted successfully"
+  },
+  "kanban": {
+    "title": "Kanban Board",
+    "pending": "To Do",
+    "inProgress": "In Progress",
+    "completed": "Done"
+  },
+  "language": {
+    "selectLanguage": "Language",
+    "english": "English",
+    "portuguese": "Portuguese"
+  }
+}

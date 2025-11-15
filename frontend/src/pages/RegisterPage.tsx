@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { register } from '../services/authService';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 /**
  * RegisterPage component
@@ -17,6 +18,7 @@ const RegisterPage: React.FC = () => {
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,34 +39,44 @@ const RegisterPage: React.FC = () => {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h1 style={styles.title}>Register</h1>
+        <div style={styles.languageSwitcher}>
+          <select
+            value={i18n.language}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            style={styles.languageSelector}
+          >
+            <option value="en">🇬🇧 {t('language.english')}</option>
+            <option value="pt">🇧🇷 {t('language.portuguese')}</option>
+          </select>
+        </div>
+        <h1 style={styles.title}>{t('auth.registerTitle')}</h1>
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.formGroup}>
-            <label style={styles.label}>Name</label>
+            <label style={styles.label}>{t('auth.name')}</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
               style={styles.input}
-              placeholder="Enter your name"
+              placeholder={t('auth.name')}
             />
           </div>
 
           <div style={styles.formGroup}>
-            <label style={styles.label}>Email</label>
+            <label style={styles.label}>{t('auth.email')}</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               style={styles.input}
-              placeholder="Enter your email"
+              placeholder={t('auth.email')}
             />
           </div>
 
           <div style={styles.formGroup}>
-            <label style={styles.label}>Password</label>
+            <label style={styles.label}>{t('auth.password')}</label>
             <input
               type="password"
               value={password}
@@ -72,33 +84,33 @@ const RegisterPage: React.FC = () => {
               required
               minLength={6}
               style={styles.input}
-              placeholder="Enter your password (min 6 characters)"
+              placeholder={t('auth.password')}
             />
           </div>
 
           <div style={styles.formGroup}>
-            <label style={styles.label}>Role</label>
+            <label style={styles.label}>{t('auth.role')}</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as 'admin' | 'gestor' | 'colaborador')}
               style={styles.input}
               required
             >
-              <option value="colaborador">Colaborador (Team Member)</option>
-              <option value="gestor">Gestor (Manager)</option>
-              <option value="admin">Admin (Administrator)</option>
+              <option value="colaborador">{t('roles.colaborador')}</option>
+              <option value="gestor">{t('roles.gestor')}</option>
+              <option value="admin">{t('roles.admin')}</option>
             </select>
           </div>
 
           {error && <div style={styles.error}>{error}</div>}
 
           <button type="submit" disabled={loading} style={styles.button}>
-            {loading ? 'Registering...' : 'Register'}
+            {loading ? t('common.loading') : t('auth.signUp')}
           </button>
         </form>
 
         <p style={styles.link}>
-          Already have an account? <Link to="/login">Login here</Link>
+          {t('auth.haveAccount')} <Link to="/login">{t('auth.signIn')}</Link>
         </p>
       </div>
     </div>
@@ -169,6 +181,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: 'center',
     marginTop: '1rem',
     color: '#555',
+  },
+  languageSwitcher: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginBottom: '1rem',
+  },
+  languageSelector: {
+    padding: '0.5rem',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
   },
 };
 

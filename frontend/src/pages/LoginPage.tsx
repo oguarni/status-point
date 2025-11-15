@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login as loginService } from '../services/authService';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 /**
  * LoginPage component
@@ -15,6 +16,7 @@ const LoginPage: React.FC = () => {
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,41 +37,51 @@ const LoginPage: React.FC = () => {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h1 style={styles.title}>Login</h1>
+        <div style={styles.languageSwitcher}>
+          <select
+            value={i18n.language}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            style={styles.languageSelector}
+          >
+            <option value="en">🇬🇧 {t('language.english')}</option>
+            <option value="pt">🇧🇷 {t('language.portuguese')}</option>
+          </select>
+        </div>
+        <h1 style={styles.title}>{t('auth.loginTitle')}</h1>
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.formGroup}>
-            <label style={styles.label}>Email</label>
+            <label style={styles.label}>{t('auth.email')}</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               style={styles.input}
-              placeholder="Enter your email"
+              placeholder={t('auth.email')}
             />
           </div>
 
           <div style={styles.formGroup}>
-            <label style={styles.label}>Password</label>
+            <label style={styles.label}>{t('auth.password')}</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               style={styles.input}
-              placeholder="Enter your password"
+              placeholder={t('auth.password')}
             />
           </div>
 
           {error && <div style={styles.error}>{error}</div>}
 
           <button type="submit" disabled={loading} style={styles.button}>
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? t('common.loading') : t('auth.signIn')}
           </button>
         </form>
 
         <p style={styles.link}>
-          Don't have an account? <Link to="/register">Register here</Link>
+          {t('auth.noAccount')} <Link to="/register">{t('auth.signUp')}</Link>
         </p>
       </div>
     </div>
@@ -140,6 +152,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: 'center',
     marginTop: '1rem',
     color: '#555',
+  },
+  languageSwitcher: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginBottom: '1rem',
+  },
+  languageSelector: {
+    padding: '0.5rem',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
   },
 };
 
