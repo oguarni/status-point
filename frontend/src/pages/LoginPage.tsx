@@ -47,7 +47,11 @@ const LoginPage: React.FC = () => {
             <option value="en">🇬🇧 {t('language.english')}</option>
           </select>
         </div>
-        <h1 style={styles.title}>{t('auth.loginTitle')}</h1>
+        <div style={styles.logoContainer}>
+          <img src="/favicon-32x32.png" alt="Agiliza" style={styles.logo} />
+          <h1 style={styles.logoText}>Agiliza</h1>
+        </div>
+        <h2 style={styles.title}>{t('auth.loginTitle')}</h2>
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.formGroup}>
             <label style={styles.label}>{t('auth.email')}</label>
@@ -81,7 +85,7 @@ const LoginPage: React.FC = () => {
         </form>
 
         <p style={styles.link}>
-          {t('auth.noAccount')} <Link to="/register">{t('auth.signUp')}</Link>
+          {t('auth.noAccount')} <Link to="/register" style={styles.linkAnchor}>{t('auth.signUp')}</Link>
         </p>
       </div>
     </div>
@@ -95,20 +99,40 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: 'center',
     alignItems: 'center',
     minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#171717',
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: '#262626',
     padding: '2rem',
     borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
     width: '100%',
     maxWidth: '400px',
+    border: '1px solid #404040',
+  },
+  logoContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.75rem',
+    marginBottom: '1.5rem',
+  },
+  logo: {
+    width: '40px',
+    height: '40px',
+  },
+  logoText: {
+    margin: 0,
+    fontSize: '1.75rem',
+    fontWeight: '600',
+    color: '#E5E5E5',
   },
   title: {
     textAlign: 'center',
     marginBottom: '1.5rem',
-    color: '#333',
+    color: '#E5E5E5',
+    fontSize: '1.25rem',
+    fontWeight: '500',
   },
   form: {
     display: 'flex',
@@ -120,38 +144,46 @@ const styles: { [key: string]: React.CSSProperties } = {
   label: {
     display: 'block',
     marginBottom: '0.5rem',
-    color: '#555',
+    color: '#E5E5E5',
     fontWeight: '500',
   },
   input: {
     width: '100%',
     padding: '0.75rem',
-    border: '1px solid #ddd',
+    border: '1px solid #404040',
     borderRadius: '4px',
     fontSize: '1rem',
     boxSizing: 'border-box',
+    backgroundColor: '#171717',
+    color: '#E5E5E5',
   },
   button: {
     padding: '0.75rem',
-    backgroundColor: '#007bff',
-    color: 'white',
+    backgroundColor: '#F97316',
+    color: '#E5E5E5',
     border: 'none',
     borderRadius: '4px',
     fontSize: '1rem',
     cursor: 'pointer',
     marginTop: '1rem',
+    fontWeight: '500',
   },
   error: {
     padding: '0.75rem',
-    backgroundColor: '#f8d7da',
-    color: '#721c24',
+    backgroundColor: '#dc3545',
+    color: '#E5E5E5',
     borderRadius: '4px',
     marginBottom: '1rem',
   },
   link: {
     textAlign: 'center',
     marginTop: '1rem',
-    color: '#555',
+    color: '#b0b0b0',
+  },
+  linkAnchor: {
+    color: '#F97316',
+    textDecoration: 'none',
+    fontWeight: '500',
   },
   languageSwitcher: {
     display: 'flex',
@@ -160,10 +192,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   languageSelector: {
     padding: '0.5rem',
-    border: '1px solid #ddd',
+    border: '1px solid #404040',
     borderRadius: '4px',
     cursor: 'pointer',
     fontSize: '0.9rem',
+    backgroundColor: '#404040',
+    color: '#E5E5E5',
   },
 };
 

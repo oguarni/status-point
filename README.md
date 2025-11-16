@@ -1,144 +1,144 @@
-# Task Management System
+# Agiliza
 
-A full-stack task management application implementing Clean Architecture with Role-Based Access Control.
+Uma aplicação full-stack de gerenciamento de tarefas implementando Clean Architecture com Controle de Acesso Baseado em Papel.
 
-**Repository:** https://github.com/oguarni/status-point.git
+**Repositório:** https://github.com/oguarni/status-point.git
 
-## 🚀 Quick Start (Docker)
+## 🚀 Início Rápido (Docker)
 
 ```bash
-# Clone and start
+# Clonar e iniciar
 git clone https://github.com/oguarni/status-point.git
 cd status-point
 docker compose up
 
-# Access the application
+# Acessar a aplicação
 # Frontend: http://localhost:3000
 # Backend API: http://localhost:3001
 ```
 
-### Test Accounts
+### Contas de Teste
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@taskmanager.com | admin123 |
-| Manager | gestor@taskmanager.com | gestor123 |
-| Developer | colaborador@taskmanager.com | colaborador123 |
+| Papel | Email | Senha |
+|-------|-------|-------|
+| admin | admin@taskmanager.com | admin123 |
+| gestor | gestor@taskmanager.com | gestor123 |
+| colaborador | colaborador@taskmanager.com | colaborador123 |
 
-## 📋 Features
+## 📋 Funcionalidades
 
-### Core Functionality
-- ✅ User authentication (JWT + bcrypt)
-- ✅ Role-based access control (admin, gestor, colaborador)
-- ✅ Task CRUD operations with authorization
-- ✅ Project management
-- ✅ Task comments and attachments
-- ✅ Task history tracking
-- ✅ Kanban board view
-- ✅ **Internationalization (i18n)** - Portuguese-BR (default) and English support with dropdown selector
+### Funcionalidade Principal
+- ✅ Autenticação de usuário (JWT + bcrypt)
+- ✅ Controle de acesso baseado em papel (admin, gestor, colaborador)
+- ✅ Operações CRUD de tarefas com autorização
+- ✅ Gerenciamento de projetos
+- ✅ Comentários e anexos de tarefas
+- ✅ Rastreamento de histórico de tarefas
+- ✅ Visualização de quadro Kanban
+- ✅ **Internacionalização (i18n)** - Português-BR (padrão) e suporte a Inglês com seletor dropdown
 
-### Technical Highlights
-- ✅ Clean Architecture with SOLID principles
-- ✅ Domain-Driven Design patterns
-- ✅ 100% test coverage in Services layer
-- ✅ Docker Compose with hot-reload
-- ✅ Comprehensive API documentation
-- ✅ Multi-language support (react-i18next) - Portuguese-BR default
+### Destaques Técnicos
+- ✅ Clean Architecture com princípios SOLID
+- ✅ Padrões de Domain-Driven Design
+- ✅ 100% de cobertura de testes na camada de Services
+- ✅ Docker Compose com hot-reload
+- ✅ Documentação abrangente de API
+- ✅ Suporte multi-idioma (react-i18next) - Português-BR padrão
 
-## 🛠️ Tech Stack
+## 🛠️ Stack Tecnológica
 
 **Backend:** Node.js, Express, TypeScript, PostgreSQL, Sequelize
 **Frontend:** React 18, TypeScript, Vite, React Router v6
 **DevOps:** Docker, Docker Compose
-**Testing:** Jest, Supertest
+**Testes:** Jest, Supertest
 
-## 📁 Project Structure
+## 📁 Estrutura do Projeto
 
 ```
 .
-├── backend/              # Node.js + Express API
+├── backend/              # API Node.js + Express
 │   ├── src/
-│   │   ├── domain/      # Business entities
-│   │   ├── usecases/    # Application logic
-│   │   ├── services/    # Business logic (100% coverage)
-│   │   ├── repositories/# Data access layer
-│   │   ├── controllers/ # API endpoints
-│   │   ├── mappers/     # ORM ↔ Domain conversion
-│   │   └── models/      # Sequelize ORM
-│   └── scripts/         # Database seeding & testing
+│   │   ├── domain/      # Entidades de negócio
+│   │   ├── usecases/    # Lógica da aplicação
+│   │   ├── services/    # Lógica de negócio (100% cobertura)
+│   │   ├── repositories/# Camada de acesso a dados
+│   │   ├── controllers/ # Endpoints da API
+│   │   ├── mappers/     # Conversão ORM ↔ Domain
+│   │   └── models/      # ORM Sequelize
+│   └── scripts/         # Seeding & testes do banco de dados
 │
-├── frontend/            # React SPA
+├── frontend/            # SPA React
 │   └── src/
-│       ├── pages/       # Page components
-│       ├── components/  # Reusable components
-│       ├── contexts/    # React contexts
-│       └── services/    # API clients
+│       ├── pages/       # Componentes de página
+│       ├── components/  # Componentes reutilizáveis
+│       ├── contexts/    # Contextos React
+│       └── services/    # Clientes API
 │
-├── docs/                # Architecture diagrams (C4)
-├── docker-compose.yml   # Docker orchestration
-└── CLAUDE.md           # Comprehensive developer guide
+├── docs/                # Diagramas de arquitetura (C4)
+├── docker-compose.yml   # Orquestração Docker
+└── CLAUDE.md           # Guia abrangente para desenvolvedores
 ```
 
-## 🏗️ Architecture
+## 🏗️ Arquitetura
 
-This project follows **Clean Architecture** with 4 layers:
+Este projeto segue **Clean Architecture** com 4 camadas:
 
-1. **Domain Layer** - Pure business entities (Task, User, Project)
-2. **Use Cases Layer** - Application-specific business rules
-3. **Interface Adapters** - Controllers, repositories, mappers
-4. **Infrastructure** - Framework implementations (Express, Sequelize)
+1. **Camada de Domínio** - Entidades de negócio puras (Task, User, Project)
+2. **Camada de Casos de Uso** - Regras de negócio específicas da aplicação
+3. **Adaptadores de Interface** - Controllers, repositories, mappers
+4. **Infraestrutura** - Implementações de framework (Express, Sequelize)
 
-### C4 Architecture Diagrams
+### Diagramas de Arquitetura C4
 
-Detailed architecture diagrams are available:
-- ![System Context](./docs/diagrams/SystemContext.png)
-- ![Container View](./docs/diagrams/Container.png)
-- ![Backend Components](./docs/diagrams/Component_Backend.png)
+Diagramas de arquitetura detalhados estão disponíveis:
+- ![Contexto do Sistema](./docs/diagrams/SystemContext.png)
+- ![Visão de Contêiner](./docs/diagrams/Container.png)
+- ![Componentes Backend](./docs/diagrams/Component_Backend.png)
 
-## 🧪 Testing
+## 🧪 Testes
 
 ```bash
 cd backend
 
-# Run all tests
+# Executar todos os testes
 npm test
 
-# Watch mode
+# Modo watch
 npm run test:watch
 
-# Coverage report
+# Relatório de cobertura
 npm run test:coverage
 ```
 
-**Current Coverage:** 100% in Services layer
+**Cobertura Atual:** 100% na camada de Services
 
-## 📚 API Endpoints
+## 📚 Endpoints da API
 
-### Authentication
-- `POST /api/auth/register` - Register new user
+### Autenticação
+- `POST /api/auth/register` - Registrar novo usuário
 - `POST /api/auth/login` - Login
 
-### Tasks (Protected)
-- `GET /api/tasks` - List user's tasks
-- `POST /api/tasks` - Create task
-- `PUT /api/tasks/:id` - Update task
-- `PATCH /api/tasks/:id/complete` - Mark complete
-- `DELETE /api/tasks/:id` - Delete task
+### Tarefas (Protegido)
+- `GET /api/tasks` - Listar tarefas do usuário
+- `POST /api/tasks` - Criar tarefa
+- `PUT /api/tasks/:id` - Atualizar tarefa
+- `PATCH /api/tasks/:id/complete` - Marcar como concluída
+- `DELETE /api/tasks/:id` - Deletar tarefa
 
-### Projects (Protected)
-- `GET /api/projects` - List projects
-- `POST /api/projects` - Create project (admin/gestor only)
-- `PUT /api/projects/:id` - Update project
-- `DELETE /api/projects/:id` - Delete project
+### Projetos (Protegido)
+- `GET /api/projects` - Listar projetos
+- `POST /api/projects` - Criar projeto (apenas admin/gestor)
+- `PUT /api/projects/:id` - Atualizar projeto
+- `DELETE /api/projects/:id` - Deletar projeto
 
-*Full API documentation in [CLAUDE.md](./CLAUDE.md#api-endpoints)*
+*Documentação completa da API em [CLAUDE.md](./CLAUDE.md#api-endpoints)*
 
-## ⚙️ Manual Setup (Without Docker)
+## ⚙️ Configuração Manual (Sem Docker)
 
 <details>
-<summary>Click to expand manual setup instructions</summary>
+<summary>Clique para expandir as instruções de configuração manual</summary>
 
-### Prerequisites
+### Pré-requisitos
 - Node.js v18+
 - PostgreSQL v12+
 
@@ -148,17 +148,17 @@ npm run test:coverage
 cd backend
 npm install
 
-# Create database
+# Criar banco de dados
 psql -U postgres -c "CREATE DATABASE task_management_dev;"
 
-# Configure .env
+# Configurar .env
 cp .env.example .env
-# Edit .env with your database credentials
+# Edite .env com suas credenciais de banco de dados
 
-# Run migrations
+# Executar migrations
 npm run db:migrate
 
-# Start server
+# Iniciar servidor
 npm run dev
 ```
 
@@ -172,36 +172,37 @@ npm run dev
 
 </details>
 
-## 📖 Documentation
+## 📖 Documentação
 
-- **[CLAUDE.md](./CLAUDE.md)** - Comprehensive guide for developers and AI assistants
-  - Detailed architecture explanations
-  - Code patterns and conventions
-  - Testing strategies
-  - Common tasks and workflows
+- **[CLAUDE.md](./CLAUDE.md)** - Guia abrangente para desenvolvedores e assistentes de IA
+  - Explicações detalhadas de arquitetura
+  - Padrões e convenções de código
+  - Estratégias de teste
+  - Tarefas e fluxos de trabalho comuns
 
-## 🎓 Academic Context
+## 🎓 Contexto Acadêmico
 
-- **Course:** Software Engineering, 7th semester
-- **Institution:** UTFPR (Federal University of Technology - Paraná)
-- **Purpose:** Demonstrate Clean Architecture implementation
-- **Achievements:**
-  - ✅ 10+ functional requirements (5 minimum required)
-  - ✅ Clean Architecture with SOLID
-  - ✅ 100% service layer test coverage
-  - ✅ Role-Based Access Control
-  - ✅ Advanced features (comments, attachments, history)
+Este projeto foi desenvolvido como trabalho da disciplina de **Arquitetura de Software (AS27S)**, da turma **7ES1**, ofertada pelo Curso de Engenharia de Software da **Universidade Tecnológica Federal do Paraná (UTFPR)**, campus Dois Vizinhos.
 
-## 📄 License
+**Orientação:** Profª. Dr. Francisco Carlos.
 
-MIT License - see [LICENSE](./LICENSE) file for details.
+O objetivo principal foi aplicar na prática os conceitos de **Clean Architecture**, **SOLID**, **Domain-Driven Design (DDD)** e **Controle de Acesso Baseado em Papel (RBAC)**.
 
-Educational project for UTFPR Software Engineering course.
+### Autores
 
-## 👤 Author
+- Aurélio Antonio Brites de Miranda
+- Gabriel Felipe Guarnieri
 
-7th-semester Software Engineering student, UTFPR
+## 📄 Licença
+
+Licença MIT - veja o arquivo [LICENSE](./LICENSE) para detalhes.
+
+Projeto educacional para o curso de Engenharia de Software da UTFPR.
+
+## 👤 Autores
+
+Estudantes de Engenharia de Software do 7º semestre, UTFPR
 
 ---
 
-**Need more details?** Check [CLAUDE.md](./CLAUDE.md) for comprehensive documentation.
+**Precisa de mais detalhes?** Confira [CLAUDE.md](./CLAUDE.md) para documentação abrangente.
