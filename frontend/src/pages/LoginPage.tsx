@@ -47,7 +47,11 @@ const LoginPage: React.FC = () => {
             <option value="en">🇬🇧 {t('language.english')}</option>
           </select>
         </div>
-        <h1 style={styles.title}>{t('auth.loginTitle')}</h1>
+        <div style={styles.logoContainer}>
+          <img src="/favicon-32x32.png" alt="Agiliza" style={styles.logo} />
+          <h1 style={styles.logoText}>Agiliza</h1>
+        </div>
+        <h2 style={styles.title}>{t('auth.loginTitle')}</h2>
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.formGroup}>
             <label style={styles.label}>{t('auth.email')}</label>
@@ -106,10 +110,29 @@ const styles: { [key: string]: React.CSSProperties } = {
     maxWidth: '400px',
     border: '1px solid #404040',
   },
+  logoContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.75rem',
+    marginBottom: '1.5rem',
+  },
+  logo: {
+    width: '40px',
+    height: '40px',
+  },
+  logoText: {
+    margin: 0,
+    fontSize: '1.75rem',
+    fontWeight: '600',
+    color: '#E5E5E5',
+  },
   title: {
     textAlign: 'center',
     marginBottom: '1.5rem',
-    color: '#F97316',
+    color: '#E5E5E5',
+    fontSize: '1.25rem',
+    fontWeight: '500',
   },
   form: {
     display: 'flex',

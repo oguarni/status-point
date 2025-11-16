@@ -106,7 +106,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: 0,
     fontSize: '1.5rem',
     fontWeight: '600',
-    color: '#F97316',
+    color: '#E5E5E5',
   },
   nav: {
     display: 'flex',

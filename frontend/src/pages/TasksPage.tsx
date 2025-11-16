@@ -485,7 +485,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   completeButton: {
     padding: '0.5rem 1rem',
-    backgroundColor: '#F97316',
+    backgroundColor: '#28a745',
     color: '#E5E5E5',
     border: 'none',
     borderRadius: '4px',
