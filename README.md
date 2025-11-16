@@ -98,10 +98,10 @@ Este projeto segue **Clean Architecture** com 4 camadas:
 
 ### Diagramas de Arquitetura C4
 
-Diagramas de arquitetura detalhados estão disponíveis:
-- ![Contexto do Sistema](./docs/diagrams/SystemContext.png)
-- ![Visão de Contêiner](./docs/diagrams/Container.png)
-- ![Componentes Backend](./docs/diagrams/Component_Backend.png)
+Diagramas de arquitetura detalhados estão disponíveis (Mermaid):
+- [System Context Diagram](./docs/diagrams/C1_SystemContext.md)
+- [Container Diagram](./docs/diagrams/C2_Container.md)
+- [Backend Component Diagram](./docs/diagrams/C3_Component_Backend.md)
 
 ## 🧪 Testes
 

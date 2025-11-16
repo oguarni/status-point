@@ -22,7 +22,6 @@ export interface RegisterData {
   name: string;
   email: string;
   password: string;
-  role?: 'admin' | 'gestor' | 'colaborador';
 }
 
 // Login data interface

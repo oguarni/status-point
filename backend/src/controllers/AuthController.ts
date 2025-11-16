@@ -23,10 +23,10 @@ class AuthController {
         return;
       }
 
-      const { name, email, password, role } = req.body;
+      const { name, email, password } = req.body;
 
       // Call service
-      const result = await this.authService.register({ name, email, password, role });
+      const result = await this.authService.register({ name, email, password });
 
       res.status(201).json({
         message: 'User registered successfully',

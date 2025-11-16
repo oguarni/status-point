@@ -14,8 +14,7 @@
   "nav": {
     "myTasks": "My Tasks",
     "kanbanBoard": "Kanban Board",
-    "projects": "Projects",
-    "dashboard": "Dashboard"
+    "projects": "Projects"
   },
   "auth": {
     "login": "Login",

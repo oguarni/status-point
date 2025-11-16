@@ -14,8 +14,7 @@
   "nav": {
     "myTasks": "Minhas Tarefas",
     "kanbanBoard": "Quadro Kanban",
-    "projects": "Projetos",
-    "dashboard": "Painel"
+    "projects": "Projetos"
   },
   "auth": {
     "login": "Entrar",

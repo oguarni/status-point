@@ -9,7 +9,6 @@ interface RegisterDTO {
   name: string;
   email: string;
   password: string;
-  role?: UserRole;
 }
 
 // Login DTO
@@ -48,12 +47,13 @@ class AuthService {
   }
 
   /**
-   * Register a new user (public registration - defaults to colaborador role)
+   * Register a new user (public registration - always assigns colaborador role)
    * @param registerData - User registration data
    * @returns Auth response with token and user data
    */
   async register(registerData: RegisterDTO): Promise<AuthResponse> {
-    const { name, email, password, role = 'colaborador' } = registerData;
+    const { name, email, password } = registerData;
+    const role: UserRole = 'colaborador'; // Hardcoded role for security
 
     // Check if user already exists
     const existingUser = await this.userRepository.findByEmail(email);
