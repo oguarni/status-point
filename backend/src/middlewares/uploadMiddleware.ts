@@ -1,20 +1,29 @@
+import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { Request } from 'express';
+
+const uploadDir = path.join(__dirname, '../../uploads');
 
 // Ensure uploads directory exists
-const uploadDir = path.join(__dirname, '../../uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Mock upload middleware (multer will be installed later)
-export const upload = {
-  single: (_fieldName: string) => {
-    return (req: any, _res: any, next: any) => {
-      // This is a placeholder for when multer is installed
-      // For now, just pass through
-      req.file = undefined;
-      next();
-    };
+const storage = multer.diskStorage({
+  destination: (req: Request, file: Express.Multer.File, cb) => {
+    cb(null, uploadDir);
   },
-};
+  filename: (req: Request, file: Express.Multer.File, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const extension = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + uniqueSuffix + extension);
+  },
+});
+
+export const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+});

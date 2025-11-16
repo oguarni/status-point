@@ -40,6 +40,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
   const [editContent, setEditContent] = useState('');
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const [confirmingDelete, setConfirmingDelete] = useState<{ type: 'comment' | 'attachment', id: number } | null>(null);
 
   useEffect(() => {
     if (activeTab === 'comments') {
@@ -100,10 +101,9 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
   };
 
   const handleDeleteComment = async (commentId: number) => {
-    if (!window.confirm('Are you sure you want to delete this comment?')) return;
-
     try {
       await deleteComment(commentId);
+      setConfirmingDelete(null);
       fetchComments();
     } catch (err) {
       setError('Failed to delete comment');
@@ -129,10 +129,9 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
   };
 
   const handleDeleteAttachment = async (attachmentId: number) => {
-    if (!window.confirm('Are you sure you want to delete this attachment?')) return;
-
     try {
       await deleteAttachment(attachmentId);
+      setConfirmingDelete(null);
       fetchAttachments();
     } catch (err) {
       setError('Failed to delete attachment');
@@ -143,7 +142,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
   const handleDownloadAttachment = async (attachmentId: number, filename: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/api/attachments/${attachmentId}/download`, {
+      const response = await fetch(`/api/attachments/${attachmentId}/download`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -195,6 +194,36 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
         </div>
 
         {error && <div style={styles.error}>{error}</div>}
+
+        {confirmingDelete && (
+          <div style={styles.confirmOverlay}>
+            <div style={styles.confirmDialog}>
+              <p style={styles.confirmMessage}>
+                Are you sure you want to delete this {confirmingDelete.type}?
+              </p>
+              <div style={styles.confirmActions}>
+                <button
+                  onClick={() => {
+                    if (confirmingDelete.type === 'comment') {
+                      handleDeleteComment(confirmingDelete.id);
+                    } else {
+                      handleDeleteAttachment(confirmingDelete.id);
+                    }
+                  }}
+                  style={styles.confirmButton}
+                >
+                  Yes, Delete
+                </button>
+                <button
+                  onClick={() => setConfirmingDelete(null)}
+                  style={styles.cancelConfirmButton}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div style={styles.tabs}>
           <button
@@ -307,7 +336,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
                                   Edit
                                 </button>
                                 <button
-                                  onClick={() => handleDeleteComment(comment.id)}
+                                  onClick={() => setConfirmingDelete({ type: 'comment', id: comment.id })}
                                   style={styles.deleteButton}
                                 >
                                   Delete
@@ -363,7 +392,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) =>
                         </button>
                         {attachment.user_id === user?.id && (
                           <button
-                            onClick={() => handleDeleteAttachment(attachment.id)}
+                            onClick={() => setConfirmingDelete({ type: 'attachment', id: attachment.id })}
                             style={styles.deleteButton}
                           >
                             Delete
@@ -639,6 +668,58 @@ const styles: { [key: string]: React.CSSProperties } = {
     cursor: 'pointer',
     fontSize: '0.875rem',
     fontWeight: '500',
+  },
+  confirmOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1001,
+    borderRadius: '8px',
+  },
+  confirmDialog: {
+    backgroundColor: '#262626',
+    padding: '2rem',
+    borderRadius: '8px',
+    border: '1px solid #404040',
+    maxWidth: '400px',
+    width: '90%',
+  },
+  confirmMessage: {
+    margin: '0 0 1.5rem 0',
+    color: '#E5E5E5',
+    fontSize: '1rem',
+    textAlign: 'center',
+  },
+  confirmActions: {
+    display: 'flex',
+    gap: '1rem',
+    justifyContent: 'center',
+  },
+  confirmButton: {
+    padding: '0.75rem 1.5rem',
+    backgroundColor: '#dc3545',
+    color: '#E5E5E5',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: '500',
+    fontSize: '1rem',
+  },
+  cancelConfirmButton: {
+    padding: '0.75rem 1.5rem',
+    backgroundColor: '#404040',
+    color: '#E5E5E5',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: '500',
+    fontSize: '1rem',
   },
 };
 

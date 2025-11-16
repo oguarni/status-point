@@ -48,7 +48,7 @@ const LoginPage: React.FC = () => {
           </select>
         </div>
         <div style={styles.logoContainer}>
-          <img src="/favicon-32x32.png" alt="Agiliza" style={styles.logo} />
+          <img src="/android-chrome-512x512.png" alt="Agiliza" style={styles.logo} />
           <h1 style={styles.logoText}>Agiliza</h1>
         </div>
         <h2 style={styles.title}>{t('auth.loginTitle')}</h2>
@@ -115,11 +115,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: 'center',
     justifyContent: 'center',
     gap: '0.75rem',
-    marginBottom: '1.5rem',
+    marginBottom: '2rem',
   },
   logo: {
-    width: '40px',
-    height: '40px',
+    width: '80px',
+    height: '80px',
   },
   logoText: {
     margin: 0,
