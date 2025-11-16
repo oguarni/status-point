@@ -85,12 +85,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#171717',
   },
   header: {
-    backgroundColor: '#007bff',
-    color: 'white',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#262626',
+    color: '#E5E5E5',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
   },
   headerContent: {
     maxWidth: '1400px',
@@ -106,6 +106,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: 0,
     fontSize: '1.5rem',
     fontWeight: '600',
+    color: '#F97316',
   },
   nav: {
     display: 'flex',
@@ -115,7 +116,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   navButton: {
     padding: '0.5rem 1rem',
     backgroundColor: 'transparent',
-    color: 'white',
+    color: '#E5E5E5',
     border: '2px solid transparent',
     borderRadius: '4px',
     cursor: 'pointer',
@@ -124,8 +125,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     transition: 'all 0.2s',
   },
   navButtonActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderColor: 'white',
+    backgroundColor: 'rgba(249, 115, 22, 0.2)',
+    borderColor: '#F97316',
   },
   userSection: {
     display: 'flex',
@@ -134,9 +135,9 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   languageSelector: {
     padding: '0.5rem',
-    backgroundColor: 'white',
-    color: '#007bff',
-    border: 'none',
+    backgroundColor: '#404040',
+    color: '#E5E5E5',
+    border: '1px solid #404040',
     borderRadius: '4px',
     cursor: 'pointer',
     fontSize: '0.9rem',
@@ -145,11 +146,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   userName: {
     fontSize: '0.9rem',
     fontWeight: '500',
+    color: '#b0b0b0',
   },
   logoutButton: {
     padding: '0.5rem 1rem',
-    backgroundColor: 'white',
-    color: '#007bff',
+    backgroundColor: '#F97316',
+    color: '#E5E5E5',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
