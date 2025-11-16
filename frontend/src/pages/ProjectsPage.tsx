@@ -124,7 +124,7 @@ const ProjectsPage: React.FC = () => {
         {/* Create/Edit Form */}
         {showForm && (
           <form onSubmit={handleSubmit} style={styles.form}>
-            <h3>{editingProject ? t('projects.editProject') : t('projects.newProject')}</h3>
+            <h3 style={{ color: '#e94560' }}>{editingProject ? t('projects.editProject') : t('projects.newProject')}</h3>
 
             <div style={styles.formGroup}>
               <label style={styles.label}>{t('projects.projectTitle')} *</label>
@@ -185,7 +185,7 @@ const ProjectsPage: React.FC = () => {
                 <div style={styles.cardHeader}>
                   <h3 style={styles.projectTitle}>{project.title}</h3>
                   {isOverdue(project.deadline) && (
-                    <span style={styles.overduebadge}>{t('projects.overdue')}</span>
+                    <span style={styles.overdueBadge}>{t('projects.overdue')}</span>
                   )}
                   {isUrgent(project.deadline) && !isOverdue(project.deadline) && (
                     <span style={styles.urgentBadge}>{t('projects.urgent')}</span>
@@ -235,44 +235,46 @@ const styles: { [key: string]: React.CSSProperties } = {
   pageTitle: {
     margin: 0,
     fontSize: '2rem',
-    color: '#333',
+    color: '#e94560',
   },
   addButton: {
     padding: '0.75rem 1.5rem',
-    backgroundColor: '#28a745',
+    backgroundColor: '#e94560',
     color: 'white',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: '1rem',
+    transition: 'background-color 0.3s',
   },
   error: {
     padding: '1rem',
-    backgroundColor: '#f8d7da',
-    color: '#721c24',
-    borderRadius: '4px',
+    backgroundColor: '#e94560',
+    color: '#ffffff',
+    borderRadius: '6px',
     marginBottom: '1rem',
   },
   loading: {
     textAlign: 'center',
-    color: '#777',
+    color: '#e0e0e0',
     fontSize: '1.1rem',
   },
   emptyMessage: {
     textAlign: 'center',
-    color: '#777',
+    color: '#e0e0e0',
     fontSize: '1.1rem',
     padding: '3rem 1rem',
-    backgroundColor: 'white',
+    backgroundColor: '#0f3460',
     borderRadius: '8px',
   },
   form: {
-    backgroundColor: 'white',
+    backgroundColor: '#0f3460',
     padding: '2rem',
     borderRadius: '8px',
     marginBottom: '2rem',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+    border: '1px solid #533483',
   },
   formGroup: {
     marginBottom: '1.5rem',
@@ -280,16 +282,18 @@ const styles: { [key: string]: React.CSSProperties } = {
   label: {
     display: 'block',
     marginBottom: '0.5rem',
-    color: '#333',
+    color: '#e0e0e0',
     fontWeight: '500',
   },
   input: {
     width: '100%',
     padding: '0.75rem',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
+    border: '2px solid #533483',
+    borderRadius: '6px',
     fontSize: '1rem',
     boxSizing: 'border-box',
+    backgroundColor: '#1a1a2e',
+    color: '#ffffff',
   },
   formActions: {
     display: 'flex',
@@ -297,23 +301,25 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   submitButton: {
     padding: '0.75rem 2rem',
-    backgroundColor: '#007bff',
+    backgroundColor: '#e94560',
     color: 'white',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: '1rem',
+    transition: 'background-color 0.3s',
   },
   cancelButton: {
     padding: '0.75rem 2rem',
-    backgroundColor: '#6c757d',
+    backgroundColor: '#533483',
     color: 'white',
-    border: 'none',
-    borderRadius: '4px',
+    border: '1px solid #e94560',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: '1rem',
+    transition: 'background-color 0.3s',
   },
   projectGrid: {
     display: 'grid',
@@ -321,11 +327,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: '1.5rem',
   },
   projectCard: {
-    backgroundColor: 'white',
+    backgroundColor: '#0f3460',
     padding: '1.5rem',
     borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
     transition: 'transform 0.2s, box-shadow 0.2s',
+    border: '1px solid #533483',
   },
   cardHeader: {
     display: 'flex',
@@ -337,12 +344,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   projectTitle: {
     margin: 0,
     fontSize: '1.25rem',
-    color: '#333',
+    color: '#ffffff',
     flex: 1,
   },
   overdueBadge: {
     padding: '0.25rem 0.75rem',
-    backgroundColor: '#dc3545',
+    backgroundColor: '#e94560',
     color: 'white',
     borderRadius: '12px',
     fontSize: '0.75rem',
@@ -359,7 +366,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     textTransform: 'uppercase',
   },
   description: {
-    color: '#666',
+    color: '#b0b0b0',
     marginBottom: '1rem',
     lineHeight: '1.5',
   },
@@ -369,37 +376,39 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: '0.5rem',
     marginBottom: '1rem',
     paddingTop: '1rem',
-    borderTop: '1px solid #eee',
+    borderTop: '1px solid #533483',
   },
   metaItem: {
     fontSize: '0.9rem',
-    color: '#555',
+    color: '#e0e0e0',
   },
   cardActions: {
     display: 'flex',
     gap: '0.5rem',
     paddingTop: '1rem',
-    borderTop: '1px solid #eee',
+    borderTop: '1px solid #533483',
   },
   editButton: {
     flex: 1,
     padding: '0.5rem',
-    backgroundColor: '#007bff',
+    backgroundColor: '#533483',
     color: 'white',
-    border: 'none',
-    borderRadius: '4px',
+    border: '1px solid #e94560',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
+    transition: 'background-color 0.3s',
   },
   deleteButton: {
     flex: 1,
     padding: '0.5rem',
-    backgroundColor: '#dc3545',
+    backgroundColor: '#e94560',
     color: 'white',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
+    transition: 'background-color 0.3s',
   },
 };
 

@@ -91,8 +91,9 @@ class TaskController {
    */
   completeTask = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      // Get user ID from authenticated request
+      // Get user ID and role from authenticated request
       const userId = req.user!.id;
+      const userRole = req.user!.role;
       const taskId = parseInt(req.params.id, 10);
 
       if (isNaN(taskId)) {
@@ -101,7 +102,7 @@ class TaskController {
       }
 
       // Call service
-      const task = await this.taskService.completeTask(userId, taskId);
+      const task = await this.taskService.completeTask(userId, taskId, userRole);
 
       res.status(200).json({
         message: 'Task marked as completed',
@@ -125,8 +126,9 @@ class TaskController {
         return;
       }
 
-      // Get user ID from authenticated request
+      // Get user ID and role from authenticated request
       const userId = req.user!.id;
+      const userRole = req.user!.role;
       const taskId = parseInt(req.params.id, 10);
 
       if (isNaN(taskId)) {
@@ -137,7 +139,7 @@ class TaskController {
       const { title, description, status, priority, due_date, project_id } = req.body;
 
       // Call service
-      const task = await this.taskService.updateTask(userId, taskId, {
+      const task = await this.taskService.updateTask(userId, taskId, userRole, {
         title,
         description,
         status,

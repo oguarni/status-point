@@ -88,12 +88,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#1a1a2e',
   },
   header: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#0f3460',
     color: 'white',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+    borderBottom: '2px solid #533483',
   },
   headerContent: {
     maxWidth: '1400px',
@@ -111,13 +112,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: '0.75rem',
   },
   logo: {
-    width: '32px',
-    height: '32px',
+    width: '40px',
+    height: '40px',
+    filter: 'drop-shadow(0 2px 4px rgba(233, 69, 96, 0.3))',
   },
   title: {
     margin: 0,
     fontSize: '1.5rem',
-    fontWeight: '600',
+    fontWeight: '700',
+    color: '#e94560',
   },
   nav: {
     display: 'flex',
@@ -127,17 +130,18 @@ const styles: { [key: string]: React.CSSProperties } = {
   navButton: {
     padding: '0.5rem 1rem',
     backgroundColor: 'transparent',
-    color: 'white',
+    color: '#e0e0e0',
     border: '2px solid transparent',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
     fontSize: '1rem',
     fontWeight: '500',
-    transition: 'all 0.2s',
+    transition: 'all 0.3s',
   },
   navButtonActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderColor: 'white',
+    backgroundColor: '#533483',
+    borderColor: '#e94560',
+    color: '#ffffff',
   },
   userSection: {
     display: 'flex',
@@ -146,10 +150,10 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   languageSelector: {
     padding: '0.5rem',
-    backgroundColor: 'white',
-    color: '#007bff',
-    border: 'none',
-    borderRadius: '4px',
+    backgroundColor: '#1a1a2e',
+    color: '#e94560',
+    border: '2px solid #533483',
+    borderRadius: '6px',
     cursor: 'pointer',
     fontSize: '0.9rem',
     fontWeight: '500',
@@ -157,16 +161,18 @@ const styles: { [key: string]: React.CSSProperties } = {
   userName: {
     fontSize: '0.9rem',
     fontWeight: '500',
+    color: '#e0e0e0',
   },
   logoutButton: {
     padding: '0.5rem 1rem',
-    backgroundColor: 'white',
-    color: '#007bff',
+    backgroundColor: '#e94560',
+    color: 'white',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: '0.9rem',
+    transition: 'background-color 0.3s',
   },
   main: {
     maxWidth: '1400px',

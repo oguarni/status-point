@@ -58,12 +58,13 @@ class TaskService {
 
   /**
    * Mark a task as completed
-   * CRITICAL: Checks if the task belongs to the user before updating
+   * CRITICAL: Checks authorization - owner, admin, or gestor can complete
    * @param userId - User's ID
    * @param taskId - Task's ID
+   * @param userRole - User's role (admin, gestor, colaborador)
    * @returns Updated task
    */
-  async completeTask(userId: number, taskId: number): Promise<Task> {
+  async completeTask(userId: number, taskId: number, userRole: string): Promise<Task> {
     // Find task
     const task = await this.taskRepository.findById(taskId);
 
@@ -71,8 +72,9 @@ class TaskService {
       throw new UserNotFoundError('Task not found');
     }
 
-    // CRITICAL: Authorization check - user must own the task
-    if (!task.isOwnedBy(userId)) {
+    // CRITICAL: Authorization check - owner, admin, or gestor can modify
+    const canModify = task.isOwnedBy(userId) || userRole === 'admin' || userRole === 'gestor';
+    if (!canModify) {
       throw new AuthorizationError('You are not authorized to modify this task');
     }
 
@@ -102,13 +104,14 @@ class TaskService {
 
   /**
    * Update a task
-   * CRITICAL: Checks if the task belongs to the user before updating
+   * CRITICAL: Checks authorization - owner, admin, or gestor can update
    * @param userId - User's ID
    * @param taskId - Task's ID
+   * @param userRole - User's role (admin, gestor, colaborador)
    * @param taskData - Task update data
    * @returns Updated task
    */
-  async updateTask(userId: number, taskId: number, taskData: UpdateTaskDTO): Promise<Task> {
+  async updateTask(userId: number, taskId: number, userRole: string, taskData: UpdateTaskDTO): Promise<Task> {
     // Find task
     const task = await this.taskRepository.findById(taskId);
 
@@ -116,8 +119,9 @@ class TaskService {
       throw new UserNotFoundError('Task not found');
     }
 
-    // CRITICAL: Authorization check - user must own the task
-    if (!task.isOwnedBy(userId)) {
+    // CRITICAL: Authorization check - owner, admin, or gestor can modify
+    const canModify = task.isOwnedBy(userId) || userRole === 'admin' || userRole === 'gestor';
+    if (!canModify) {
       throw new AuthorizationError('You are not authorized to modify this task');
     }
 
