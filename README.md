@@ -96,13 +96,6 @@ Este projeto segue **Clean Architecture** com 4 camadas:
 3. **Adaptadores de Interface** - Controllers, repositories, mappers
 4. **Infraestrutura** - Implementações de framework (Express, Sequelize)
 
-### Diagramas de Arquitetura C4
-
-Diagramas de arquitetura detalhados estão disponíveis (Mermaid):
-- [System Context Diagram](./docs/diagrams/C1_SystemContext.md)
-- [Container Diagram](./docs/diagrams/C2_Container.md)
-- [Backend Component Diagram](./docs/diagrams/C3_Component_Backend.md)
-
 ## 🧪 Testes
 
 ```bash
@@ -177,14 +170,6 @@ npm run dev
 ```
 
 </details>
-
-## 📖 Documentação
-
-- **[CLAUDE.md](./CLAUDE.md)** - Guia abrangente para desenvolvedores e assistentes de IA
-  - Explicações detalhadas de arquitetura
-  - Padrões e convenções de código
-  - Estratégias de teste
-  - Tarefas e fluxos de trabalho comuns
 
 ## 🎓 Contexto Acadêmico
 
