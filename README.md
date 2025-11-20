@@ -1,6 +1,4 @@
-<p align="center"><img src="frontend/public/android-chrome-192x192.png" alt="Agiliza Logo" width="192"></p>
-
-# Agiliza
+<p align="center"><img src="frontend/public/android-chrome-192x192.png" alt="Logo" width="192"></p>
 
 Uma aplicação full-stack de gerenciamento de tarefas implementando Clean Architecture com Controle de Acesso Baseado em Papel.
 
@@ -102,6 +100,15 @@ Diagramas de arquitetura detalhados estão disponíveis (Mermaid):
 - [System Context Diagram](./docs/diagrams/C1_SystemContext.md)
 - [Container Diagram](./docs/diagrams/C2_Container.md)
 - [Backend Component Diagram](./docs/diagrams/C3_Component_Backend.md)
+
+#### System Context Diagram
+<p align="center"><img src="docs/diagrams/SystemContext.png" alt="System Context Diagram" width="800"></p>
+
+#### Container Diagram
+<p align="center"><img src="docs/diagrams/Container.png" alt="Container Diagram" width="800"></p>
+
+#### Backend Component Diagram
+<p align="center"><img src="docs/diagrams/Component_Backend.png" alt="Backend Component Diagram" width="800"></p>
 
 ## 🧪 Testes
 
