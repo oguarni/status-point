@@ -25,6 +25,45 @@
 # =============================================================================
 services:
   # ---------------------------------------------------------------------------
+  # PostgreSQL Database Service
+  # ---------------------------------------------------------------------------
+  postgres:
+    # Official PostgreSQL image
+    image: postgres:15-alpine
+
+    # Container name for easy reference
+    container_name: status-point-postgres
+
+    # Port mapping: host:container
+    # Maps host port 5432 to container port 5432
+    ports:
+      - "5432:5432"
+
+    # Environment variables for PostgreSQL initialization
+    environment:
+      - POSTGRES_USER=terrasafe_user
+      - POSTGRES_PASSWORD=xH5CdP2aA-ERZOxRA3bAzqUbdSxpKF6B6b69xfFzsPY
+      - POSTGRES_DB=task_management_dev
+
+    # Volume for data persistence
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    # Network configuration
+    networks:
+      - status-point-net
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Health check to ensure database is ready
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U terrasafe_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
   # Backend Service (Node.js + Express + TypeScript)
   # ---------------------------------------------------------------------------
   backend:
@@ -41,11 +80,6 @@ services:
     ports:
       - "3001:3001"
 
-    # Extra hosts for Linux compatibility
-    # Maps host.docker.internal to host gateway IP
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
     # Environment variables for the backend
     # These override defaults and configure database connection
     environment:
@@ -54,12 +88,12 @@ services:
       - NODE_ENV=development
 
       # Database configuration
-      # CRITICAL: Use host.docker.internal to connect to host PostgreSQL
-      - DB_HOST=host.docker.internal        # Special DNS name for host machine
+      # CRITICAL: Use service name 'postgres' to connect to PostgreSQL container
+      - DB_HOST=postgres                     # Service name for PostgreSQL container
       - DB_PORT=5432
-      - DB_USER=terrasafe_user               # Database user from .env
-      - DB_PASS=xH5CdP2aA-ERZOxRA3bAzqUbdSxpKF6B6b69xfFzsPY  # Database password from .env
-      - DB_NAME=task_management_dev          # Your database name
+      - DB_USER=terrasafe_user               # Database user
+      - DB_PASS=xH5CdP2aA-ERZOxRA3bAzqUbdSxpKF6B6b69xfFzsPY  # Database password
+      - DB_NAME=task_management_dev          # Database name
 
       # JWT configuration
       - JWT_SECRET=S3nh4Muit0F0rt3P4r4M3uJWT!@#$$
@@ -75,6 +109,12 @@ services:
       # This prevents conflicts between host and container OS/architecture
       # (e.g., native bindings compiled for different platforms)
       - backend_modules:/app/node_modules
+
+    # Dependencies
+    # Backend depends on PostgreSQL being available
+    depends_on:
+      postgres:
+        condition: service_healthy
 
     # Network configuration
     networks:
@@ -148,9 +188,13 @@ networks:
 # =============================================================================
 # VOLUMES
 # =============================================================================
-# Named volumes for persisting node_modules inside containers
+# Named volumes for persisting data inside containers
 # These prevent host/container OS conflicts and improve performance
 volumes:
+  # PostgreSQL data volume
+  # Stores database data for persistence across container restarts
+  postgres_data:
+
   # Backend node_modules volume
   # Stores backend dependencies inside the container
   backend_modules:

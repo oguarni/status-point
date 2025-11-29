@@ -26,10 +26,10 @@ module.exports = {
       usersToInsert.push({
         name: 'Admin User',
         email: 'admin@taskmanager.com',
-        password: hashedAdminPassword,
+        password_hash: hashedAdminPassword,
         role: 'admin',
-        createdAt: now,
-        updatedAt: now
+        created_at: now,
+        updated_at: now
       });
     }
 
@@ -37,10 +37,10 @@ module.exports = {
       usersToInsert.push({
         name: 'Gestor User',
         email: 'gestor@taskmanager.com',
-        password: hashedGestorPassword,
+        password_hash: hashedGestorPassword,
         role: 'gestor',
-        createdAt: now,
-        updatedAt: now
+        created_at: now,
+        updated_at: now
       });
     }
 
@@ -48,10 +48,10 @@ module.exports = {
       usersToInsert.push({
         name: 'Colaborador User',
         email: 'colaborador@taskmanager.com',
-        password: hashedColaboradorPassword,
+        password_hash: hashedColaboradorPassword,
         role: 'colaborador',
-        createdAt: now,
-        updatedAt: now
+        created_at: now,
+        updated_at: now
       });
     }
 
