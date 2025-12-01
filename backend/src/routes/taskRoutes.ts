@@ -46,6 +46,10 @@ router.post(
       .optional()
       .isInt()
       .withMessage('Project ID must be an integer'),
+    body('assignee_id')
+      .optional()
+      .isInt()
+      .withMessage('Assignee ID must be an integer'),
   ],
   taskController.createTask
 );
@@ -83,6 +87,10 @@ router.put(
       .optional()
       .isInt()
       .withMessage('Project ID must be an integer'),
+    body('assignee_id')
+      .optional()
+      .isInt()
+      .withMessage('Assignee ID must be an integer'),
   ],
   taskController.updateTask
 );

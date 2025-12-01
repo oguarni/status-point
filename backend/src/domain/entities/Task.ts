@@ -3,6 +3,7 @@ export class Task {
     public readonly id: number,
     public readonly userId: number,
     public readonly projectId: number | null,
+    public readonly assigneeId: number | null,
     public readonly title: string,
     public readonly description: string | null,
     public readonly status: 'pending' | 'completed',

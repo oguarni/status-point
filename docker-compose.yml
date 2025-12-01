@@ -98,6 +98,9 @@ services:
       # JWT configuration
       - JWT_SECRET=S3nh4Muit0F0rt3P4r4M3uJWT!@#$$
 
+      # Seed database on startup (set to false to skip seeding)
+      - SEED_DB=true
+
     # Volume mounts
     # CRITICAL for hot-reload: These bind mounts sync host and container files
     volumes:
@@ -122,10 +125,6 @@ services:
 
     # Restart policy: always restart if container stops
     restart: unless-stopped
-
-    # Command override (optional, already set in Dockerfile)
-    # Runs ts-node-dev for hot-reload during development
-    command: npm run dev
 
   # ---------------------------------------------------------------------------
   # Frontend Service (React + Vite + TypeScript)

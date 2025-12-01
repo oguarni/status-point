@@ -4,11 +4,17 @@
   },
   "auth": {
     "login": "Entrar",
+    "loginTitle": "Entrar",
     "register": "Registrar",
+    "registerTitle": "Criar Conta",
     "email": "E-mail",
     "password": "Senha",
     "name": "Nome",
     "submit": "Enviar",
+    "signIn": "Entrar",
+    "signUp": "Cadastrar",
+    "haveAccount": "Já tem uma conta?",
+    "noAccount": "Não tem uma conta?",
     "have_account": "Já tem uma conta? Entre",
     "no_account": "Não tem uma conta? Registre-se"
   },
@@ -18,10 +24,34 @@
     "cancel": "Cancelar",
     "edit": "Editar",
     "delete": "Excluir",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "create": "Criar",
+    "update": "Atualizar",
+    "logout": "Sair",
+    "close": "Fechar"
+  },
+  "about": {
+    "title": "Sobre o Agiliza",
+    "version": "Versão",
+    "mission": {
+      "title": "Missão",
+      "description": "Agiliza é um sistema moderno de gerenciamento de tarefas projetado para ajudar equipes e indivíduos a organizar, rastrear e concluir seu trabalho de forma eficiente. Construído com princípios de arquitetura limpa, demonstra as melhores práticas no desenvolvimento de software."
+    },
+    "technology": {
+      "title": "Pilha de Tecnologia"
+    },
+    "features": {
+      "title": "Recursos Principais"
+    },
+    "academic": {
+      "title": "Projeto Acadêmico",
+      "description": "Este é um projeto educacional desenvolvido para o curso de Arquitetura de Software, demonstrando Arquitetura Limpa, princípios SOLID e Design Orientado ao Domínio em uma aplicação real."
+    }
   },
   "status": {
     "todo": "A Fazer",
+    "pending": "Pendente",
+    "completed": "Concluído",
     "in_progress": "Em Progresso",
     "done": "Concluído"
   },
@@ -33,5 +63,59 @@
     "created": "Criado em",
     "assignee": "Responsável",
     "unassigned": "Não atribuído"
+  },
+  "nav": {
+    "myTasks": "Minhas Tarefas",
+    "kanbanBoard": "Quadro Kanban",
+    "projects": "Projetos"
+  },
+  "language": {
+    "selectLanguage": "Selecionar Idioma",
+    "portuguese": "Português",
+    "english": "Inglês"
+  },
+  "kanban": {
+    "title": "Quadro Kanban",
+    "dragAndDrop": "Arraste e solte tarefas para alterar o status",
+    "pending": "Pendente",
+    "completed": "Concluído",
+    "noTasksInColumn": "Nenhuma tarefa nesta coluna",
+    "reopen": "Reabrir Tarefa"
+  },
+  "tasks": {
+    "title": "Minhas Tarefas",
+    "newTask": "Nova Tarefa",
+    "taskTitle": "Título da Tarefa",
+    "description": "Descrição",
+    "priority": "Prioridade",
+    "dueDate": "Data de Vencimento",
+    "project": "Projeto",
+    "status": "Status",
+    "noTasks": "Nenhuma tarefa encontrada. Crie uma nova tarefa para começar!",
+    "markComplete": "Marcar como Concluída",
+    "deleteConfirm": "Tem certeza que deseja excluir esta tarefa?"
+  },
+  "priority": {
+    "low": "Baixa",
+    "medium": "Média",
+    "high": "Alta"
+  },
+  "projects": {
+    "title": "Projetos",
+    "newProject": "Novo Projeto",
+    "editProject": "Editar Projeto",
+    "projectTitle": "Nome do Projeto",
+    "deadline": "Prazo",
+    "created": "Criado em",
+    "noProject": "Nenhum Projeto",
+    "noProjects": "Nenhum projeto encontrado. Crie um novo projeto para começar!",
+    "deleteConfirm": "Tem certeza que deseja excluir este projeto?",
+    "overdue": "Atrasado",
+    "urgent": "Urgente"
+  },
+  "roles": {
+    "admin": "Administrador",
+    "gestor": "Gestor",
+    "colaborador": "Colaborador"
   }
 }

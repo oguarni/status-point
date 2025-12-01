@@ -5,18 +5,7 @@ import api from '../services/api';
 import { getProjects, Project } from '../services/projectService';
 import { useTranslation } from 'react-i18next';
 import { formatDate as formatDateLocale } from '../utils/dateFormatter';
-
-// Task interface
-interface Task {
-  id: number;
-  title: string;
-  description: string | null;
-  status: 'pending' | 'completed';
-  priority: 'low' | 'medium' | 'high' | null;
-  dueDate: string | null;
-  projectId: number | null;
-  created_at: string;
-}
+import { Task } from '../types/task';
 
 const TasksPage: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -130,7 +119,7 @@ const TasksPage: React.FC = () => {
     setShowForm(false);
   };
 
-  const getPriorityStyle = (priority: string | null): React.CSSProperties => {
+  const getPriorityStyle = (priority: string | null | undefined): React.CSSProperties => {
     const baseStyle: React.CSSProperties = {
       padding: '0.25rem 0.75rem',
       borderRadius: '12px',
@@ -242,9 +231,14 @@ const TasksPage: React.FC = () => {
               </select>
             </div>
 
-            <button type="submit" style={styles.submitButton}>
-              {t('tasks.newTask')}
-            </button>
+            <div style={styles.formActions}>
+              <button type="submit" style={styles.submitButton}>
+                {t('tasks.newTask')}
+              </button>
+              <button type="button" onClick={() => setShowForm(false)} style={styles.cancelButton}>
+                {t('common.cancel')}
+              </button>
+            </div>
           </form>
         )}
 
@@ -335,13 +329,14 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   addButton: {
     padding: '0.75rem 1.5rem',
-    backgroundColor: '#F97316',
-    color: '#E5E5E5',
+    backgroundColor: '#3B82F6',
+    color: '#FFFFFF',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: '1rem',
+    transition: 'background-color 0.2s',
   },
   error: {
     padding: '1rem',
@@ -396,15 +391,32 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: '#171717',
     color: '#E5E5E5',
   },
+  formActions: {
+    display: 'flex',
+    gap: '1rem',
+    marginTop: '1rem',
+  },
   submitButton: {
     padding: '0.75rem 2rem',
-    backgroundColor: '#F97316',
-    color: '#E5E5E5',
+    backgroundColor: '#3B82F6',
+    color: '#FFFFFF',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: '1rem',
+    transition: 'background-color 0.2s',
+  },
+  cancelButton: {
+    padding: '0.75rem 2rem',
+    backgroundColor: '#6B7280',
+    color: '#FFFFFF',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: '1rem',
+    transition: 'background-color 0.2s',
   },
   taskGrid: {
     display: 'grid',
@@ -482,25 +494,33 @@ const styles: { [key: string]: React.CSSProperties } = {
   actions: {
     display: 'flex',
     gap: '0.5rem',
+    alignItems: 'center',
   },
   completeButton: {
     padding: '0.5rem 1rem',
-    backgroundColor: '#28a745',
-    color: '#E5E5E5',
+    backgroundColor: '#10B981',
+    color: '#FFFFFF',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
     fontSize: '0.875rem',
-    fontWeight: '500',
+    fontWeight: '600',
+    transition: 'background-color 0.2s',
+    whiteSpace: 'nowrap',
+    minHeight: '36px',
   },
   deleteButton: {
     padding: '0.5rem 1rem',
-    backgroundColor: '#dc3545',
-    color: '#E5E5E5',
+    backgroundColor: '#EF4444',
+    color: '#FFFFFF',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
     fontSize: '0.875rem',
+    fontWeight: '600',
+    transition: 'background-color 0.2s',
+    whiteSpace: 'nowrap',
+    minHeight: '36px',
   },
 };
 

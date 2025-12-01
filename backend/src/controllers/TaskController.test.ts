@@ -63,8 +63,8 @@ describe('TaskController Integration Tests', () => {
       // Arrange
       const now = new Date();
       const mockTasks = [
-        new Task(1, 1, null, 'Task 1', 'Description 1', 'pending', 'high', null, now, now),
-        new Task(2, 1, null, 'Task 2', 'Description 2', 'completed', 'low', null, now, now),
+        new Task(1, 1, null, null, 'Task 1', 'Description 1', 'pending', 'high', null, now, now),
+        new Task(2, 1, null, null, 'Task 2', 'Description 2', 'completed', 'low', null, now, now),
       ];
 
       mockGetTasks.mockResolvedValue(mockTasks);
@@ -121,6 +121,7 @@ describe('TaskController Integration Tests', () => {
         1,
         1,
         null, // projectId
+        null, // assigneeId
         'New Task',
         'Task description',
         'pending',
@@ -177,6 +178,7 @@ describe('TaskController Integration Tests', () => {
         taskId,
         1,
         null, // projectId
+        null, // assigneeId
         'Task',
         null,
         'completed',
@@ -225,6 +227,7 @@ describe('TaskController Integration Tests', () => {
         taskId,
         1,
         null, // projectId
+        null, // assigneeId
         'Updated Task',
         null,
         'pending',

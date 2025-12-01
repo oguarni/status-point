@@ -4,7 +4,7 @@ import AuthController from '../controllers/AuthController';
 import AuthService from '../services/AuthService';
 import UserRepository from '../repositories/UserRepository';
 import authMiddleware from '../middlewares/authMiddleware';
-import { requireAdmin } from '../middlewares/roleMiddleware';
+import { requireAdmin, requireGestorOrAdmin } from '../middlewares/roleMiddleware';
 
 const router = Router();
 
@@ -55,6 +55,14 @@ router.post(
       .withMessage('Password is required'),
   ],
   authController.login
+);
+
+// GET /api/auth/users - List all users (admin and gestor only)
+router.get(
+  '/users',
+  authMiddleware,
+  requireGestorOrAdmin,
+  authController.listUsers
 );
 
 // POST /api/auth/users - Create user (admin only)

@@ -4,11 +4,17 @@
   },
   "auth": {
     "login": "Login",
+    "loginTitle": "Sign In",
     "register": "Register",
+    "registerTitle": "Create Account",
     "email": "Email",
     "password": "Password",
     "name": "Name",
     "submit": "Submit",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
     "have_account": "Already have an account? Login",
     "no_account": "Don't have an account? Register"
   },
@@ -18,10 +24,34 @@
     "cancel": "Cancel",
     "edit": "Edit",
     "delete": "Delete",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "create": "Create",
+    "update": "Update",
+    "logout": "Logout",
+    "close": "Close"
+  },
+  "about": {
+    "title": "About Agiliza",
+    "version": "Version",
+    "mission": {
+      "title": "Mission",
+      "description": "Agiliza is a modern task management system designed to help teams and individuals organize, track, and complete their work efficiently. Built with clean architecture principles, it demonstrates best practices in software development."
+    },
+    "technology": {
+      "title": "Technology Stack"
+    },
+    "features": {
+      "title": "Key Features"
+    },
+    "academic": {
+      "title": "Academic Project",
+      "description": "This is an educational project developed for the Software Architecture course, demonstrating Clean Architecture, SOLID principles, and Domain-Driven Design in a real-world application."
+    }
   },
   "status": {
     "todo": "To Do",
+    "pending": "Pending",
+    "completed": "Completed",
     "in_progress": "In Progress",
     "done": "Done"
   },
@@ -33,5 +63,59 @@
     "created": "Created",
     "assignee": "Assignee",
     "unassigned": "Unassigned"
+  },
+  "nav": {
+    "myTasks": "My Tasks",
+    "kanbanBoard": "Kanban Board",
+    "projects": "Projects"
+  },
+  "language": {
+    "selectLanguage": "Select Language",
+    "portuguese": "Portuguese",
+    "english": "English"
+  },
+  "kanban": {
+    "title": "Kanban Board",
+    "dragAndDrop": "Drag and drop tasks to change their status",
+    "pending": "Pending",
+    "completed": "Completed",
+    "noTasksInColumn": "No tasks in this column",
+    "reopen": "Reopen Task"
+  },
+  "tasks": {
+    "title": "My Tasks",
+    "newTask": "New Task",
+    "taskTitle": "Task Title",
+    "description": "Description",
+    "priority": "Priority",
+    "dueDate": "Due Date",
+    "project": "Project",
+    "status": "Status",
+    "noTasks": "No tasks found. Create a new task to get started!",
+    "markComplete": "Mark as Complete",
+    "deleteConfirm": "Are you sure you want to delete this task?"
+  },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "projects": {
+    "title": "Projects",
+    "newProject": "New Project",
+    "editProject": "Edit Project",
+    "projectTitle": "Project Name",
+    "deadline": "Deadline",
+    "created": "Created",
+    "noProject": "No Project",
+    "noProjects": "No projects found. Create a new project to get started!",
+    "deleteConfirm": "Are you sure you want to delete this project?",
+    "overdue": "Overdue",
+    "urgent": "Urgent"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "gestor": "Manager",
+    "colaborador": "Collaborator"
   }
 }

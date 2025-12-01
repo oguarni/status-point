@@ -1,7 +1,8 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import AboutModal from './AboutModal';
 
 interface LayoutProps {
   children: ReactNode;
@@ -12,6 +13,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation();
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -35,12 +37,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div style={styles.container}>
-      {/* Header */}
-      <header style={styles.header}>
+    <>
+      <AboutModal isOpen={isAboutModalOpen} onClose={() => setIsAboutModalOpen(false)} />
+      <div style={styles.container}>
+        {/* Header */}
+        <header style={styles.header}>
         <div style={styles.headerContent}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <img src="/favicon-32x32.png" alt="Agiliza Logo" style={{ width: '32px', height: '32px' }} />
+          <div
+            onClick={() => setIsAboutModalOpen(true)}
+            style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }}
+          >
+            <img src="/android-chrome-192x192.png" alt="Agiliza Logo" style={{ width: '48px', height: '48px' }} />
             <h1 style={styles.title}>Agiliza</h1>
           </div>
           <nav style={styles.nav}>
@@ -79,9 +86,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       </header>
 
-      {/* Main content */}
-      <main style={styles.main}>{children}</main>
-    </div>
+        {/* Main content */}
+        <main style={styles.main}>{children}</main>
+      </div>
+    </>
   );
 };
 
@@ -121,15 +129,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: 'transparent',
     color: '#E5E5E5',
     border: '2px solid transparent',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
     fontSize: '1rem',
-    fontWeight: '500',
+    fontWeight: '600',
     transition: 'all 0.2s',
   },
   navButtonActive: {
-    backgroundColor: 'rgba(249, 115, 22, 0.2)',
-    borderColor: '#F97316',
+    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+    borderColor: '#3B82F6',
+    color: '#3B82F6',
   },
   userSection: {
     display: 'flex',
@@ -153,13 +162,14 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   logoutButton: {
     padding: '0.5rem 1rem',
-    backgroundColor: '#F97316',
-    color: '#E5E5E5',
+    backgroundColor: '#EF4444',
+    color: '#FFFFFF',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: '0.9rem',
+    transition: 'background-color 0.2s',
   },
   main: {
     maxWidth: '1400px',

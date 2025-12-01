@@ -6,6 +6,7 @@ export interface TaskAttributes {
   id: number;
   user_id: number;
   project_id: number | null;
+  assignee_id: number | null;
   title: string;
   description: string | null;
   status: 'pending' | 'completed';
@@ -29,6 +30,7 @@ export class TaskMapper {
       model.id,
       model.user_id,
       model.project_id,
+      model.assignee_id,
       model.title,
       model.description,
       model.status,
@@ -49,6 +51,7 @@ export class TaskMapper {
       id: entity.id,
       user_id: entity.userId,
       project_id: entity.projectId,
+      assignee_id: entity.assigneeId,
       title: entity.title,
       description: entity.description,
       status: entity.status,

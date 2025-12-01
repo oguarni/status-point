@@ -43,6 +43,7 @@ describe('CreateTaskUseCase', () => {
       1,
       userId,
       null, // projectId
+      null, // assigneeId
       input.title,
       input.description!,
       'pending',
@@ -113,6 +114,7 @@ describe('CreateTaskUseCase', () => {
       1,
       userId,
       null, // projectId
+      null, // assigneeId
       input.title,
       null,
       'pending',

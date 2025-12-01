@@ -1,17 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, User, AlignLeft, CheckSquare, Clock, AlertCircle } from 'lucide-react';
-import { Task } from '../services/api';
+import { Task } from '../types/task';
+
+interface UserOption {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
 
 interface TaskDetailsModalProps {
   task: Task | null;
-  isOpen: boolean;
   onClose: () => void;
-  onUpdate: (taskId: number, updates: Partial<Task>) => Promise<void>;
+  onTaskUpdate: () => Promise<void>;
 }
 
-const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, isOpen, onClose, onUpdate }) => {
+const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose, onTaskUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTask, setEditedTask] = useState<Partial<Task>>({});
+  const [users, setUsers] = useState<UserOption[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
 
   useEffect(() => {
     if (task) {
@@ -19,11 +27,46 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, isOpen, onClo
     }
   }, [task]);
 
-  if (!isOpen || !task) return null;
+  useEffect(() => {
+    // Fetch users when modal opens
+    const fetchUsers = async () => {
+      setLoadingUsers(true);
+      try {
+        const response = await fetch('/api/auth/users', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        if (response.ok) {
+          const result = await response.json();
+          setUsers(result.data || []);
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
+
+    if (task) {
+      fetchUsers();
+    }
+  }, [task]);
+
+  if (!task) return null;
 
   const handleSave = async () => {
     if (task.id) {
-      await onUpdate(task.id, editedTask);
+      // Update task via API
+      await fetch(`/api/tasks/${task.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(editedTask),
+      });
+      await onTaskUpdate();
       setIsEditing(false);
     }
   };
@@ -105,15 +148,41 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, isOpen, onClo
             )}
           </div>
 
+          {/* Assignee Selection */}
+          <div className="space-y-2">
+            <div className="flex items-center text-gray-600">
+              <User size={20} className="mr-2" />
+              <h3 className="font-semibold">Assignee</h3>
+            </div>
+            {isEditing ? (
+              <select
+                value={editedTask.assigneeId || ''}
+                onChange={(e) => setEditedTask({ ...editedTask, assigneeId: e.target.value ? Number(e.target.value) : null })}
+                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                disabled={loadingUsers}
+              >
+                <option value="">Unassigned</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.name} ({user.role})
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div className="bg-gray-50 p-3 rounded-md text-gray-700">
+                {task.assigneeId ?
+                  users.find(u => u.id === task.assigneeId)?.name || `User #${task.assigneeId}` :
+                  "Unassigned"
+                }
+              </div>
+            )}
+          </div>
+
           {/* Meta Information */}
           <div className="grid grid-cols-2 gap-4 text-sm text-gray-500 pt-4 border-t">
             <div className="flex items-center">
               <Calendar size={16} className="mr-2" />
-              <span>Created: {new Date(task.createdAt).toLocaleDateString()}</span>
-            </div>
-            <div className="flex items-center">
-              <User size={16} className="mr-2" />
-              <span>Assignee: {task.assigneeId || "Unassigned"}</span>
+              <span>Created: {task.createdAt ? new Date(task.createdAt).toLocaleDateString() : 'N/A'}</span>
             </div>
           </div>
         </div>

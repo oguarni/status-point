@@ -93,6 +93,7 @@ describe('TaskService', () => {
         taskId,
         userId,
         null, // projectId
+        null, // assigneeId
         'Task',
         null,
         'pending',
@@ -106,6 +107,7 @@ describe('TaskService', () => {
         taskId,
         userId,
         null, // projectId
+        null, // assigneeId
         'Task',
         null,
         'completed',
@@ -139,6 +141,7 @@ describe('TaskService', () => {
         taskId,
         differentUserId, // Different user!
         null, // projectId
+        null, // assigneeId
         'Task',
         null,
         'pending',
@@ -177,6 +180,7 @@ describe('TaskService', () => {
         taskId,
         userId,
         null, // projectId
+        null, // assigneeId
         'Task',
         null,
         'pending',
@@ -210,6 +214,7 @@ describe('TaskService', () => {
         taskId,
         userId,
         null, // projectId
+        null, // assigneeId
         'Original Task',
         null,
         'pending',
@@ -223,6 +228,7 @@ describe('TaskService', () => {
         taskId,
         userId,
         null, // projectId
+        null, // assigneeId
         'Updated Task',
         null,
         'pending',
@@ -255,6 +261,7 @@ describe('TaskService', () => {
         taskId,
         differentUserId, // Different user!
         null, // projectId
+        null, // assigneeId
         'Original Task',
         null,
         'pending',
@@ -298,6 +305,7 @@ describe('TaskService', () => {
         taskId,
         userId,
         null, // projectId
+        null, // assigneeId
         'Original Task',
         null,
         'pending',
@@ -329,6 +337,7 @@ describe('TaskService', () => {
         taskId,
         userId,
         null, // projectId
+        null, // assigneeId
         'Task to delete',
         null,
         'pending',
@@ -360,6 +369,7 @@ describe('TaskService', () => {
         taskId,
         differentUserId, // Different user!
         null, // projectId
+        null, // assigneeId
         'Task',
         null,
         'pending',

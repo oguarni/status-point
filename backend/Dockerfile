@@ -47,6 +47,10 @@ RUN npm install
 # But we copy it anyway so the image can run standalone if needed
 COPY . .
 
+# Copy and set entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # -----------------------------------------------------------------------------
 # Stage 4: Expose Port
 # -----------------------------------------------------------------------------
@@ -57,12 +61,10 @@ EXPOSE 3001
 # -----------------------------------------------------------------------------
 # Stage 5: Start Development Server
 # -----------------------------------------------------------------------------
-# Run ts-node-dev for hot-reload development
-# --respawn: Restart on file changes
-# --transpile-only: Skip type checking for faster restarts (use IDE for types)
-# src/server.ts: Entry point for the backend application
-#
-# CRITICAL: This command enables hot-reload. When you edit a .ts file on your
-# host machine, the bind mount syncs the change to the container, and
-# ts-node-dev detects the change and restarts the server automatically.
-CMD ["npm", "run", "dev"]
+# Use entrypoint script to run migrations, seeds, and start dev server
+# The entrypoint script will:
+# 1. Wait for database to be ready
+# 2. Run database migrations
+# 3. Optionally run seeds (if SEED_DB=true)
+# 4. Start ts-node-dev for hot-reload development
+CMD ["docker-entrypoint.sh"]

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import api from '../services/api';
 import { useTranslation } from 'react-i18next';
-import { formatDateLong } from '../utils/dateFormatter';
+import { formatDate as formatDateLocale } from '../utils/dateFormatter';
 
 interface Task {
   id: number;
@@ -72,7 +72,7 @@ const KanbanPage: React.FC = () => {
   };
 
   const formatDate = (dateString: string | null) => {
-    return formatDateLong(dateString, i18n.language);
+    return formatDateLocale(dateString, i18n.language);
   };
 
   const isOverdue = (dueDate: string | null) => {
@@ -374,25 +374,27 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   completeButton: {
     flex: 1,
-    padding: '0.5rem',
-    backgroundColor: '#28a745',
-    color: '#E5E5E5',
+    padding: '0.5rem 1rem',
+    backgroundColor: '#10B981',
+    color: '#FFFFFF',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
     fontSize: '0.875rem',
-    fontWeight: '500',
+    fontWeight: '600',
+    transition: 'background-color 0.2s',
   },
   reopenButton: {
     flex: 1,
-    padding: '0.5rem',
-    backgroundColor: '#007bff',
-    color: '#E5E5E5',
+    padding: '0.5rem 1rem',
+    backgroundColor: '#3B82F6',
+    color: '#FFFFFF',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
     fontSize: '0.875rem',
-    fontWeight: '500',
+    fontWeight: '600',
+    transition: 'background-color 0.2s',
   },
 };
 

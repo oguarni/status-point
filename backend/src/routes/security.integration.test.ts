@@ -1,5 +1,6 @@
 import request from 'supertest';
 import app from '../app';
+import { sequelize, User } from '../models';
 
 /**
  * Security Integration Tests for Role-Based Access Control (RBAC)
@@ -7,14 +8,7 @@ import app from '../app';
  * These tests verify that the roleMiddleware correctly blocks colaborador users
  * from performing write operations (POST, PUT, DELETE) on protected resources.
  *
- * Prerequisites:
- * - Database must be migrated: docker-compose exec backend npm run db:migrate
- * - Database must be seeded: docker-compose exec backend npm run db:seed:all
- *
- * The seeded database includes a colaborador user:
- * - Email: colaborador@taskmanager.com
- * - Password: colaborador123
- * - Role: colaborador
+ * Test users are created programmatically - no seeding required.
  */
 
 describe('Security Role Middleware (RBAC) Integration Tests', () => {
@@ -36,18 +30,39 @@ describe('Security Role Middleware (RBAC) Integration Tests', () => {
     return response.body.data.token;
   };
 
-  // Before all tests, authenticate users
+  // Before all tests, create test users and authenticate
   beforeAll(async () => {
     try {
-      // Get token for colaborador user (seeded)
-      colaboradorToken = await getAuthToken('colaborador@taskmanager.com', 'colaborador123');
+      // Sync database (creates tables if they don't exist)
+      await sequelize.sync({ force: true });
 
-      // Get token for gestor user (needed for creating test data)
+      // Create test users with different roles
+      await User.create({
+        name: 'Colaborador Test',
+        email: 'colaborador@taskmanager.com',
+        password_hash: 'colaborador123', // beforeCreate hook will hash this
+        role: 'colaborador',
+      });
+
+      await User.create({
+        name: 'Gestor Test',
+        email: 'gestor@taskmanager.com',
+        password_hash: 'gestor123', // beforeCreate hook will hash this
+        role: 'gestor',
+      });
+
+      // Get tokens for both users
+      colaboradorToken = await getAuthToken('colaborador@taskmanager.com', 'colaborador123');
       gestorToken = await getAuthToken('gestor@taskmanager.com', 'gestor123');
     } catch (error) {
-      console.error('Failed to authenticate test users. Ensure database is seeded.');
+      console.error('Failed to create test users and authenticate:', error);
       throw error;
     }
+  });
+
+  // Clean up after all tests
+  afterAll(async () => {
+    await sequelize.close();
   });
 
   /**
@@ -106,7 +121,7 @@ describe('Security Role Middleware (RBAC) Integration Tests', () => {
         });
 
       if (res.status === 201 && res.body.data) {
-        testTaskId = res.body.data.task.id;
+        testTaskId = res.body.data.id;
       }
     });
 
@@ -178,7 +193,7 @@ describe('Security Role Middleware (RBAC) Integration Tests', () => {
         });
 
       if (res.status === 201 && res.body.data) {
-        testTaskId = res.body.data.task.id;
+        testTaskId = res.body.data.id;
       }
     });
 

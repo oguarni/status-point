@@ -48,6 +48,21 @@ class UserRepository {
       throw new Error(`Error creating user: ${error}`);
     }
   }
+
+  /**
+   * Find all users
+   * @returns Array of user domain entities
+   */
+  async findAll(): Promise<User[]> {
+    try {
+      const users = await UserModel.findAll({
+        order: [['name', 'ASC']],
+      });
+      return users.map(user => UserMapper.toDomain(user));
+    } catch (error) {
+      throw new Error(`Error finding all users: ${error}`);
+    }
+  }
 }
 
 export default UserRepository;

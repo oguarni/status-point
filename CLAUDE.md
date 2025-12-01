@@ -15,6 +15,7 @@ Path: oguarni/status-point/status-point-claude-add-dropdown-selector-01PXaZrGrw6
     * **Backend**: TypeScript, Node.js, Express, PostgreSQL, Sequelize, `tsyringe` (DI), express-validator (Validation), Jest.
     * **Frontend**: React, TypeScript, Vite, TailwindCSS, React Router, Axios.
     * **DevOps**: Docker, Docker Compose.
+* **Architecture Diagrams**: C4 model diagrams are available in `docs/diagrams/` (SystemContext.png, Container.png, Component_Backend.png).
 
 ---
 
@@ -148,16 +149,17 @@ If colaborador attempts: Returns **403 Forbidden** at roleMiddleware layer.
     ```bash
     docker-compose up -d --build
     ```
+    **Automatic Startup**: The backend uses `docker-entrypoint.sh` to automatically run database migrations on startup. Seeds can be run by setting `SEED_DB=true` in `docker-compose.yml`.
+
 * **Stop All Services**:
     ```bash
     docker-compose down
     ```
-* **Run Backend Commands (Migrations, Tests, etc.)**:
+* **Run Backend Commands (Tests, etc.)**:
     Use `docker-compose exec backend <command>`
-    * **Run Migrations**: `docker-compose exec backend npm run db:migrate`
-    * **Run Seeders**: `docker-compose exec backend npm run db:seed:all`
     * **Run All Tests**: `docker-compose exec backend npm run test`
-    * **Run Linter**: `docker-compose exec backend npm run lint`
+    * **Manually Run Migrations**: `docker-compose exec backend npm run db:migrate` (usually not needed - runs automatically)
+    * **Manually Run Seeders**: `docker-compose exec backend npm run db:seed:all`
 
 ---
 
