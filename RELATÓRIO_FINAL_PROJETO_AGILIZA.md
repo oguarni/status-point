@@ -1,261 +1,190 @@
-Relatório Final: Projeto Agiliza - Intelligent Vulnerability Triage Tool
+# Relatório Final de Entrega - Projeto Agiliza
 
-1. Visão Geral e Regras de Negócio
+**Disciplina:** Arquitetura de Software
 
-1.1. Objetivo do Sistema
+**Projeto:** Sistema de Gerenciamento de Tarefas (Agiliza)
 
-O Intelligent Vulnerability Triage Tool é uma solução de segurança projetada para combater a "fadiga de alertas" em ambientes DevSecOps. Seu objetivo principal é utilizar Inteligência Artificial (Machine Learning) para analisar e priorizar automaticamente vulnerabilidades de segurança detectadas por scanners (como OWASP Dependency-Check), distinguindo entre riscos críticos reais e falsos positivos ou alertas de baixa relevância.
+---
 
-1.2. Regras de Negócio
+## 1. Visão Geral
 
-Priorização Inteligente: Vulnerabilidades não são classificadas apenas pelo CVSS, mas analisadas semanticamente por modelos de IA (Naive Bayes ou BERT) para determinar a probabilidade real de exploração.
+O Agiliza é um sistema full-stack de gerenciamento de tarefas e projetos, desenvolvido para demonstrar a aplicação prática de **Clean Architecture**, princípios **SOLID** e **Domain-Driven Design (DDD)**. O sistema permite que equipes organizem fluxos de trabalho através de quadros Kanban, com controle de acesso hierárquico.
 
-Enriquecimento de Dados: Toda vulnerabilidade identificada deve ser enriquecida, quando possível, com dados externos (NVD e EPSS) para validar sua severidade.
+---
 
-Segurança de Acesso: O uso da ferramenta via interface web requer autenticação por sessão. O uso via API requer uma chave de API (API Key) válida e ativa.
+## 2. Semana 1: Regras de Negócio e Papéis
 
-Fallback Resiliente: Em caso de falha ou indisponibilidade do modelo de IA avançado (BERT), o sistema deve degradar graciosamente para o modelo base (Naive Bayes) ou para uma heurística baseada em regras, garantindo que o usuário sempre receba uma resposta.
+### 2.1. Papéis Definidos (RBAC)
 
-Privacidade de Dados: Dados sensíveis dos relatórios não devem ser retidos por mais tempo que o necessário para a análise (cache com TTL).
+O sistema implementa um **Controle de Acesso Baseado em Papel** (Role-Based Access Control) com três níveis hierárquicos:
 
-1.3. Usuários em Potencial (Personas)
+**Administrador (admin):**
+- Possui acesso irrestrito a todo o sistema.
+- Pode criar e gerenciar outros usuários e atribuir papéis.
+- Visualiza e gerencia todos os projetos e tarefas.
 
-Engenheiro de Segurança (Security Analyst): Precisa filtrar milhares de alertas para focar nos 5-10% que representam risco real à infraestrutura.
+**Gestor (gestor):**
+- Foco no nível tático/gerencial.
+- Pode criar, editar e excluir Projetos.
+- Pode visualizar tarefas de sua equipe e gerar relatórios.
 
-Desenvolvedor (DevSecOps): Deseja feedback rápido no pipeline de CI/CD sobre se uma nova dependência introduziu uma falha crítica, sem esperar dias por uma revisão manual.
+**Colaborador (colaborador):**
+- Foco operacional.
+- Pode criar e gerenciar suas próprias Tarefas.
+- Não tem permissão para criar ou excluir Projetos.
+- Pode interagir (comentar/anexar) em tarefas atribuídas a ele.
 
-Gerente de Engenharia: Precisa de métricas sobre a postura de segurança e a eficiência do time na correção de falhas.
+### 2.2. Regras de Negócio Principais
 
-2. Definição dos Requisitos
+- **RN01 - Unicidade de E-mail:** Não é permitido o cadastro de dois usuários com o mesmo endereço de e-mail.
+- **RN02 - Propriedade de Tarefa:** Apenas o criador da tarefa (ou um Admin) pode excluí-la, garantindo a integridade do histórico de trabalho.
+- **RN03 - Fluxo de Status:** As tarefas devem seguir um fluxo lógico de estados (`todo` -> `in_progress` -> `completed`), embora o sistema permita flexibilidade via Kanban.
+- **RN04 - Segurança de Projetos:** Apenas usuários com perfil `gestor` ou superior podem instanciar novos projetos no sistema.
 
-2.1. Épicos
+### 2.3. Ferramenta de Gerenciamento
 
-Gestão de Identidade e Acesso: Controle de quem pode acessar a ferramenta e gerar chaves de API.
+A equipe utilizou o **GitHub Projects** para organização das Sprints, adotando a metodologia Kanban para o fluxo de desenvolvimento das features.
 
-Motor de Triagem e Inferência: O núcleo de IA que processa descrições de vulnerabilidades.
+---
 
-Gestão de Relatórios e Dashboard: Interface para upload de arquivos e visualização amigável dos resultados.
+## 3. Semana 2: Detalhamento dos Requisitos
 
-Integração e Enriquecimento: Conexão com fontes externas de dados de segurança.
+### 3.1. Requisitos Funcionais (RF)
 
-2.2. Histórias de Usuário (HU) e Tasks
+O sistema atende aos seguintes requisitos funcionais, organizados por Épicos:
 
-Épico 1: Gestão de Identidade
+**Épico 01: Autenticação e Gestão de Usuários**
+- **RF01:** O sistema deve permitir o registro de novos usuários (papel padrão: Colaborador).
+- **RF02:** O sistema deve permitir o login via e-mail e senha (autenticação JWT).
 
-HU-01: Como usuário, quero criar uma conta e fazer login para acessar o sistema de forma segura.
+**Épico 02: Gestão de Projetos**
+- **RF03:** O usuário Gestor/Admin deve conseguir criar, editar, listar e excluir Projetos.
+- **RF04:** O sistema deve validar prazos de projetos (não permitir datas passadas na criação).
 
-Task: Criar modelos de banco de dados para Usuários (app/models/user.py).
+**Épico 03: Gestão de Tarefas (Core)**
+- **RF05:** O usuário deve conseguir criar tarefas com Título, Descrição, Prioridade e Prazo.
+- **RF06:** O usuário deve conseguir visualizar suas tarefas em formato de lista ou Quadro Kanban.
+- **RF07:** O sistema deve permitir arrastar e soltar (drag-and-drop) tarefas para mudar seu status (A Fazer, Em Progresso, Concluído, Bloqueado).
+- **RF08:** O usuário deve conseguir filtrar tarefas por Status, Prioridade ou Projeto.
 
-Task: Implementar rotas de Login/Registro com Flask-Login (app/auth_routes.py).
+**Épico 04: Colaboração**
+- **RF09:** O usuário deve conseguir adicionar comentários em uma tarefa.
+- **RF10:** O sistema deve permitir o upload de anexos (arquivos) em uma tarefa.
 
-Task: Criar templates HTML para formulários de acesso.
+### 3.2. Requisitos Não Funcionais (RNF)
 
-HU-02: Como desenvolvedor, quero gerar uma API Key para integrar a ferramenta ao meu pipeline CI/CD.
+- **RNF01 - Arquitetura:** O backend deve seguir estritamente a Clean Architecture, isolando o domínio de frameworks externos.
+- **RNF02 - Segurança:** As senhas devem ser armazenadas com hash (bcrypt) e a API deve ser protegida por tokens JWT.
+- **RNF03 - Internacionalização (i18n):** O frontend deve suportar múltiplos idiomas (Português e Inglês).
+- **RNF04 - Portabilidade:** O sistema deve ser empacotado em contêineres Docker para fácil implantação.
+- **RNF05 - Tecnologia:**
+  - Backend: Node.js + TypeScript + Express + Sequelize.
+  - Frontend: React + TypeScript + TailwindCSS.
+  - Banco de Dados: PostgreSQL.
 
-Task: Implementar lógica de geração de token seguro (secrets.token_urlsafe).
+---
 
-Task: Criar interface de perfil para visualizar/revogar chaves.
+## 4. Semana 3: Modelagem Arquitetural
 
-Épico 2: Motor de Triagem
+### 4.1. Modelo C4
 
-HU-03: Como analista, quero que o sistema classifique automaticamente a severidade baseada na descrição do problema.
+A documentação arquitetural segue o modelo C4, conforme diagramas gerados na pasta `docs/diagrams/`:
 
-Task: Treinar modelo Naive Bayes com dataset CVE (scripts/train_naive_bayes.py).
+- **Nível 1 (Contexto):** Demonstra a interação do Usuário com o Sistema Agiliza.
+- **Nível 2 (Contêineres):** Detalha a separação entre Frontend (SPA), Backend (API) e Database.
+- **Nível 3 (Componentes):** Explode o Backend API para mostrar as camadas da Clean Architecture.
 
-Task: Implementar serviço de inferência com padrão Strategy (app/core/inference_service.py).
+### 4.2. Diagrama de Banco de Dados (DER)
 
-Task: Implementar modelo BERT para maior precisão (opcional/avançado).
+O esquema relacional foi implementado em PostgreSQL utilizando Sequelize. Abaixo o diagrama Entidade-Relacionamento gerado a partir dos modelos:
 
-Épico 3: Dashboard
-
-HU-04: Como usuário, quero fazer upload de um relatório JSON (OWASP) e ver os resultados priorizados.
-
-Task: Criar parser para formato OWASP Dependency-Check.
-
-Task: Desenvolver tela de upload com Drag-and-Drop (templates/index.html).
-
-Task: Desenvolver dashboard de resultados com gráficos e tabelas (templates/results.html).
-
-Épico 4: Integração
-
-HU-05: Como analista, quero ver o score EPSS (probabilidade de exploração) junto com a vulnerabilidade.
-
-Task: Criar serviço de integração com API da FIRST.org (app/core/epss_service.py).
-
-Task: Integrar dados do NVD para confirmar CVSS oficial.
-
-2.3. Requisitos Não Funcionais (Atributos de Qualidade)
-
-Desempenho: A inferência do modelo Naive Bayes deve ocorrer em menos de 100ms por item.
-
-Usabilidade: A interface deve ser responsiva (Tailwind CSS) e intuitiva para usuários não técnicos.
-
-Confiabilidade: O sistema deve possuir mecanismos de retry para chamadas externas e fallback caso o Redis ou APIs externas estejam offline.
-
-Manutenibilidade: O código deve seguir a Clean Architecture, separando camadas de apresentação, domínio e infraestrutura.
-
-3. Arquitetura
-
-3.1. Diagrama Arquitetural
-
-O sistema segue uma arquitetura em camadas (Clean Architecture) com serviços desacoplados.
-
-graph TD
-    subgraph "Camada de Apresentação (Frontend/API)"
-        UI[Interface Web<br/>HTML/Jinja2/Tailwind]
-        API[REST API v1<br/>Flask Blueprints]
-    end
-
-    subgraph "Camada de Aplicação (Core)"
-        AuthService[Serviço de Autenticação]
-        InferenceService[Serviço de Inferência IA]
-        EnrichmentService[Serviço de Enriquecimento]
-    end
-
-    subgraph "Camada de Infraestrutura"
-        DB[(SQLite<br/>Usuários/Logs)]
-        Redis[(Redis<br/>Cache/Rate Limit)]
-        ModelLoader[Carregador de Modelos ML]
-    end
-
-    subgraph "Serviços Externos"
-        NVD[API NVD NIST]
-        EPSS[API FIRST.org]
-    end
-
-    UI --> API
-    API --> AuthService
-    API --> InferenceService
-    API --> EnrichmentService
-    
-    AuthService --> DB
-    InferenceService --> Redis
-    InferenceService --> ModelLoader
-    EnrichmentService --> NVD
-    EnrichmentService --> EPSS
-
-
-3.2. Definição de Tecnologias
-
-Linguagem: Python 3.10+
-
-Framework Web: Flask (Leve, flexível e robusto).
-
-Banco de Dados: SQLite (Simplicidade para o MVP, compatível com SQLAlchemy).
-
-Cache/Filas: Redis (Opcional, com fallback em memória implementado).
-
-Machine Learning: scikit-learn (Naive Bayes) e Transformers/PyTorch (BERT).
-
-Frontend: HTML5, Jinja2 Templating, Tailwind CSS (CDN).
-
-Testes: Pytest com cobertura de código.
-
-3.3. Diagrama de Banco de Dados
-
-Modelo simplificado focado na gestão de usuários e acesso, já que as análises são processadas em tempo real e cacheadas no Redis, sem persistência longa de relatórios (por privacidade).
-
+```mermaid
 erDiagram
-    USER {
+    Users ||--o{ Projects : "gerencia (gestor_id)"
+    Users ||--o{ Tasks : "cria (user_id)"
+    Users ||--o{ Tasks : "atribuído a (assignee_id)"
+    Users ||--o{ TaskComments : "escreve"
+    Users ||--o{ TaskHistory : "gera histórico"
+    Users ||--o{ TaskAttachments : "faz upload"
+
+    Projects ||--o{ Tasks : "contém"
+
+    Tasks ||--o{ TaskComments : "possui"
+    Tasks ||--o{ TaskAttachments : "possui"
+    Tasks ||--o{ TaskHistory : "possui"
+
+    Users {
         int id PK
-        string username "Unique"
-        string password_hash
-        string api_key "Indexed, Unique"
-        datetime created_at
-        boolean is_active
+        string name
+        string email UK
+        enum role
     }
 
+    Projects {
+        int id PK
+        string title
+        datetime deadline
+        int gestor_id FK
+    }
 
-4. Documento Sumarizando
+    Tasks {
+        int id PK
+        string title
+        enum status
+        enum priority
+        int project_id FK
+        int assignee_id FK
+    }
+```
 
-4.1. Objetivo do Sistema
+> **Nota:** O diagrama completo com atributos detalhados está disponível no arquivo `docs/diagrams/database_schema.mermaid`.
 
-Reduzir o tempo gasto por equipes de segurança na análise manual de vulnerabilidades, provendo uma triagem automatizada que separa o "sinal" do "ruído".
+---
 
-4.2. Regras de Negócio e Personas
+## 5. Semana 4 e 5: Desenvolvimento do MVP (Entregáveis)
 
-O sistema atende Engenheiros de Segurança e Desenvolvedores que operam sob a regra de que "nem todo CVSS alto é uma emergência real". O sistema aplica inteligência para validar o contexto da vulnerabilidade.
+O desenvolvimento atingiu e superou a meta de 5 funcionalidades completas.
 
-4.3. Próximos Passos
+### Funcionalidades Entregues (Status: ✅ Concluído)
 
-Expansão do Dataset de treinamento para cobrir mais linguagens além de Java/Python.
+1. **Sistema de Login e Registro Seguro:** Backend seguro com JWT e Frontend responsivo.
+2. **CRUD de Projetos com Validação de Papel:** Regra de negócio onde apenas gestores gerenciam projetos.
+3. **Quadro Kanban Interativo:** Visualização visual das tarefas com Drag-and-Drop.
+4. **Sistema de Busca e Filtros Avançados:** Filtros por texto, prioridade e status via SQL otimizado.
+5. **Anexos e Uploads:** Gestão de arquivos vinculados a tarefas.
+6. **Internacionalização:** Suporte completo a PT-BR e EN.
 
-Implementação de Webhooks para notificar Slack/Teams quando uma vulnerabilidade crítica for detectada.
+---
 
-Deploy automatizado em Kubernetes para escalabilidade horizontal do modelo BERT.
+## 6. Procedimentos de Operação (Deploy)
 
-5. Telas e Fluxo do Sistema
+O projeto utiliza Docker para padronização de ambiente.
 
-Fluxo Principal
+### Pré-requisitos
 
-Login/Registro: O usuário cria uma conta ou entra.
+- Docker e Docker Compose.
 
-Home/Upload: O usuário faz upload de um arquivo dependency-check-report.json.
+### Como Rodar
 
-Processamento: O backend lê o JSON, extrai descrições, passa pelos modelos de ML e consulta APIs externas.
+1. **Clonar o repositório:**
+   ```bash
+   git clone https://github.com/oguarni/status-point.git
+   ```
 
-Resultados: O usuário visualiza uma tabela com as vulnerabilidades re-priorizadas.
+2. **Subir a aplicação:**
+   ```bash
+   docker-compose up --build -d
+   ```
 
-Explicação das Telas (Mockup Conceitual)
+3. **Acessar:**
+   - Frontend: `http://localhost:3000`
+   - API: `http://localhost:3001`
 
-Tela 1: Upload (Home)
+---
 
-Interface limpa com uma área de "Drag & Drop". Permite ao usuário escolher entre o modelo rápido (Naive Bayes) ou o modelo preciso (BERT).
+## Autores
 
-Ação: Usuário arrasta arquivo JSON e clica em "Analisar".
+- Gabriel Felipe Guarnieri
+- Aurélio Antonio Brites de Miranda
 
-Tela 2: Dashboard de Resultados
-
-Apresenta cards com métricas no topo:
-
-Total de Vulnerabilidades: Contagem bruta.
-
-Alertas Críticos (IA): Quantos a IA considerou realmente perigosos.
-
-Taxa de Redução: Porcentagem de trabalho economizado (ex: 70%).
-
-Abaixo, uma tabela detalhada com colunas:
-
-Prioridade IA: Crítico, Alto, Médio, Baixo (Colorido).
-
-CVE ID: Link para detalhes.
-
-Score Original vs IA: Comparativo visual.
-
-Enriquecimento: Ícones indicando se há exploit conhecido (EPSS) ou correção disponível.
-
-Tela 3: Perfil e API
-
-Permite ao usuário gerar uma chave de API (sk_...) para usar o sistema via terminal ou script CI/CD, sem precisar da interface gráfica.
-
-6. Entregáveis Finais
-
-6.1. Documentação
-
-Este documento serve como a documentação central dos requisitos funcionais, não funcionais e arquiteturais. A configuração da ferramenta de gerenciamento e instruções de uso estão detalhadas no README.md e CLAUDE.MD presentes no repositório.
-
-6.2. Funcionalidades Desenvolvidas (Checklist)
-
-O MVP entregue contempla as seguintes 5 funcionalidades completas:
-
-✅ Sistema de Autenticação Completo: Login, Registro, Logout e Proteção de Rotas.
-
-✅ API RESTful Segura: Endpoints /api/v1/triage protegidos por API Key.
-
-✅ Motor de Análise Híbrido: Suporte a Naive Bayes (rápido) e BERT (profundo) com fallback automático.
-
-✅ Dashboard Interativo: Visualização de dados com cálculo de redução de ruído em tempo real.
-
-✅ Enriquecimento de Dados: Integração funcional com NVD e EPSS para validação de riscos.
-
-6.3. Deploy e Versionamento
-
-Versionamento: Todo o código fonte está versionado utilizando Git, seguindo padrões de commit semântico.
-
-Ambiente: O projeto está configurado para rodar em containers (Docker ready) ou diretamente em Linux/Windows via script start.sh.
-
-Procedimento de Operação:
-
-# Inicialização rápida
-./start.sh
-# O sistema estará disponível em http://localhost:5000
+**Data:** Dezembro/2025
