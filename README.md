@@ -1,6 +1,6 @@
-<p align="center">
-<img src="frontend/public/android-chrome-512x512.png" alt="Logotipo Agiliza" width="200" />
-</p>
+<div align="center">
+  <img src="frontend/public/android-chrome-512x512.png" alt="Logotipo Agiliza" width="350" />
+</div>
 
 <h1 align="center">Agiliza - Sistema de Gestão de Tarefas</h1>
 
