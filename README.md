@@ -1,9 +1,7 @@
 <p align="center">
-<img src="frontend/public/android-chrome-512x512.png" alt="Logotipo Agiliza" width="400" />
+<img src="frontend/public/android-chrome-512x512.png" alt="Logotipo Agiliza" width="350" />
 </p>
-
 <h1 align="center">Sistema de Gestão de Tarefas</h1>
-
 <p align="center">
 <strong>Arquitetura Limpa | SOLID | DDD | RBAC</strong>
 </p>
