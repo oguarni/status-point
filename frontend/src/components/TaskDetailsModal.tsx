@@ -72,9 +72,10 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose, onTa
   };
 
   const statusOptions = [
-    { value: 'TODO', label: 'To Do', icon: AlertCircle, color: 'text-gray-500' },
-    { value: 'IN_PROGRESS', label: 'In Progress', icon: Clock, color: 'text-blue-500' },
-    { value: 'DONE', label: 'Done', icon: CheckSquare, color: 'text-green-500' }
+    { value: 'todo', label: 'To Do', icon: AlertCircle, color: 'text-gray-500' },
+    { value: 'in_progress', label: 'In Progress', icon: Clock, color: 'text-blue-500' },
+    { value: 'completed', label: 'Completed', icon: CheckSquare, color: 'text-green-500' },
+    { value: 'blocked', label: 'Blocked', icon: AlertCircle, color: 'text-red-500' }
   ];
 
   return (

@@ -6,7 +6,7 @@ export class Task {
     public readonly assigneeId: number | null,
     public readonly title: string,
     public readonly description: string | null,
-    public readonly status: 'pending' | 'completed',
+    public readonly status: 'todo' | 'in_progress' | 'completed' | 'blocked',
     public readonly priority: 'low' | 'medium' | 'high' | null,
     public readonly dueDate: Date | null,
     public readonly createdAt: Date,
@@ -73,5 +73,29 @@ export class Task {
       default:
         return 0;
     }
+  }
+
+  /**
+   * Check if the task is in progress
+   * @returns true if the task status is in_progress
+   */
+  isInProgress(): boolean {
+    return this.status === 'in_progress';
+  }
+
+  /**
+   * Check if the task is blocked
+   * @returns true if the task status is blocked
+   */
+  isBlocked(): boolean {
+    return this.status === 'blocked';
+  }
+
+  /**
+   * Check if the task is actionable (not blocked or completed)
+   * @returns true if task can be worked on
+   */
+  isActionable(): boolean {
+    return this.status !== 'blocked' && this.status !== 'completed';
   }
 }

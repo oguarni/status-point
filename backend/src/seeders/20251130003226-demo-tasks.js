@@ -57,7 +57,7 @@ module.exports = {
       {
         title: 'Implement payment gateway integration',
         description: 'Integrate Stripe and PayPal payment gateways with proper error handling and webhook support.',
-        status: 'pending',
+        status: 'todo',
         priority: 'high',
         due_date: new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000), // 5 days from now
         user_id: colaboradorId,
@@ -68,7 +68,7 @@ module.exports = {
       {
         title: 'Write unit tests for cart functionality',
         description: 'Create comprehensive unit tests for shopping cart operations including add, remove, update quantity, and checkout.',
-        status: 'pending',
+        status: 'todo',
         priority: 'medium',
         due_date: new Date(now.getTime() + 8 * 24 * 60 * 60 * 1000), // 8 days from now
         user_id: colaboradorId,
@@ -92,7 +92,7 @@ module.exports = {
       {
         title: 'Implement push notifications',
         description: 'Add Firebase Cloud Messaging for push notifications on iOS and Android with notification permissions handling.',
-        status: 'pending',
+        status: 'todo',
         priority: 'high',
         due_date: new Date(now.getTime() + 12 * 24 * 60 * 60 * 1000), // 12 days from now
         user_id: colaboradorId,
@@ -103,7 +103,7 @@ module.exports = {
       {
         title: 'Implement biometric authentication',
         description: 'Add fingerprint and face ID authentication for secure app access using React Native Biometrics.',
-        status: 'pending',
+        status: 'todo',
         priority: 'medium',
         due_date: new Date(now.getTime() + 20 * 24 * 60 * 60 * 1000), // 20 days from now
         user_id: colaboradorId,
@@ -127,7 +127,7 @@ module.exports = {
       {
         title: 'Review code for PR #342',
         description: 'Code review for authentication refactoring pull request. Check for security issues and best practices.',
-        status: 'pending',
+        status: 'todo',
         priority: 'medium',
         due_date: new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
         user_id: colaboradorId,
@@ -138,7 +138,7 @@ module.exports = {
       {
         title: 'Prepare presentation for team meeting',
         description: 'Create slides about recent performance improvements and optimization results.',
-        status: 'pending',
+        status: 'todo',
         priority: 'low',
         due_date: new Date(now.getTime() + 4 * 24 * 60 * 60 * 1000), // 4 days from now
         user_id: colaboradorId,
@@ -162,7 +162,7 @@ module.exports = {
       {
         title: 'Conduct team performance reviews',
         description: 'Schedule and conduct quarterly performance reviews for all team members. Prepare feedback and development plans.',
-        status: 'pending',
+        status: 'todo',
         priority: 'high',
         due_date: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
         user_id: gestorId,
@@ -173,7 +173,7 @@ module.exports = {
       {
         title: 'Approve budget allocation for Q2',
         description: 'Review and approve budget requests for all departments for Q2. Submit to finance by deadline.',
-        status: 'pending',
+        status: 'todo',
         priority: 'high',
         due_date: new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000), // 3 days from now
         user_id: gestorId,
@@ -195,7 +195,7 @@ module.exports = {
       {
         title: 'Hire security consultant',
         description: 'Interview and hire external security consultant for comprehensive audit. Check credentials and references.',
-        status: 'pending',
+        status: 'todo',
         priority: 'medium',
         due_date: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000), // 10 days from now
         user_id: gestorId,
@@ -206,7 +206,7 @@ module.exports = {
       {
         title: 'Define customer portal requirements',
         description: 'Work with stakeholders to define detailed requirements for customer portal features and user flows.',
-        status: 'pending',
+        status: 'todo',
         priority: 'medium',
         due_date: new Date(now.getTime() + 15 * 24 * 60 * 60 * 1000), // 15 days from now
         user_id: gestorId,
@@ -230,7 +230,7 @@ module.exports = {
       {
         title: 'Implement backup and disaster recovery',
         description: 'Setup automated backups, disaster recovery procedures, and test restoration process.',
-        status: 'pending',
+        status: 'todo',
         priority: 'high',
         due_date: new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000), // 5 days from now
         user_id: adminId,
@@ -252,7 +252,7 @@ module.exports = {
       {
         title: 'Review and update security policies',
         description: 'Review all security policies, update password requirements, implement 2FA, and create security training materials.',
-        status: 'pending',
+        status: 'todo',
         priority: 'high',
         due_date: new Date(now.getTime() + 6 * 24 * 60 * 60 * 1000), // 6 days from now
         user_id: adminId,
@@ -263,7 +263,7 @@ module.exports = {
       {
         title: 'Optimize database queries',
         description: 'Analyze slow queries, add missing indexes, optimize query plans, and implement query caching.',
-        status: 'pending',
+        status: 'todo',
         priority: 'medium',
         due_date: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000), // 10 days from now
         user_id: adminId,
@@ -274,7 +274,7 @@ module.exports = {
       {
         title: 'Setup monitoring and alerting',
         description: 'Configure Grafana/Prometheus for system monitoring, create dashboards, and setup alert notifications.',
-        status: 'pending',
+        status: 'todo',
         priority: 'medium',
         due_date: new Date(now.getTime() + 12 * 24 * 60 * 60 * 1000), // 12 days from now
         user_id: adminId,
@@ -285,7 +285,7 @@ module.exports = {
       {
         title: 'Conduct security audit',
         description: 'Perform comprehensive security audit including vulnerability scanning, penetration testing, and compliance checks.',
-        status: 'pending',
+        status: 'todo',
         priority: 'high',
         due_date: new Date(now.getTime() + 8 * 24 * 60 * 60 * 1000), // 8 days from now
         user_id: adminId,
@@ -309,7 +309,7 @@ module.exports = {
       {
         title: 'Fix login page responsive design',
         description: 'Login page has layout issues on mobile devices. Fix CSS and test on various screen sizes.',
-        status: 'pending',
+        status: 'todo',
         priority: 'low',
         due_date: new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000), // 14 days from now
         user_id: colaboradorId,
@@ -320,7 +320,7 @@ module.exports = {
       {
         title: 'Update dependencies to latest versions',
         description: 'Review and update all npm packages to latest stable versions. Test for breaking changes.',
-        status: 'pending',
+        status: 'todo',
         priority: 'low',
         due_date: new Date(now.getTime() + 18 * 24 * 60 * 60 * 1000), // 18 days from now
         user_id: adminId,
@@ -331,7 +331,7 @@ module.exports = {
       {
         title: 'Create user onboarding flow',
         description: 'Design and implement user onboarding tutorial for new users with interactive walkthroughs.',
-        status: 'pending',
+        status: 'todo',
         priority: 'medium',
         due_date: new Date(now.getTime() + 25 * 24 * 60 * 60 * 1000), // 25 days from now
         user_id: colaboradorId,

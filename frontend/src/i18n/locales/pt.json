@@ -28,7 +28,8 @@
     "create": "Criar",
     "update": "Atualizar",
     "logout": "Sair",
-    "close": "Fechar"
+    "close": "Fechar",
+    "all": "Todos"
   },
   "about": {
     "title": "Sobre o Agiliza",
@@ -51,8 +52,9 @@
   "status": {
     "todo": "A Fazer",
     "pending": "Pendente",
-    "completed": "Concluído",
+    "completed": "Concluída",
     "in_progress": "Em Progresso",
+    "blocked": "Bloqueada",
     "done": "Concluído"
   },
   "task": {
@@ -77,9 +79,15 @@
   "kanban": {
     "title": "Quadro Kanban",
     "dragAndDrop": "Arraste e solte tarefas para alterar o status",
+    "todo": "A Fazer",
     "pending": "Pendente",
-    "completed": "Concluído",
+    "inProgress": "Em Progresso",
+    "completed": "Concluídas",
+    "blocked": "Bloqueadas",
     "noTasksInColumn": "Nenhuma tarefa nesta coluna",
+    "startTask": "Iniciar Tarefa",
+    "markBlocked": "Marcar como Bloqueada",
+    "unblock": "Desbloquear",
     "reopen": "Reabrir Tarefa"
   },
   "tasks": {
@@ -93,7 +101,15 @@
     "status": "Status",
     "noTasks": "Nenhuma tarefa encontrada. Crie uma nova tarefa para começar!",
     "markComplete": "Marcar como Concluída",
-    "deleteConfirm": "Tem certeza que deseja excluir esta tarefa?"
+    "deleteConfirm": "Tem certeza que deseja excluir esta tarefa?",
+    "searchAndFilter": "Buscar e Filtrar",
+    "search": "Buscar",
+    "searchPlaceholder": "Buscar por título ou descrição...",
+    "filterByStatus": "Filtrar por Status",
+    "filterByPriority": "Filtrar por Prioridade",
+    "filterByProject": "Filtrar por Projeto",
+    "applyFilters": "Aplicar Filtros",
+    "clearFilters": "Limpar Filtros"
   },
   "priority": {
     "low": "Baixa",

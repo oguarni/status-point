@@ -15,6 +15,7 @@ describe('CreateTaskUseCase', () => {
       findAllByUserId: jest.fn(),
       findAllByUserIdPaginated: jest.fn(),
       findAllByProjectId: jest.fn(),
+      findAllByUserIdWithFilters: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -46,7 +47,7 @@ describe('CreateTaskUseCase', () => {
       null, // assigneeId
       input.title,
       input.description!,
-      'pending',
+      'todo',
       input.priority,
       null,
       new Date(),
@@ -64,7 +65,7 @@ describe('CreateTaskUseCase', () => {
       description: input.description,
       priority: input.priority,
       due_date: undefined,
-      status: 'pending',
+      status: 'todo',
     });
     expect(mockLogger.info).toHaveBeenCalledWith(
       `Creating task for user ${userId}`,
@@ -117,7 +118,7 @@ describe('CreateTaskUseCase', () => {
       null, // assigneeId
       input.title,
       null,
-      'pending',
+      'todo',
       null,
       null,
       new Date(),

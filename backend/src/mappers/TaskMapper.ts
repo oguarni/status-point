@@ -9,7 +9,7 @@ export interface TaskAttributes {
   assignee_id: number | null;
   title: string;
   description: string | null;
-  status: 'pending' | 'completed';
+  status: 'todo' | 'in_progress' | 'completed' | 'blocked';
   priority: 'low' | 'medium' | 'high' | null;
   due_date: Date | null;
   created_at: Date;

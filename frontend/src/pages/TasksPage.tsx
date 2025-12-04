@@ -23,6 +23,12 @@ const TasksPage: React.FC = () => {
   const [dueDate, setDueDate] = useState('');
   const [projectId, setProjectId] = useState<number | null>(null);
 
+  // Filter state
+  const [searchText, setSearchText] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('');
+  const [priorityFilter, setPriorityFilter] = useState<string>('');
+  const [projectFilter, setProjectFilter] = useState<string>('');
+
   useEffect(() => {
     fetchTasks();
     fetchProjects();
@@ -31,7 +37,18 @@ const TasksPage: React.FC = () => {
   const fetchTasks = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/tasks');
+
+      // Build query parameters
+      const params = new URLSearchParams();
+      if (searchText) params.append('search', searchText);
+      if (statusFilter) params.append('status', statusFilter);
+      if (priorityFilter) params.append('priority', priorityFilter);
+      if (projectFilter) params.append('projectId', projectFilter);
+
+      // Use search endpoint if any filters are applied, otherwise use regular endpoint
+      const endpoint = params.toString() ? `/tasks/search?${params.toString()}` : '/tasks';
+
+      const response = await api.get(endpoint);
       setTasks(response.data.data);
       setError('');
     } catch (err: any) {
@@ -117,6 +134,19 @@ const TasksPage: React.FC = () => {
     setDueDate('');
     setProjectId(null);
     setShowForm(false);
+  };
+
+  const handleApplyFilters = () => {
+    fetchTasks();
+  };
+
+  const handleClearFilters = () => {
+    setSearchText('');
+    setStatusFilter('');
+    setPriorityFilter('');
+    setProjectFilter('');
+    // Filters will be cleared, so fetch all tasks
+    setTimeout(() => fetchTasks(), 0);
   };
 
   const getPriorityStyle = (priority: string | null | undefined): React.CSSProperties => {
@@ -242,6 +272,78 @@ const TasksPage: React.FC = () => {
           </form>
         )}
 
+        {/* Search and Filter Section */}
+        <div style={styles.filterSection}>
+          <h3 style={styles.filterTitle}>{t('tasks.searchAndFilter') || 'Search & Filter'}</h3>
+
+          <div style={styles.filterGrid}>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>{t('tasks.search') || 'Search'}</label>
+              <input
+                type="text"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                style={styles.input}
+                placeholder={t('tasks.searchPlaceholder') || 'Search by title or description...'}
+              />
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>{t('tasks.filterByStatus') || 'Filter by Status'}</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                style={styles.input}
+              >
+                <option value="">{t('common.all') || 'All'}</option>
+                <option value="todo">{t('status.todo')}</option>
+                <option value="in_progress">{t('status.in_progress')}</option>
+                <option value="completed">{t('status.completed')}</option>
+                <option value="blocked">{t('status.blocked')}</option>
+              </select>
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>{t('tasks.filterByPriority') || 'Filter by Priority'}</label>
+              <select
+                value={priorityFilter}
+                onChange={(e) => setPriorityFilter(e.target.value)}
+                style={styles.input}
+              >
+                <option value="">{t('common.all') || 'All'}</option>
+                <option value="low">{t('priority.low')}</option>
+                <option value="medium">{t('priority.medium')}</option>
+                <option value="high">{t('priority.high')}</option>
+              </select>
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>{t('tasks.filterByProject') || 'Filter by Project'}</label>
+              <select
+                value={projectFilter}
+                onChange={(e) => setProjectFilter(e.target.value)}
+                style={styles.input}
+              >
+                <option value="">{t('common.all') || 'All'}</option>
+                {projects.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div style={styles.filterActions}>
+            <button onClick={handleApplyFilters} style={styles.applyButton}>
+              {t('tasks.applyFilters') || 'Apply Filters'}
+            </button>
+            <button onClick={handleClearFilters} style={styles.clearButton}>
+              {t('tasks.clearFilters') || 'Clear Filters'}
+            </button>
+          </div>
+        </div>
+
         {/* Tasks list */}
         {loading ? (
           <p style={styles.loading}>{t('common.loading')}</p>
@@ -281,7 +383,7 @@ const TasksPage: React.FC = () => {
                   </div>
 
                   <div style={styles.actions} onClick={(e) => e.stopPropagation()}>
-                    {task.status === 'pending' && (
+                    {(task.status === 'todo' || task.status === 'in_progress') && (
                       <button
                         onClick={() => handleCompleteTask(task.id)}
                         style={styles.completeButton}
@@ -521,6 +623,53 @@ const styles: { [key: string]: React.CSSProperties } = {
     transition: 'background-color 0.2s',
     whiteSpace: 'nowrap',
     minHeight: '36px',
+  },
+  filterSection: {
+    backgroundColor: '#262626',
+    padding: '2rem',
+    borderRadius: '8px',
+    marginBottom: '2rem',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+    border: '1px solid #404040',
+  },
+  filterTitle: {
+    margin: '0 0 1.5rem 0',
+    fontSize: '1.25rem',
+    color: '#E5E5E5',
+    fontWeight: '600',
+  },
+  filterGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gap: '1rem',
+    marginBottom: '1.5rem',
+  },
+  filterActions: {
+    display: 'flex',
+    gap: '1rem',
+    justifyContent: 'flex-end',
+  },
+  applyButton: {
+    padding: '0.75rem 2rem',
+    backgroundColor: '#10B981',
+    color: '#FFFFFF',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: '1rem',
+    transition: 'background-color 0.2s',
+  },
+  clearButton: {
+    padding: '0.75rem 2rem',
+    backgroundColor: '#6B7280',
+    color: '#FFFFFF',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: '1rem',
+    transition: 'background-color 0.2s',
   },
 };
 

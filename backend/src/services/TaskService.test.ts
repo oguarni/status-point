@@ -30,7 +30,7 @@ describe('TaskService', () => {
           id: 1,
           user_id: userId,
           title: 'Task 1',
-          status: 'pending',
+          status: 'todo',
         },
         {
           id: 2,
@@ -65,7 +65,7 @@ describe('TaskService', () => {
         id: 1,
         user_id: userId,
         ...taskData,
-        status: 'pending',
+        status: 'todo',
         created_at: new Date(),
         updated_at: new Date(),
       };
@@ -96,7 +96,7 @@ describe('TaskService', () => {
         null, // assigneeId
         'Task',
         null,
-        'pending',
+        'todo',
         null,
         null,
         new Date(),
@@ -144,7 +144,7 @@ describe('TaskService', () => {
         null, // assigneeId
         'Task',
         null,
-        'pending',
+        'todo',
         null,
         null,
         new Date(),
@@ -183,7 +183,7 @@ describe('TaskService', () => {
         null, // assigneeId
         'Task',
         null,
-        'pending',
+        'todo',
         null,
         null,
         new Date(),
@@ -217,7 +217,7 @@ describe('TaskService', () => {
         null, // assigneeId
         'Original Task',
         null,
-        'pending',
+        'todo',
         null,
         null,
         new Date(),
@@ -231,7 +231,7 @@ describe('TaskService', () => {
         null, // assigneeId
         'Updated Task',
         null,
-        'pending',
+        'todo',
         'low',
         null,
         new Date(),
@@ -264,7 +264,7 @@ describe('TaskService', () => {
         null, // assigneeId
         'Original Task',
         null,
-        'pending',
+        'todo',
         null,
         null,
         new Date(),
@@ -308,7 +308,7 @@ describe('TaskService', () => {
         null, // assigneeId
         'Original Task',
         null,
-        'pending',
+        'todo',
         null,
         null,
         new Date(),
@@ -340,7 +340,7 @@ describe('TaskService', () => {
         null, // assigneeId
         'Task to delete',
         null,
-        'pending',
+        'todo',
         null,
         null,
         new Date(),
@@ -372,7 +372,7 @@ describe('TaskService', () => {
         null, // assigneeId
         'Task',
         null,
-        'pending',
+        'todo',
         null,
         null,
         new Date(),
@@ -397,6 +397,135 @@ describe('TaskService', () => {
       await expect(taskService.deleteTask(userId, taskId)).rejects.toThrow(UserNotFoundError);
       expect(mockTaskRepository.findById).toHaveBeenCalledWith(taskId);
       expect(mockTaskRepository.delete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getTasksKanban', () => {
+    it('should return tasks organized by 4 statuses', async () => {
+      // Arrange
+      const userId = 1;
+      const mockTasks = [
+        new Task(1, userId, null, null, 'Task 1', null, 'todo', null, null, new Date(), new Date()),
+        new Task(2, userId, null, null, 'Task 2', null, 'in_progress', null, null, new Date(), new Date()),
+        new Task(3, userId, null, null, 'Task 3', null, 'completed', null, null, new Date(), new Date()),
+        new Task(4, userId, null, null, 'Task 4', null, 'blocked', null, null, new Date(), new Date()),
+        new Task(5, userId, null, null, 'Task 5', null, 'todo', null, null, new Date(), new Date()),
+      ];
+
+      mockTaskRepository.findAllByUserId.mockResolvedValue(mockTasks);
+
+      // Act
+      const result = await taskService.getTasksKanban(userId);
+
+      // Assert
+      expect(mockTaskRepository.findAllByUserId).toHaveBeenCalledWith(userId);
+      expect(result.todo).toHaveLength(2);
+      expect(result.in_progress).toHaveLength(1);
+      expect(result.completed).toHaveLength(1);
+      expect(result.blocked).toHaveLength(1);
+      expect(result.todo[0].title).toBe('Task 1');
+      expect(result.in_progress[0].title).toBe('Task 2');
+      expect(result.completed[0].title).toBe('Task 3');
+      expect(result.blocked[0].title).toBe('Task 4');
+    });
+
+    it('should return empty arrays when user has no tasks', async () => {
+      // Arrange
+      const userId = 1;
+      mockTaskRepository.findAllByUserId.mockResolvedValue([]);
+
+      // Act
+      const result = await taskService.getTasksKanban(userId);
+
+      // Assert
+      expect(result.todo).toEqual([]);
+      expect(result.in_progress).toEqual([]);
+      expect(result.completed).toEqual([]);
+      expect(result.blocked).toEqual([]);
+    });
+  });
+
+  describe('searchTasks', () => {
+    it('should return all tasks when no filters provided', async () => {
+      // Arrange
+      const userId = 1;
+      const mockTasks = [
+        new Task(1, userId, null, null, 'Task 1', null, 'todo', null, null, new Date(), new Date()),
+        new Task(2, userId, null, null, 'Task 2', null, 'completed', null, null, new Date(), new Date()),
+      ];
+
+      mockTaskRepository.findAllByUserId.mockResolvedValue(mockTasks);
+
+      // Act
+      const result = await taskService.searchTasks(userId, {});
+
+      // Assert
+      expect(mockTaskRepository.findAllByUserId).toHaveBeenCalledWith(userId);
+      expect(result).toEqual(mockTasks);
+    });
+
+    it('should call repository with filters when filters provided', async () => {
+      // Arrange
+      const userId = 1;
+      const filters = {
+        search: 'bug',
+        status: 'in_progress' as const,
+        priority: 'high' as const,
+        projectId: 5,
+      };
+
+      const mockFilteredTasks = [
+        new Task(1, userId, 5, null, 'Bug Fix', null, 'in_progress', 'high', null, new Date(), new Date()),
+      ];
+
+      mockTaskRepository.findAllByUserIdWithFilters = jest.fn().mockResolvedValue(mockFilteredTasks);
+
+      // Act
+      const result = await taskService.searchTasks(userId, filters);
+
+      // Assert
+      expect(mockTaskRepository.findAllByUserIdWithFilters).toHaveBeenCalledWith(userId, filters);
+      expect(result).toEqual(mockFilteredTasks);
+    });
+
+    it('should filter by status only', async () => {
+      // Arrange
+      const userId = 1;
+      const filters = { status: 'blocked' as const };
+
+      const mockFilteredTasks = [
+        new Task(1, userId, null, null, 'Blocked Task', null, 'blocked', null, null, new Date(), new Date()),
+      ];
+
+      mockTaskRepository.findAllByUserIdWithFilters = jest.fn().mockResolvedValue(mockFilteredTasks);
+
+      // Act
+      const result = await taskService.searchTasks(userId, filters);
+
+      // Assert
+      expect(mockTaskRepository.findAllByUserIdWithFilters).toHaveBeenCalledWith(userId, filters);
+      expect(result).toHaveLength(1);
+      expect(result[0].status).toBe('blocked');
+    });
+
+    it('should filter by search term only', async () => {
+      // Arrange
+      const userId = 1;
+      const filters = { search: 'feature' };
+
+      const mockFilteredTasks = [
+        new Task(1, userId, null, null, 'Feature Request', null, 'todo', null, null, new Date(), new Date()),
+        new Task(2, userId, null, null, 'New Feature', null, 'in_progress', null, null, new Date(), new Date()),
+      ];
+
+      mockTaskRepository.findAllByUserIdWithFilters = jest.fn().mockResolvedValue(mockFilteredTasks);
+
+      // Act
+      const result = await taskService.searchTasks(userId, filters);
+
+      // Assert
+      expect(mockTaskRepository.findAllByUserIdWithFilters).toHaveBeenCalledWith(userId, filters);
+      expect(result).toHaveLength(2);
     });
   });
 });

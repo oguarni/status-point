@@ -63,7 +63,7 @@ describe('TaskController Integration Tests', () => {
       // Arrange
       const now = new Date();
       const mockTasks = [
-        new Task(1, 1, null, null, 'Task 1', 'Description 1', 'pending', 'high', null, now, now),
+        new Task(1, 1, null, null, 'Task 1', 'Description 1', 'todo', 'high', null, now, now),
         new Task(2, 1, null, null, 'Task 2', 'Description 2', 'completed', 'low', null, now, now),
       ];
 
@@ -84,7 +84,7 @@ describe('TaskController Integration Tests', () => {
         userId: 1,
         title: 'Task 1',
         description: 'Description 1',
-        status: 'pending',
+        status: 'todo',
         priority: 'high',
       });
       expect(mockGetTasks).toHaveBeenCalledWith(1);
@@ -124,7 +124,7 @@ describe('TaskController Integration Tests', () => {
         null, // assigneeId
         'New Task',
         'Task description',
-        'pending',
+        'todo',
         'medium',
         null,
         new Date(),
@@ -147,7 +147,7 @@ describe('TaskController Integration Tests', () => {
         userId: 1,
         title: 'New Task',
         description: 'Task description',
-        status: 'pending',
+        status: 'todo',
         priority: 'medium',
       });
     });
@@ -230,7 +230,7 @@ describe('TaskController Integration Tests', () => {
         null, // assigneeId
         'Updated Task',
         null,
-        'pending',
+        'todo',
         'high',
         null,
         new Date(),

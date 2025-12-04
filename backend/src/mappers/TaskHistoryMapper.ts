@@ -5,8 +5,8 @@ export interface TaskHistoryAttributes {
   id: number;
   task_id: number;
   user_id: number;
-  previous_status: 'pending' | 'completed' | null;
-  new_status: 'pending' | 'completed';
+  previous_status: 'todo' | 'in_progress' | 'completed' | 'blocked' | null;
+  new_status: 'todo' | 'in_progress' | 'completed' | 'blocked';
   created_at: Date;
 }
 

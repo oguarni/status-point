@@ -2,6 +2,7 @@ import { Task as TaskModel } from '../models';
 import { Task } from '../domain/entities/Task';
 import { TaskMapper } from '../mappers/TaskMapper';
 import { CreateTaskDTO, UpdateTaskDTO, PaginationOptions, PaginatedResult } from '../interfaces/ITaskRepository';
+import { Op } from 'sequelize';
 
 // TaskRepository class - Data Access Layer
 class TaskRepository {
@@ -33,6 +34,58 @@ class TaskRepository {
       return TaskMapper.toDomainList(tasks);
     } catch (error) {
       throw new Error(`Error finding tasks by user ID: ${error}`);
+    }
+  }
+
+  /**
+   * Find all tasks for a specific user with filters (SQL-based)
+   * @param userId - User's ID
+   * @param filters - Search and filter criteria
+   * @returns Array of filtered task domain entities
+   */
+  async findAllByUserIdWithFilters(
+    userId: number,
+    filters: {
+      search?: string;
+      status?: 'todo' | 'in_progress' | 'completed' | 'blocked';
+      priority?: 'low' | 'medium' | 'high';
+      projectId?: number;
+    }
+  ): Promise<Task[]> {
+    try {
+      const where: any = { user_id: userId };
+
+      // Filter by status
+      if (filters.status) {
+        where.status = filters.status;
+      }
+
+      // Filter by priority
+      if (filters.priority) {
+        where.priority = filters.priority;
+      }
+
+      // Filter by project
+      if (filters.projectId !== undefined) {
+        where.project_id = filters.projectId;
+      }
+
+      // Search in title and description using PostgreSQL ILIKE (case-insensitive)
+      if (filters.search) {
+        where[Op.or] = [
+          { title: { [Op.iLike]: `%${filters.search}%` } },
+          { description: { [Op.iLike]: `%${filters.search}%` } }
+        ];
+      }
+
+      const tasks = await TaskModel.findAll({
+        where,
+        order: [['created_at', 'DESC']],
+      });
+
+      return TaskMapper.toDomainList(tasks);
+    } catch (error) {
+      throw new Error(`Error finding filtered tasks by user ID: ${error}`);
     }
   }
 

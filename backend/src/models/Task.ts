@@ -10,7 +10,7 @@ interface TaskAttributes {
   assignee_id: number | null;
   title: string;
   description: string | null;
-  status: 'pending' | 'completed';
+  status: 'todo' | 'in_progress' | 'completed' | 'blocked';
   priority: 'low' | 'medium' | 'high' | null;
   due_date: Date | null;
   created_at: Date;
@@ -28,7 +28,7 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> implements Task
   public assignee_id!: number | null;
   public title!: string;
   public description!: string | null;
-  public status!: 'pending' | 'completed';
+  public status!: 'todo' | 'in_progress' | 'completed' | 'blocked';
   public priority!: 'low' | 'medium' | 'high' | null;
   public due_date!: Date | null;
   public created_at!: Date;
@@ -86,9 +86,9 @@ export const initTaskModel = (sequelize: Sequelize): typeof Task => {
       status: {
         type: DataTypes.STRING(50),
         allowNull: false,
-        defaultValue: 'pending',
+        defaultValue: 'todo',
         validate: {
-          isIn: [['pending', 'completed']],
+          isIn: [['todo', 'in_progress', 'completed', 'blocked']],
         },
       },
       priority: {

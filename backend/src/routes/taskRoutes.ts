@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import TaskController from '../controllers/TaskController';
 import TaskService from '../services/TaskService';
 import TaskRepository from '../repositories/TaskRepository';
@@ -17,6 +17,31 @@ router.use(authMiddleware);
 
 // GET /api/tasks - List all tasks for the logged-in user
 router.get('/', taskController.getTasks);
+
+// GET /api/tasks/search - Search and filter tasks (BEFORE /kanban to avoid route conflicts)
+router.get(
+  '/search',
+  [
+    query('search')
+      .optional()
+      .trim()
+      .isLength({ min: 1, max: 255 })
+      .withMessage('Search query must be 1-255 characters'),
+    query('status')
+      .optional()
+      .isIn(['todo', 'in_progress', 'completed', 'blocked'])
+      .withMessage('Status must be one of: todo, in_progress, completed, blocked'),
+    query('priority')
+      .optional()
+      .isIn(['low', 'medium', 'high'])
+      .withMessage('Priority must be one of: low, medium, high'),
+    query('projectId')
+      .optional()
+      .isInt()
+      .withMessage('Project ID must be an integer'),
+  ],
+  taskController.searchTasks
+);
 
 // GET /api/tasks/kanban - Get tasks organized as Kanban board
 router.get('/kanban', taskController.getTasksKanban);
@@ -73,8 +98,8 @@ router.put(
       .trim(),
     body('status')
       .optional()
-      .isIn(['pending', 'completed'])
-      .withMessage('Status must be one of: pending, completed'),
+      .isIn(['todo', 'in_progress', 'completed', 'blocked'])
+      .withMessage('Status must be one of: todo, in_progress, completed, blocked'),
     body('priority')
       .optional()
       .isIn(['low', 'medium', 'high'])

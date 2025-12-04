@@ -3,8 +3,8 @@ import { TaskHistory } from '../domain/entities/TaskHistory';
 export interface CreateTaskHistoryDTO {
   task_id: number;
   user_id: number;
-  previous_status: 'pending' | 'completed' | null;
-  new_status: 'pending' | 'completed';
+  previous_status: 'todo' | 'in_progress' | 'completed' | 'blocked' | null;
+  new_status: 'todo' | 'in_progress' | 'completed' | 'blocked';
 }
 
 export interface ITaskHistoryRepository {

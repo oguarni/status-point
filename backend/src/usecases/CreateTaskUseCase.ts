@@ -55,7 +55,7 @@ export class CreateTaskUseCase {
       description: input.description,
       priority: input.priority,
       due_date: input.due_date,
-      status: 'pending',
+      status: 'todo',
     };
 
     const task = await this.taskRepository.create(taskData);

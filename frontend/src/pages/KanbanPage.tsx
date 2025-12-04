@@ -8,7 +8,7 @@ interface Task {
   id: number;
   title: string;
   description: string | null;
-  status: 'pending' | 'completed';
+  status: 'todo' | 'in_progress' | 'completed' | 'blocked';
   priority: 'low' | 'medium' | 'high' | null;
   dueDate: string | null;
   userId: number;
@@ -16,13 +16,20 @@ interface Task {
 }
 
 interface KanbanData {
-  pending: Task[];
+  todo: Task[];
+  in_progress: Task[];
   completed: Task[];
+  blocked: Task[];
 }
 
 const KanbanPage: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const [kanbanData, setKanbanData] = useState<KanbanData>({ pending: [], completed: [] });
+  const [kanbanData, setKanbanData] = useState<KanbanData>({
+    todo: [],
+    in_progress: [],
+    completed: [],
+    blocked: []
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -44,13 +51,9 @@ const KanbanPage: React.FC = () => {
     }
   };
 
-  const handleTaskStatusChange = async (taskId: number, newStatus: 'pending' | 'completed') => {
+  const handleTaskStatusChange = async (taskId: number, newStatus: 'todo' | 'in_progress' | 'completed' | 'blocked') => {
     try {
-      if (newStatus === 'completed') {
-        await api.patch(`/tasks/${taskId}/complete`);
-      } else {
-        await api.put(`/tasks/${taskId}`, { status: 'pending' });
-      }
+      await api.put(`/tasks/${taskId}`, { status: newStatus });
       fetchKanbanData();
     } catch (err: any) {
       setError('Failed to update task status');
@@ -80,7 +83,7 @@ const KanbanPage: React.FC = () => {
     return new Date(dueDate) < new Date();
   };
 
-  const TaskCard: React.FC<{ task: Task; onStatusChange: (status: 'pending' | 'completed') => void }> = ({
+  const TaskCard: React.FC<{ task: Task; onStatusChange: (status: 'todo' | 'in_progress' | 'completed' | 'blocked') => void }> = ({
     task,
     onStatusChange,
   }) => {
@@ -129,13 +132,28 @@ const KanbanPage: React.FC = () => {
         </div>
 
         <div style={styles.taskActions}>
-          {task.status === 'pending' && (
-            <button onClick={() => onStatusChange('completed')} style={styles.completeButton}>
-              {t('tasks.markComplete')}
+          {task.status === 'todo' && (
+            <button onClick={() => onStatusChange('in_progress')} style={styles.startButton}>
+              {t('kanban.startTask')}
+            </button>
+          )}
+          {task.status === 'in_progress' && (
+            <>
+              <button onClick={() => onStatusChange('completed')} style={styles.completeButton}>
+                {t('tasks.markComplete')}
+              </button>
+              <button onClick={() => onStatusChange('blocked')} style={styles.blockButton}>
+                {t('kanban.markBlocked')}
+              </button>
+            </>
+          )}
+          {task.status === 'blocked' && (
+            <button onClick={() => onStatusChange('in_progress')} style={styles.unblockButton}>
+              {t('kanban.unblock')}
             </button>
           )}
           {task.status === 'completed' && (
-            <button onClick={() => onStatusChange('pending')} style={styles.reopenButton}>
+            <button onClick={() => onStatusChange('todo')} style={styles.reopenButton}>
               {t('kanban.reopen')}
             </button>
           )}
@@ -144,7 +162,7 @@ const KanbanPage: React.FC = () => {
     );
   };
 
-  const Column: React.FC<{ title: string; status: 'pending' | 'completed'; tasks: Task[] }> = ({
+  const Column: React.FC<{ title: string; status: 'todo' | 'in_progress' | 'completed' | 'blocked'; tasks: Task[] }> = ({
     title,
     status,
     tasks,
@@ -218,8 +236,10 @@ const KanbanPage: React.FC = () => {
           <p style={styles.loading}>{t('common.loading')}</p>
         ) : (
           <div style={styles.board}>
-            <Column title={t('kanban.pending')} status="pending" tasks={kanbanData.pending} />
+            <Column title={t('kanban.todo')} status="todo" tasks={kanbanData.todo} />
+            <Column title={t('kanban.inProgress')} status="in_progress" tasks={kanbanData.in_progress} />
             <Column title={t('kanban.completed')} status="completed" tasks={kanbanData.completed} />
+            <Column title={t('kanban.blocked')} status="blocked" tasks={kanbanData.blocked} />
           </div>
         )}
       </div>
@@ -372,6 +392,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     paddingTop: '0.75rem',
     borderTop: '1px solid #404040',
   },
+  startButton: {
+    flex: 1,
+    padding: '0.5rem 1rem',
+    backgroundColor: '#3B82F6',
+    color: '#FFFFFF',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '0.875rem',
+    fontWeight: '600',
+    transition: 'background-color 0.2s',
+  },
   completeButton: {
     flex: 1,
     padding: '0.5rem 1rem',
@@ -384,10 +416,34 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontWeight: '600',
     transition: 'background-color 0.2s',
   },
+  blockButton: {
+    flex: 1,
+    padding: '0.5rem 1rem',
+    backgroundColor: '#EF4444',
+    color: '#FFFFFF',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '0.875rem',
+    fontWeight: '600',
+    transition: 'background-color 0.2s',
+  },
+  unblockButton: {
+    flex: 1,
+    padding: '0.5rem 1rem',
+    backgroundColor: '#F59E0B',
+    color: '#FFFFFF',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '0.875rem',
+    fontWeight: '600',
+    transition: 'background-color 0.2s',
+  },
   reopenButton: {
     flex: 1,
     padding: '0.5rem 1rem',
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#6B7280',
     color: '#FFFFFF',
     border: 'none',
     borderRadius: '6px',
