@@ -7,8 +7,8 @@ interface TaskHistoryAttributes {
   id: number;
   task_id: number;
   user_id: number;
-  previous_status: 'pending' | 'completed' | null;
-  new_status: 'pending' | 'completed';
+  previous_status: 'todo' | 'in_progress' | 'completed' | 'blocked' | null;
+  new_status: 'todo' | 'in_progress' | 'completed' | 'blocked';
   created_at: Date;
 }
 
@@ -20,8 +20,8 @@ class TaskHistory extends Model<TaskHistoryAttributes, TaskHistoryCreationAttrib
   public id!: number;
   public task_id!: number;
   public user_id!: number;
-  public previous_status!: 'pending' | 'completed' | null;
-  public new_status!: 'pending' | 'completed';
+  public previous_status!: 'todo' | 'in_progress' | 'completed' | 'blocked' | null;
+  public new_status!: 'todo' | 'in_progress' | 'completed' | 'blocked';
   public created_at!: Date;
 
   // Timestamp
@@ -59,14 +59,14 @@ export const initTaskHistoryModel = (sequelize: Sequelize): typeof TaskHistory =
         type: DataTypes.STRING(50),
         allowNull: true,
         validate: {
-          isIn: [['pending', 'completed']],
+          isIn: [['todo', 'in_progress', 'completed', 'blocked']],
         },
       },
       new_status: {
         type: DataTypes.STRING(50),
         allowNull: false,
         validate: {
-          isIn: [['pending', 'completed']],
+          isIn: [['todo', 'in_progress', 'completed', 'blocked']],
         },
       },
       created_at: {

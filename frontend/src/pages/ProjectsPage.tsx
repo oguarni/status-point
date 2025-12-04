@@ -9,7 +9,7 @@ import {
   CreateProjectData,
 } from '../services/projectService';
 import { useTranslation } from 'react-i18next';
-import { formatDateLong } from '../utils/dateFormatter';
+import { formatDate as formatDateLocale } from '../utils/dateFormatter';
 
 const ProjectsPage: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -97,7 +97,7 @@ const ProjectsPage: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return formatDateLong(dateString, i18n.language);
+    return formatDateLocale(dateString, i18n.language);
   };
 
   const isOverdue = (deadline: string) => {
@@ -239,13 +239,14 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   addButton: {
     padding: '0.75rem 1.5rem',
-    backgroundColor: '#F97316',
-    color: '#E5E5E5',
+    backgroundColor: '#3B82F6',
+    color: '#FFFFFF',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: '1rem',
+    transition: 'background-color 0.2s',
   },
   error: {
     padding: '1rem',
@@ -298,26 +299,29 @@ const styles: { [key: string]: React.CSSProperties } = {
   formActions: {
     display: 'flex',
     gap: '1rem',
+    marginTop: '1rem',
   },
   submitButton: {
     padding: '0.75rem 2rem',
-    backgroundColor: '#F97316',
-    color: '#E5E5E5',
+    backgroundColor: '#3B82F6',
+    color: '#FFFFFF',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: '1rem',
+    transition: 'background-color 0.2s',
   },
   cancelButton: {
     padding: '0.75rem 2rem',
-    backgroundColor: '#404040',
-    color: '#E5E5E5',
+    backgroundColor: '#6B7280',
+    color: '#FFFFFF',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: '1rem',
+    transition: 'background-color 0.2s',
   },
   projectGrid: {
     display: 'grid',
@@ -347,8 +351,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   overdueBadge: {
     padding: '0.25rem 0.75rem',
-    backgroundColor: '#dc3545',
-    color: '#E5E5E5',
+    backgroundColor: '#EF4444',
+    color: '#FFFFFF',
     borderRadius: '12px',
     fontSize: '0.75rem',
     fontWeight: '600',
@@ -356,8 +360,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   urgentBadge: {
     padding: '0.25rem 0.75rem',
-    backgroundColor: '#F97316',
-    color: '#E5E5E5',
+    backgroundColor: '#F59E0B',
+    color: '#FFFFFF',
     borderRadius: '12px',
     fontSize: '0.75rem',
     fontWeight: '600',
@@ -388,23 +392,27 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   editButton: {
     flex: 1,
-    padding: '0.5rem',
-    backgroundColor: '#F97316',
-    color: '#E5E5E5',
+    padding: '0.5rem 1rem',
+    backgroundColor: '#3B82F6',
+    color: '#FFFFFF',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
+    fontSize: '0.875rem',
+    transition: 'background-color 0.2s',
   },
   deleteButton: {
     flex: 1,
-    padding: '0.5rem',
-    backgroundColor: '#dc3545',
-    color: '#E5E5E5',
+    padding: '0.5rem 1rem',
+    backgroundColor: '#EF4444',
+    color: '#FFFFFF',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '500',
+    fontWeight: '600',
+    fontSize: '0.875rem',
+    transition: 'background-color 0.2s',
   },
 };
 

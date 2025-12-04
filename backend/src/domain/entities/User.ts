@@ -69,6 +69,14 @@ export class User {
   }
 
   /**
+   * Check if user has permission to manage projects
+   * @returns true if user is admin or gestor
+   */
+  canManageProjects(): boolean {
+    return this.isAdmin() || this.isGestor();
+  }
+
+  /**
    * Get a safe representation of the user (without password)
    * @returns object with safe user data
    */

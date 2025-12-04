@@ -16,10 +16,18 @@ interface CreateTaskDTO {
 interface UpdateTaskDTO {
   title?: string;
   description?: string;
-  status?: 'pending' | 'completed';
+  status?: 'todo' | 'in_progress' | 'completed' | 'blocked';
   priority?: 'low' | 'medium' | 'high';
   due_date?: Date;
   project_id?: number | null;
+}
+
+// Search/Filter DTO
+interface TaskSearchFilters {
+  search?: string;
+  status?: 'todo' | 'in_progress' | 'completed' | 'blocked';
+  priority?: 'low' | 'medium' | 'high';
+  projectId?: number;
 }
 
 // TaskService class - Business Logic Layer
@@ -146,17 +154,47 @@ class TaskService {
   /**
    * Get tasks organized as Kanban board (grouped by status)
    * @param userId - User's ID
-   * @returns Tasks grouped by status
+   * @returns Tasks grouped by 4 statuses
    */
-  async getTasksKanban(userId: number): Promise<{ pending: Task[]; completed: Task[] }> {
+  async getTasksKanban(userId: number): Promise<{
+    todo: Task[];
+    in_progress: Task[];
+    completed: Task[];
+    blocked: Task[];
+  }> {
     const tasks = await this.taskRepository.findAllByUserId(userId);
 
     const kanban = {
-      pending: tasks.filter(task => task.status === 'pending'),
+      todo: tasks.filter(task => task.status === 'todo'),
+      in_progress: tasks.filter(task => task.status === 'in_progress'),
       completed: tasks.filter(task => task.status === 'completed'),
+      blocked: tasks.filter(task => task.status === 'blocked'),
     };
 
     return kanban;
+  }
+
+  /**
+   * Search and filter tasks for a user
+   * @param userId - User's ID
+   * @param filters - Search and filter criteria
+   * @returns Filtered array of tasks
+   */
+  async searchTasks(userId: number, filters: TaskSearchFilters): Promise<Task[]> {
+    // If no filters provided, return all tasks
+    if (Object.keys(filters).length === 0) {
+      return await this.taskRepository.findAllByUserId(userId);
+    }
+
+    // Use repository filtering with SQL WHERE clauses
+    const repositoryFilters = {
+      search: filters.search,
+      status: filters.status,
+      priority: filters.priority,
+      projectId: filters.projectId,
+    };
+
+    return await this.taskRepository.findAllByUserIdWithFilters(userId, repositoryFilters);
   }
 
   /**

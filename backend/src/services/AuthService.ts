@@ -160,6 +160,27 @@ class AuthService {
       user: user.toSafeObject(),
     };
   }
+
+  /**
+   * List all users (for assignment dropdown)
+   * @param requestingUserId - ID of the user requesting the list
+   * @returns Array of users with safe data (no passwords)
+   */
+  async listUsers(requestingUserId: number): Promise<Array<{ id: number; name: string; email: string; role: UserRole }>> {
+    // Verify requesting user has permission
+    const requestingUser = await this.userRepository.findById(requestingUserId);
+    if (!requestingUser) {
+      throw new UserNotFoundError('Requesting user not found');
+    }
+
+    // Only admin and gestor can list users
+    if (!requestingUser.canManageUsers() && !requestingUser.canManageProjects()) {
+      throw new AuthorizationError('Only administrators and managers can list users');
+    }
+
+    const users = await this.userRepository.findAll();
+    return users.map(user => user.toSafeObject());
+  }
 }
 
 export default AuthService;

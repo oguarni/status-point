@@ -8,14 +8,14 @@ export interface CreateTaskDTO {
   description?: string;
   priority?: 'low' | 'medium' | 'high';
   due_date?: Date;
-  status?: 'pending' | 'completed';
+  status?: 'todo' | 'in_progress' | 'completed' | 'blocked';
 }
 
 export interface UpdateTaskDTO {
   project_id?: number | null;
   title?: string;
   description?: string;
-  status?: 'pending' | 'completed';
+  status?: 'todo' | 'in_progress' | 'completed' | 'blocked';
   priority?: 'low' | 'medium' | 'high';
   due_date?: Date;
 }
@@ -35,10 +35,19 @@ export interface PaginatedResult<T> {
   totalPages: number;
 }
 
+// Search/Filter DTO
+export interface TaskSearchFilters {
+  search?: string;
+  status?: 'todo' | 'in_progress' | 'completed' | 'blocked';
+  priority?: 'low' | 'medium' | 'high';
+  projectId?: number;
+}
+
 // Repository Interface
 export interface ITaskRepository {
   findById(id: number): Promise<Task | null>;
   findAllByUserId(userId: number): Promise<Task[]>;
+  findAllByUserIdWithFilters(userId: number, filters: TaskSearchFilters): Promise<Task[]>;
   findAllByProjectId(projectId: number): Promise<Task[]>;
   findAllByUserIdPaginated(userId: number, options: PaginationOptions): Promise<PaginatedResult<Task>>;
   create(data: CreateTaskDTO): Promise<Task>;

@@ -92,6 +92,27 @@ class AuthController {
       next(error);
     }
   };
+
+  /**
+   * List all users
+   * GET /api/auth/users
+   * Requires authentication and admin or gestor role
+   */
+  listUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const requestingUserId = req.user!.id;
+
+      // Call service
+      const users = await this.authService.listUsers(requestingUserId);
+
+      res.status(200).json({
+        message: 'Users retrieved successfully',
+        data: users,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default AuthController;

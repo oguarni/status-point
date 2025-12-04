@@ -51,6 +51,34 @@ class TaskController {
   };
 
   /**
+   * Search and filter tasks
+   * GET /api/tasks/search?search=keyword&status=todo&priority=high&projectId=1
+   */
+  searchTasks = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const { search, status, priority, projectId } = req.query;
+
+      // Build filters object
+      const filters: any = {};
+      if (search) filters.search = search as string;
+      if (status) filters.status = status as string;
+      if (priority) filters.priority = priority as string;
+      if (projectId) filters.projectId = parseInt(projectId as string, 10);
+
+      const tasks = await this.taskService.searchTasks(userId, filters);
+
+      res.status(200).json({
+        message: 'Tasks retrieved successfully',
+        data: tasks,
+        filters: filters, // Return applied filters for debugging
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
    * Create a new task
    * POST /api/tasks
    */
