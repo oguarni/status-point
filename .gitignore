@@ -94,3 +94,4 @@ seedDatabase.ts
 # Root-level files that shouldn't exist
 /package.json
 /.sequelizerc
+/.claude
