@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="frontend/public/android-chrome-512x512.png" alt="Logotipo Agiliza" width="300" />
+  <img src="frontend/public/android-chrome-512x512.png" alt="Logotipo Agiliza" width="350" />
   <br>
   Sistema de Gestão de Tarefas
 </h1>
