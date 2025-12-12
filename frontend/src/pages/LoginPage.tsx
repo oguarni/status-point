@@ -116,8 +116,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: '2rem',
   },
   logo: {
-    width: '80px',
-    height: '80px',
+    width: '250px',
+    height: '250px',
   },
   title: {
     textAlign: 'center',
